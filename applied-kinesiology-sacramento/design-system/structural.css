@@ -1319,3 +1319,39 @@ a:hover { color: var(--ds-accent-deep); }
 @media (max-width: 900px) {
   .bw-matrix thead { display: none; }
 }
+
+/* SECTION REVEAL
+   One quiet entrance: each top-level <main> section fades up as it scrolls into
+   view. Deliberately restrained (opacity plus a small translate, nothing else),
+   built from the locked motion tokens rather than invented values.
+
+   PROGRESSIVE ENHANCEMENT, and this part is load-bearing: the hidden start state
+   is scoped to .js-reveal, a class the inline head script adds. If JS is off,
+   blocked, or throws, that class never lands and every section renders fully
+   visible. Content is NEVER hidden by CSS alone. That is the difference between
+   an animation and an accidental blank page.
+
+   NO LAYOUT SHIFT: only opacity and transform are animated, so nothing reflows
+   and Cumulative Layout Shift is untouched.
+
+   REDUCED MOTION: the accessibility page states that if the visitor's device is
+   set to reduce motion, the motion on this site stands still. This honours that
+   in CSS as well as in JS, so the promise holds even if the script runs. */
+.js-reveal main > section {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity var(--ds-dur-slow) var(--ds-ease-out),
+              transform var(--ds-dur-slow) var(--ds-ease-out);
+}
+.js-reveal main > section.is-revealed {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .js-reveal main > section,
+  .js-reveal main > section.is-revealed {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

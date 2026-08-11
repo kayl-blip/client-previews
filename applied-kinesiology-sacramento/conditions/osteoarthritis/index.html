@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400..700&display=swap">
 <link rel="stylesheet" href="../../design-system/tokens.css?v=5d619531">
   <link rel="stylesheet" href="../../design-system/chrome.css?v=e69733a7">
-  <link rel="stylesheet" href="../../design-system/structural.css?v=ac45bfb8">
+  <link rel="stylesheet" href="../../design-system/structural.css?v=0954e6ef">
   <link rel="stylesheet" href="../../design-system/brand-card-standard.css?v=6010adaa">
 
 <link rel="canonical" href="https://kayl-blip.github.io/client-previews/applied-kinesiology-sacramento/conditions/osteoarthritis/">
@@ -137,6 +137,63 @@
 </script>
 </head>
 <body class="tier-standard">
+<script>
+/* SECTION REVEAL (pairs with .js-reveal in the structural sheet).
+   Placed at the TOP of body, ahead of the content slot, so sections are hidden
+   in the same frame they first paint. A body-end script would let them paint
+   visible and then vanish, which is a worse artefact than no animation at all.
+
+   NOTE, do not undo this: no comment in this file may contain a literal main
+   start-tag. derive-shell locates the content slot by scanning for one and its
+   probe does not mask comment interiors, so writing that tag here truncates the
+   assembled page at this point. That is a real bug this file has already caused
+   once. Refer to it in prose, never as a tag.
+
+   It BAILS OUT COMPLETELY, leaving every section visible, when either:
+     (a) the visitor asked for reduced motion, or
+     (b) IntersectionObserver is unavailable.
+   Case (a) is not a nicety: the accessibility page tells visitors that motion on
+   this site stands still when their device asks for that, so this has to be true.
+
+   It also self-heals. If anything throws, the class comes back off, and a
+   backstop timer reveals everything regardless, so no section can be stranded at
+   opacity 0. Hidden content is a far worse failure than a missing animation. */
+(function () {
+  var d = document, root = d.documentElement;
+  try {
+    if (!('IntersectionObserver' in window)) return;
+    var mq = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (mq && mq.matches) return;
+    root.classList.add('js-reveal');
+    var start = function () {
+      try {
+        var secs = d.querySelectorAll('main > section');
+        if (!secs.length) { root.classList.remove('js-reveal'); return; }
+        var io = new IntersectionObserver(function (entries) {
+          for (var j = 0; j < entries.length; j++) {
+            if (entries[j].isIntersecting) {
+              entries[j].target.classList.add('is-revealed');
+              io.unobserve(entries[j].target);
+            }
+          }
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.01 });
+        var vh = window.innerHeight || root.clientHeight || 0;
+        for (var i = 0; i < secs.length; i++) {
+          /* Anything already on screen at load reveals at once, so the first
+             viewport is never blank while the observer warms up. */
+          if (secs[i].getBoundingClientRect().top < vh) secs[i].classList.add('is-revealed');
+          else io.observe(secs[i]);
+        }
+        window.setTimeout(function () {
+          for (var k = 0; k < secs.length; k++) secs[k].classList.add('is-revealed');
+        }, 4000);
+      } catch (e) { root.classList.remove('js-reveal'); }
+    };
+    if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', start);
+    else start();
+  } catch (e) { root.classList.remove('js-reveal'); }
+})();
+</script>
 
 <a class="kit-skip-link" href="#main">Skip to main content</a>
 
