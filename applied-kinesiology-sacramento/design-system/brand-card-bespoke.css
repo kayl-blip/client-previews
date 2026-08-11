@@ -1,0 +1,82 @@
+/* ============================================================================
+   brand-card-bespoke.css — the BESPOKE tier treatment (token-pure)
+   applied-kinesiology-sacramento · SYSTEM stage, 2026-08-10
+
+   WHO GETS THIS TIER: exactly ONE page — `index` (T-HOME), the only bespoke:true row
+   in sitemap.yaml (owner decision F3). The homepage is the analytical router built LAST,
+   and it is the only surface allowed the full material vocabulary.
+
+   WHAT THE TIER ADDS over standard: a taller hero band, the A2 arc seam between every
+   major movement, glass tiles on dark ground, and a wider container so the 12-slot V6
+   homepage composition can breathe.
+
+   TOKEN-PURE: zero brand hex. Every value resolves through the locked tokens sheet.
+   ============================================================================ */
+
+/* --- the bespoke hero runs taller and carries the split portrait (V6 B3) --- */
+.tier-bespoke .bw-hero {
+  padding: var(--ds-space-2xl) 0 var(--ds-space-xl);
+  overflow: hidden;
+  background-image:
+    radial-gradient(90% 120% at 88% -20%, var(--ds-accent-soft) 0%, transparent 60%),
+    linear-gradient(180deg, var(--ds-bg-warm) 0%, var(--ds-bg-surface) 78%);
+}
+.tier-bespoke .bw-hero h1 { max-width: 16ch; }
+
+/* --- the homepage may run wider than the template pages --- */
+.tier-bespoke .container { max-width: var(--ds-container-max); }
+.tier-bespoke .container--wide { max-width: none; padding-inline: var(--ds-space-lg); }
+/* .container--full MUST be restated at tier specificity for the same reason --wide is, and it was
+   missing. FIXED 2026-08-11. The structural sheet declares `.container--full { max-width:none;
+   padding-inline:0 }` at specificity (0,1,0); the `.tier-bespoke .container` line directly above is
+   (0,2,0) and therefore BEAT it on every full-bleed wrapper on the home page. Measured consequence at
+   1440: all FOUR A2 arc seams rendered in a box of 140..1300 (1160px, the reading container) instead
+   of 0..1440, so each band transition showed a flat gap from 0..140, a hard vertical cut at x=1300,
+   and the arc only drawn across the middle - on the one page the arc seam is the signature of. Every
+   tier-standard page was already correct (`.container--full` there computes max-width:none and the
+   seams measure 0..1440), which is what made this look intentional rather than broken. The modifier
+   now wins on tier-bespoke too, so the seam is full-bleed on the marquee page as it is everywhere
+   else. Pre-dates the 2026-08-11 dark-band work; found while eye-reading the new seam. */
+.tier-bespoke .container--full { max-width: none; padding-inline: 0; }
+
+/* --- movement seams: the arc appears between every major band, not just once --- */
+.tier-bespoke .bw-seam { height: 92px; }
+
+/* --- glass tiles on dark ground (on-register for this vertical) --- */
+.tier-bespoke .bw-glass {
+  padding: var(--ds-space-lg) var(--ds-space-md);
+  border-radius: var(--ds-r-surface);
+}
+
+/* --- the trust ladder: counters -> team -> testimonials, stacked deliberately (V6) --- */
+.tier-bespoke .bw-ladder {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--ds-space-md);
+}
+
+/* --- services grid is the spine and the page's table of contents (V6 G4) --- */
+.tier-bespoke .bw-spine {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--ds-space-md);
+}
+.tier-bespoke .bw-spine .bw-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--ds-accent);
+}
+
+/* --- the homepage lede sits larger than a template page's --- */
+.tier-bespoke .bw-lede { font-size: 20px; max-width: 36rem; }
+
+/* --- education band (V6: conversion is education G5, never pricing, for this client) --- */
+.tier-bespoke .bw-educate {
+  padding: var(--ds-space-2xl) 0;
+  background-image: linear-gradient(180deg, var(--ds-bg-surface-2) 0%, var(--ds-bg-warm) 100%);
+}
+
+@media (max-width: 900px) {
+  .tier-bespoke .bw-hero { padding: var(--ds-space-xl) 0 var(--ds-space-lg); }
+  .tier-bespoke .bw-hero h1 { max-width: none; }
+  .tier-bespoke .bw-seam { height: 60px; }
+}

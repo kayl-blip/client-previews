@@ -1,0 +1,61 @@
+/* ============================================================================
+   brand-card-standard.css — the STANDARD tier treatment (token-pure)
+   applied-kinesiology-sacramento · SYSTEM stage, 2026-08-10
+
+   WHO GETS THIS TIER: the 47 non-bespoke pages — every T-ARTICLE (24), T-FEATURE (6),
+   T-HUB (3), T-INDEX (4), T-COMPANY (2), T-CONTACT (2), T-LEGAL (5), T-PERSONA (1).
+   These are TEMPLATE-STAMPED pages: predictable rhythm, restrained material, the
+   appointment CTA repeated as the spine (V6 medical-health).
+
+   TOKEN-PURE: zero brand hex. Every value resolves through the locked tokens sheet.
+   ============================================================================ */
+
+/* --- page title banner (V6: inner pages always open on a B2 page-title band) --- */
+.tier-standard .bw-pagehead {
+  padding: var(--ds-space-xl) 0 var(--ds-space-lg);
+  background-image: linear-gradient(180deg, var(--ds-bg-warm) 0%, var(--ds-bg-surface) 100%);
+  border-bottom: 1px solid var(--ds-line);
+}
+.tier-standard .bw-pagehead h1 { margin-bottom: var(--ds-space-sm); }
+.tier-standard .bw-crumbs {
+  font-size: 13.5px;
+  color: var(--ds-ink-soft);
+  margin-bottom: var(--ds-space-sm);
+}
+.tier-standard .bw-crumbs a { color: var(--ds-ink-soft); }
+.tier-standard .bw-crumbs a:hover { color: var(--ds-accent-ink); }
+
+/* --- standard section rhythm: alternate ground every other band --- */
+.tier-standard section:nth-of-type(even):not(.bw-ctaband) {
+  background-image: linear-gradient(180deg, var(--ds-bg-surface) 0%, var(--ds-bg-surface-2) 100%);
+}
+
+/* --- the repeated appointment CTA — the vertical's spine --- */
+.tier-standard .bw-ctaband {
+  padding: var(--ds-space-xl) 0;
+  background-image:
+    radial-gradient(70% 140% at 15% 0%, var(--ds-accent-soft) 0%, transparent 55%),
+    linear-gradient(180deg, var(--ds-primary-deep) 0%, var(--ds-primary-deep) 100%);
+}
+/* .bw-ctaband now carries the .surface-dark token flip via tokens.css, so ink resolves
+   correctly without hand-set colours (which previously gave 2.28:1 body text). */
+
+/* --- body prose measure for template pages --- */
+.tier-standard .bw-prose { max-width: 40rem; }
+.tier-standard .bw-prose h2 { margin-top: var(--ds-space-lg); }
+.tier-standard .bw-prose ul { padding-left: 1.15em; margin: 0 0 1.1em; }
+.tier-standard .bw-prose li { margin-bottom: .45em; }
+
+/* --- related-items rail that closes most standard pages --- */
+.tier-standard .bw-rail {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--ds-space-md);
+}
+
+/* --- restrained motion: standard pages do not animate on scroll --- */
+.tier-standard .bw-card:hover { transform: translateY(-3px); }
+
+@media (max-width: 600px) {
+  .tier-standard .bw-pagehead { padding: var(--ds-space-lg) 0 var(--ds-space-md); }
+}

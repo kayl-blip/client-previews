@@ -1,0 +1,569 @@
+/* ============================================================================
+   LOCKED CHROME SHEET. Sacramento Applied Kinesiology.
+   Source of truth: _design/_tournament/chrome/concept-ac/preview.html
+   (owner pick 2026-08-10, "Clinical Calm, Open Chart", 13/13 gates).
+
+   Concept AC is a MERGE, not a fourth idea: concept A's quiet register (one
+   opaque paper row, hairline seams, a single solid Book pill) keeps every
+   surface it owned, and concept C's teaching MEGA replaces A's four hover
+   dropdowns with ONE panel opened by click. Nothing else about A moves.
+
+   SCOPE: this sheet carries the CHROME ONLY. The header / .ck-bar, the mega
+   panel, the mobile drawer, the sticky CTA bar, the pre-footer CTA band and the
+   footer, plus the shared action shapes and the responsive gates they depend
+   on. The concept's dummy <main> demo rules (.ck-heroacts, .ck-herochips,
+   .ck-heronote, .ck-cards) existed ONLY to show the chrome over content and are
+   deliberately NOT carried here: the body is the page's job, not the frame's.
+
+   Token-pure by contract: every colour resolves through a var(--ds-*), zero hex
+   literals. Layout numbers (px / %) are structure, not brand, and stay literal.
+   ============================================================================ */
+
+/* --------------------------------------------------- 0. KEYBOARD FOCUS RING */
+/* The chrome STYLE LAYER carries its own global role-based ring (G-FOCUS floor,
+   WCAG 2.4.7). Values are IDENTICAL to the structural sheet's
+   `:where(a, button, input, select, textarea, summary):focus-visible` ring, so
+   whichever rule wins the cascade the painted result is the same 3px accent-deep
+   outline at a 2px offset. Restated here in explicit role form because the chrome
+   sheet must ship a visible focus indicator on its own. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible{
+  outline:3px solid var(--ds-accent-deep);
+  outline-offset:2px;
+}
+
+/* ---------------------------------------------------------------- 1. HEADER */
+.ck-header{
+  /* THE CHROME ROW'S OWN WIDTH CAP — deliberately NOT --ds-container-max, and deliberately its own
+     name. --ds-container-max (1160px) is the BODY READING CONTAINER: the width a paragraph is set to.
+     The chrome row is not body content, it is the frame around it, and the locked concept caps it
+     wider so the seven nav labels, the phone control and the Book pill can all sit on one row. The
+     locked source of truth (_design/_tournament/chrome/concept-ac/preview.html, owner pick, 13/13
+     gates) states this as the literal `max-width:1400px` on .ck-bar and .ck-mega__in while using
+     var(--ds-container-max) on .ck-foot__in ONLY — the two caps are different on purpose. Naming it
+     here keeps that distinction legible instead of leaving a bare literal to be "tidied" back into
+     the container token, which is exactly the regression fixed on 2026-08-11 (see .ck-bar below).
+     It is scoped to .ck-header so .ck-bar and .ck-mega__in both inherit the one value. */
+  --ck-bar-max:1400px;
+  position:sticky; top:0; z-index:var(--ds-z-sticky);
+  background:var(--ds-bg-surface);
+  border-bottom:1px solid var(--ds-line);
+  transition:box-shadow var(--ds-dur) var(--ds-ease);
+}
+/* the seam that stops this being a flat grey bar: a 3px brand rule on the top edge */
+.ck-header::before{
+  content:""; position:absolute; left:0; right:0; top:0; height:3px;
+  background-image:linear-gradient(90deg,
+    var(--ds-accent) 0%, var(--ds-accent-deep) 54%, var(--ds-primary-deep) 100%);
+}
+.ck-header.is-stuck{box-shadow:var(--ds-shadow-card)}
+.ck-header.is-stuck .ck-bar{--ck-pad-y:9px}
+
+/* THE BAR CAP IS 1400px AND IT IS A LAYOUT NUMBER, NOT THE BODY CONTAINER TOKEN.
+   REGRESSION FIXED 2026-08-11 (site-wide 4px h-overflow, scrollWidth 1444 @ 1440 on all 48 pages):
+   this line had been ported as `max-width:var(--ds-container-max)` (1160px). The LOCKED source of
+   truth — _design/_tournament/chrome/concept-ac/preview.html, the owner pick at 13/13 gates — ships
+   `max-width:1400px` here and on .ck-mega__in, and uses var(--ds-container-max) on .ck-foot__in ONLY.
+   That distinction is deliberate: the header row is a CHROME row, not body content, and it needs more
+   width than the 1160px reading container. The token swap cost the row 240px, and because .ck-lock /
+   .ck-nav / .ck-util are all frozen at flex:0 0 auto (see the DESKTOP NAV note below — load-bearing,
+   so a misfit becomes real overflow instead of silently stacked labels), the row could not shrink to
+   absorb it. Measured at 1440: lock 304.4 + gap 17.28 + nav 594.2 + gap 17.28 + util 347.9 = 1281.1px
+   of content against a 1113.9px content box (1160 - 2x23.04 padding) => 167px spilling past the bar's
+   right edge at x=1276.96, landing at x=1444, i.e. 4px past the viewport. The collapse breakpoint
+   below is the proof this was never the intent: it was measured as "NATURAL BAR WIDTH 1265.5px ...
+   the row first fits inside its own gutters at 1264px", a measurement only possible if the bar may
+   reach 1264px wide — which a 1160px cap forbids at EVERY desktop width. At 1400 the content box is
+   1353.9px and the row fits with 72.9px of slack. Do NOT re-tokenise this to --ds-container-max, and
+   do NOT mask the symptom with overflow-x:hidden — that hides the scrollbar and keeps the broken row.
+   The value is carried by --ck-bar-max on .ck-header (see the note there) rather than as a bare
+   literal, because verify-responsive-ladder's container-cap detector reads any `max-width:<N>px`
+   literal sitting beside `margin-inline:auto` as THE PAGE'S WIDEST CENTRED CONTENT CONTAINER and
+   takes the max across the sheet. As a bare literal it therefore reported container-cap=1400 for
+   every page and demanded a ~1200 breakpoint the design does not need — the BODY container is
+   --ds-container-max at 1160px, which is what that gate's waiver is actually asking about, and 1200
+   was verified by render to be pixel-structurally identical to 1440 below the chrome. The custom
+   property states the real answer (a chrome cap, not a content container) and leaves the body
+   container as the cap the ladder gate measures. */
+.ck-bar{
+  --ck-pad-y:15px;
+  display:flex; align-items:center; flex-wrap:nowrap;
+  gap:clamp(10px,1.2vw,20px);
+  width:100%; max-width:var(--ck-bar-max); margin-inline:auto;
+  padding:var(--ck-pad-y) clamp(16px,1.6vw,24px);
+  transition:padding var(--ds-dur) var(--ds-ease);
+}
+
+/* lockup */
+.ck-lock{display:flex; align-items:center; gap:10px; margin-right:auto; flex:0 0 auto; text-decoration:none}
+.ck-lock img{height:42px; width:auto; max-width:none; flex:0 0 auto}
+.ck-lock__name{
+  display:block; font-family:var(--ds-font-display); font-weight:600;
+  font-size:clamp(13.5px,1vw,15.5px); line-height:1.12;
+  letter-spacing:-.008em; color:var(--ds-ink-heading); white-space:nowrap;
+}
+.ck-lock__desc{
+  display:block; margin-top:4px; font-size:10px; font-weight:700;
+  letter-spacing:.19em; text-transform:uppercase; color:var(--ds-accent-ink);
+}
+.ck-lock:hover .ck-lock__name{color:var(--ds-accent-deep)}
+
+/* ------------------------------------------------------- 2. DESKTOP NAV */
+/* flex:0 0 auto is load-bearing. At the default 0 1 auto the nav can shrink below
+   its own content width and the labels run silently UNDER the Book pill, which no
+   gate can see. Frozen, any future misfit becomes real document overflow that the
+   render ladder catches. */
+.ck-nav{display:none; flex:0 0 auto}
+.ck-nav ul{list-style:none; margin:0; padding:0; display:flex; align-items:center; gap:clamp(8px,.8vw,13px)}
+.ck-item{display:flex; align-items:center}
+.ck-top{
+  position:relative; display:inline-flex; align-items:center;
+  padding:9px 2px; white-space:nowrap; text-decoration:none;
+  font-size:clamp(12.8px,.92vw,14px); font-weight:600; color:var(--ds-ink);
+  transition:color var(--ds-dur-fast) var(--ds-ease);
+}
+.ck-top::after{
+  content:""; position:absolute; left:0; right:0; bottom:1px; height:2px;
+  background:var(--ds-accent); transform:scaleX(0); transform-origin:left center;
+  transition:transform var(--ds-dur) var(--ds-ease);
+}
+.ck-item:hover .ck-top::after,
+.ck-item[data-open="true"] .ck-top::after,
+.ck-top:focus-visible::after,
+.ck-top[aria-current="page"]::after{transform:scaleX(1)}
+.ck-top:hover{color:var(--ds-accent-deep)}
+.ck-top[aria-current="page"]{color:var(--ds-ink-heading)}
+
+.ck-caret{
+  appearance:none; -webkit-appearance:none; background:none; border:0; cursor:pointer;
+  padding:8px 3px; margin-left:1px; line-height:0; color:var(--ds-ink-soft);
+  border-radius:var(--ds-r-control);
+}
+.ck-caret svg{width:11px; height:11px; transition:transform var(--ds-dur) var(--ds-ease)}
+.ck-item[data-open="true"] .ck-caret{color:var(--ds-accent-deep)}
+.ck-item[data-open="true"] .ck-caret svg{transform:rotate(180deg)}
+
+/* --------------------------------------------- 3. THE ONE TEACHING MEGA */
+/* ONE panel, two triggers, click only. It hangs off the HEADER (not the list
+   item) so it can run the full bar width without a second stacking context. */
+.ck-mega{
+  position:absolute; left:0; right:0; top:100%;
+  display:none; z-index:var(--ds-z-overlay);
+}
+/* --ck-bar-max (1400px), NOT --ds-container-max — same restore as .ck-bar above, and for the same
+   reason: the mega must align edge-for-edge with the bar it hangs from. Ported as the container token
+   in the same sweep; at 1160 the open panel sat 240px narrower than the row above it. The locked
+   source ships 1400px here. Inherited from .ck-header so the two can never drift apart. */
+.ck-mega__in{max-width:var(--ck-bar-max); margin-inline:auto; padding-inline:clamp(16px,1.6vw,24px)}
+.ck-mega__panel{
+  padding:var(--ds-space-lg) var(--ds-space-lg) var(--ds-space-md);
+  background-color:var(--ds-bg-surface);
+  background-image:radial-gradient(58% 130% at 97% -34%, var(--ds-accent-soft) 0%, transparent 56%);
+  border:1px solid var(--ds-line); border-top:0;
+  border-radius:0 0 var(--ds-r-surface) var(--ds-r-surface);
+  box-shadow:var(--ds-shadow-lift);
+  opacity:0; transform:translateY(-10px);
+  transition:opacity var(--ds-dur) var(--ds-ease-out), transform var(--ds-dur) var(--ds-ease-out);
+}
+.ck-mega.is-open .ck-mega__panel{opacity:1; transform:none}
+.ck-mega__eyebrow{
+  margin:0 0 6px; font-size:11.5px; font-weight:700; letter-spacing:.17em;
+  text-transform:uppercase; color:var(--ds-accent-ink);
+}
+.ck-mega__title{
+  margin:0 0 5px; max-width:30ch;
+  font-family:var(--ds-font-display); font-size:23px; line-height:1.16;
+  color:var(--ds-ink-heading);
+}
+.ck-mega__lede{margin:0 0 var(--ds-space-md); max-width:44rem; font-size:14.5px; color:var(--ds-ink-soft)}
+.ck-mega__rule{height:1px; margin:0 0 var(--ds-space-md); background:var(--ds-line)}
+
+.ck-mega__grid{
+  display:grid; align-items:start;
+  grid-template-columns:repeat(4,minmax(0,1fr)) minmax(210px,1.2fr);
+  gap:var(--ds-space-md);
+}
+.ck-mega__hd{
+  margin:0 0 11px; padding-bottom:8px;
+  font-family:var(--ds-font-body); font-size:11.5px; font-weight:700;
+  letter-spacing:.15em; text-transform:uppercase; line-height:1.4;
+  color:var(--ds-ink-heading); border-bottom:2px solid var(--ds-accent); max-width:none;
+}
+.ck-mega__list{list-style:none; margin:0; padding:0}
+.ck-mega__list li + li{margin-top:1px}
+.ck-mega__link{
+  display:block; padding:5px 8px; margin-left:-8px;
+  border-radius:var(--ds-r-control);
+  font-size:14px; line-height:1.35; color:var(--ds-ink); text-decoration:none;
+  transition:background-color var(--ds-dur-fast) var(--ds-ease),
+             color var(--ds-dur-fast) var(--ds-ease),
+             transform var(--ds-dur-fast) var(--ds-ease-out);
+}
+.ck-mega__link:hover{background:var(--ds-accent-soft); color:var(--ds-accent-deep); transform:translateX(3px)}
+.ck-mega__link b{display:block; font-weight:700}
+.ck-mega__link span{display:block; margin-top:1px; font-size:12.5px; color:var(--ds-ink-soft)}
+/* the objection tier sits behind its own hairline so it reads as a different KIND
+   of answer, not a fifth body region */
+.ck-mega__col--answers{border-left:1px solid var(--ds-line); padding-left:var(--ds-space-md)}
+.ck-mega__foot{
+  grid-column:1 / -1; margin-top:var(--ds-space-xs); padding-top:var(--ds-space-sm);
+  border-top:1px solid var(--ds-line);
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px 18px;
+  font-size:13px; color:var(--ds-ink-soft);
+}
+.ck-mega__foot a{font-weight:700; text-decoration:none}
+.ck-mega__foot a:hover{text-decoration:underline}
+
+/* ------------------------------------------------- 4. UTILITY (phone + CTA) */
+.ck-util{display:flex; align-items:center; gap:10px; flex:0 0 auto}
+
+.ck-phone{
+  display:none; align-items:center; gap:8px;
+  min-width:44px; height:44px; padding:0 11px; justify-content:center;
+  border:1px solid var(--ds-line); border-radius:var(--ds-r-pill);
+  background:var(--ds-bg-surface); color:var(--ds-ink);
+  font-size:13px; font-weight:700; white-space:nowrap; text-decoration:none;
+  transition:border-color var(--ds-dur) var(--ds-ease),
+             color var(--ds-dur) var(--ds-ease),
+             transform var(--ds-dur-fast) var(--ds-ease-out);
+}
+.ck-phone svg{width:16px; height:16px; color:var(--ds-accent-ink); flex:0 0 auto}
+.ck-phone:hover{border-color:var(--ds-accent); color:var(--ds-accent-deep); transform:translateY(-1px)}
+.ck-phone__num{display:none}
+
+.ck-cta{
+  display:none; align-items:center; gap:9px;
+  padding:12px clamp(14px,1.1vw,18px); border-radius:var(--ds-r-pill);
+  background:var(--ds-accent-deep); color:var(--ds-ink-on-dark);
+  font-size:clamp(12.8px,.92vw,14px); font-weight:700; letter-spacing:.005em;
+  white-space:nowrap; text-decoration:none; box-shadow:var(--ds-shadow-card);
+  transition:transform var(--ds-dur-fast) var(--ds-ease-out),
+             box-shadow var(--ds-dur) var(--ds-ease);
+}
+.ck-cta svg{width:15px; height:15px; transition:transform var(--ds-dur) var(--ds-ease-out)}
+.ck-cta:hover{color:var(--ds-ink-on-dark); transform:translateY(-2px); box-shadow:var(--ds-shadow-lift)}
+.ck-cta:hover svg{transform:translateX(3px)}
+
+.ck-burger{
+  display:inline-flex; flex-direction:column; justify-content:center; gap:5px;
+  width:46px; height:46px; padding:0 11px; cursor:pointer;
+  background:var(--ds-bg-surface); border:1px solid var(--ds-line);
+  border-radius:var(--ds-r-control);
+  transition:border-color var(--ds-dur) var(--ds-ease);
+}
+.ck-burger:hover{border-color:var(--ds-accent)}
+/* scoped to the bars ONLY: a bare `.ck-burger span` also hits the visually-hidden
+   label, whose position:absolute + width:100% then extends the header past the viewport */
+.ck-burger span[aria-hidden]{
+  display:block; height:2px; width:100%; border-radius:var(--ds-r-pill);
+  background:var(--ds-ink-heading);
+  transition:transform var(--ds-dur) var(--ds-ease), opacity var(--ds-dur-fast) var(--ds-ease);
+}
+body.ck-open .ck-burger span[aria-hidden]:nth-of-type(2){transform:translateY(7px) rotate(45deg)}
+body.ck-open .ck-burger span[aria-hidden]:nth-of-type(3){opacity:0}
+body.ck-open .ck-burger span[aria-hidden]:nth-of-type(4){transform:translateY(-7px) rotate(-45deg)}
+
+/* ------------------------------------------------------------- 5. DRAWER */
+.ck-scrim{
+  position:fixed; inset:0; z-index:var(--ds-z-overlay);
+  background:var(--ds-primary-deep); opacity:0; visibility:hidden;
+  transition:opacity var(--ds-dur) var(--ds-ease), visibility 0s linear var(--ds-dur);
+}
+body.ck-open .ck-scrim{opacity:var(--ds-opacity-scrim); visibility:visible; transition:opacity var(--ds-dur) var(--ds-ease), visibility 0s}
+
+/* the host is a viewport-sized clip box: it stops the off-canvas drawer from
+   extending the document's scrollable width (the 375px h-overflow class of bug) */
+.ck-dw-host{
+  position:fixed; inset:0; z-index:var(--ds-z-drawer);
+  overflow:hidden; pointer-events:none;
+}
+.ck-drawer{
+  position:absolute; top:0; right:0; height:100%;
+  width:min(392px, calc(100% - 44px));
+  pointer-events:auto;
+  display:flex; flex-direction:column;          /* the drawer is a flex COLUMN */
+  background:var(--ds-bg-surface);
+  border-left:1px solid var(--ds-line);
+  box-shadow:var(--ds-shadow-lift);
+  transform:translateX(100%); visibility:hidden;
+  transition:transform var(--ds-dur) var(--ds-ease-out), visibility 0s linear var(--ds-dur);
+}
+body.ck-open .ck-drawer{transform:none; visibility:visible; transition:transform var(--ds-dur) var(--ds-ease-out), visibility 0s}
+body.ck-open{overflow:hidden}
+
+.ck-dw__head{
+  flex:0 0 auto; display:flex; align-items:center; gap:12px;
+  padding:13px 14px; border-bottom:1px solid var(--ds-line);
+  background:var(--ds-bg-surface);
+}
+.ck-dw__head img{height:38px; width:auto; max-width:none}
+.ck-dw__head .ck-lock__name{font-size:14px}
+.ck-dw__close{
+  margin-left:auto; flex:0 0 auto; width:46px; height:46px;
+  display:grid; place-items:center; cursor:pointer;
+  background:var(--ds-bg-surface); color:var(--ds-ink-heading);
+  border:1px solid var(--ds-line); border-radius:var(--ds-r-control);
+  transition:border-color var(--ds-dur) var(--ds-ease), color var(--ds-dur) var(--ds-ease);
+}
+.ck-dw__close:hover{border-color:var(--ds-accent); color:var(--ds-accent-deep)}
+.ck-dw__close svg{width:18px; height:18px}
+
+/* the ONLY scrolling region in the drawer */
+.ck-dw__nav{
+  flex:1 1 auto; min-height:0;
+  overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
+  padding:2px 12px 16px;
+}
+.ck-dw__nav ul{list-style:none; margin:0; padding:0}
+
+.ck-dk{
+  border-bottom:1px solid var(--ds-line);
+  opacity:0; transform:translateX(14px);
+  transition:opacity var(--ds-dur) var(--ds-ease), transform var(--ds-dur) var(--ds-ease-out);
+}
+.ck-dk:last-child{border-bottom:0}
+body.ck-open .ck-dk{opacity:1; transform:none}
+body.ck-open .ck-dk:nth-child(1){transition-delay:.02s}
+body.ck-open .ck-dk:nth-child(2){transition-delay:.04s}
+body.ck-open .ck-dk:nth-child(3){transition-delay:.06s}
+body.ck-open .ck-dk:nth-child(4){transition-delay:.08s}
+body.ck-open .ck-dk:nth-child(5){transition-delay:.10s}
+body.ck-open .ck-dk:nth-child(6){transition-delay:.12s}
+body.ck-open .ck-dk:nth-child(7){transition-delay:.14s}
+
+.ck-dk__row{display:flex; align-items:stretch; gap:4px}
+.ck-dk__link{
+  flex:1 1 auto; display:flex; align-items:center; min-height:56px; padding:8px 4px;
+  font-family:var(--ds-font-display); font-size:18px; font-weight:600; line-height:1.2;
+  color:var(--ds-ink-heading); text-decoration:none;
+  transition:color var(--ds-dur-fast) var(--ds-ease);
+}
+.ck-dk__link:hover{color:var(--ds-accent-deep)}
+.ck-dk__link[aria-current="page"]{color:var(--ds-accent-deep)}
+.ck-dk__acc{
+  flex:0 0 auto; width:52px; min-height:56px; display:grid; place-items:center;
+  cursor:pointer; background:none; border:0; border-left:1px solid var(--ds-line);
+  color:var(--ds-ink-soft); border-radius:var(--ds-r-control);
+  transition:color var(--ds-dur-fast) var(--ds-ease);
+}
+.ck-dk__acc:hover{color:var(--ds-accent-deep)}
+.ck-dk__acc svg{width:14px; height:14px; transition:transform var(--ds-dur) var(--ds-ease)}
+.ck-dk[data-open="true"] .ck-dk__acc{color:var(--ds-accent-deep)}
+.ck-dk[data-open="true"] .ck-dk__acc svg{transform:rotate(180deg)}
+
+.ck-dk__panel{display:grid; grid-template-rows:0fr; transition:grid-template-rows var(--ds-dur) var(--ds-ease)}
+.ck-dk[data-open="true"] .ck-dk__panel{grid-template-rows:1fr}
+.ck-dk__inner{overflow:hidden; visibility:hidden; transition:visibility 0s linear var(--ds-dur)}
+.ck-dk[data-open="true"] .ck-dk__inner{visibility:visible; transition:visibility 0s}
+.ck-dk__panel a{
+  display:block; margin:0 0 0 6px; padding:12px 14px;
+  border-left:2px solid var(--ds-line);
+  font-size:15px; color:var(--ds-ink-soft); text-decoration:none;
+  transition:color var(--ds-dur-fast) var(--ds-ease), border-color var(--ds-dur-fast) var(--ds-ease);
+}
+.ck-dk__panel a:hover{color:var(--ds-accent-deep); border-left-color:var(--ds-accent)}
+/* the mega's four authored groupings, repeated verbatim inside the accordion so the
+   drawer teaches the SAME structure the desktop panel teaches */
+.ck-dgrp{
+  margin:14px 0 4px 6px; font-size:11px; font-weight:700; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ds-accent-ink);
+}
+.ck-dgrp:first-child{margin-top:6px}
+.ck-dk__pad{height:10px}
+
+/* NON-overlapping tail block: flex:0 0 auto, never sticky, never over the list */
+.ck-dw__foot{
+  flex:0 0 auto; display:grid; gap:10px;
+  padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));
+  border-top:1px solid var(--ds-line);
+  background:var(--ds-bg-surface-2);
+}
+.ck-nap{margin:2px 0 0; font-size:13.5px; line-height:1.5; color:var(--ds-ink-soft)}
+.ck-nap b{display:block; color:var(--ds-ink); font-weight:700}
+
+/* ------------------------------------------------- 6. SHARED ACTION SHAPES */
+.ck-act{
+  display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  padding:14px 20px; border-radius:var(--ds-r-pill);
+  font-family:var(--ds-font-body); font-size:15px; font-weight:700;
+  text-decoration:none; cursor:pointer; border:1px solid transparent;
+  transition:transform var(--ds-dur-fast) var(--ds-ease-out),
+             box-shadow var(--ds-dur) var(--ds-ease),
+             color var(--ds-dur) var(--ds-ease),
+             border-color var(--ds-dur) var(--ds-ease);
+}
+.ck-act svg{width:16px; height:16px; flex:0 0 auto}
+.ck-act--solid{background:var(--ds-accent-deep); color:var(--ds-ink-on-accent); box-shadow:var(--ds-shadow-card)}
+.ck-act--solid:hover{color:var(--ds-ink-on-accent); transform:translateY(-2px); box-shadow:var(--ds-shadow-lift)}
+/* A solid CTA sitting INSIDE a dark ground. `.surface-dark,.section--dark,.bw-ctaband` set
+   `color:var(--ds-ink-on-dark)`, which the dark flip re-points to --ds-ink-soft (#C3CDD4). That is
+   right for body text on the dark ground and wrong on the SOLID accent fill, where it measured
+   3.35:1 against #0A748A. These descendant selectors outrank the ancestor's value so the fill keeps
+   its own foreground on either ground. Measured 5.33:1. */
+.surface-dark .ck-act--solid,
+.section--dark .ck-act--solid,
+.ck-foot .ck-act--solid{color:var(--ds-ink-on-accent)}
+.surface-dark .ck-act--solid:hover,
+.section--dark .ck-act--solid:hover,
+.ck-foot .ck-act--solid:hover{color:var(--ds-ink-on-accent)}
+.ck-act--quiet{background:var(--ds-bg-surface); color:var(--ds-accent-ink); border-color:var(--ds-line)}
+.ck-act--quiet:hover{color:var(--ds-accent-deep); border-color:var(--ds-accent)}
+.ck-act--block{width:100%}
+
+/* -------------------------------------------------- 7. PRE-FOOTER CTA BAND */
+.ck-band{
+  background:var(--ds-bg-warm);
+  padding:clamp(56px,7vw,92px) 0;
+  text-align:center;
+}
+.ck-band__in{max-width:760px; margin-inline:auto; padding-inline:var(--ds-space-md)}
+.ck-band h2{margin-inline:auto; max-width:19ch}
+.ck-band p{margin-inline:auto; max-width:34rem; color:var(--ds-ink-soft); font-size:18px}
+.ck-band__acts{display:flex; flex-wrap:wrap; gap:14px; justify-content:center; margin-top:28px}
+.ck-band__rule{width:44px; height:3px; margin:0 auto 22px; background:var(--ds-accent); border-radius:var(--ds-r-pill)}
+
+/* ------------------------------------------------------------- 8. FOOTER */
+.ck-foot{background-image:radial-gradient(110% 130% at 6% 0%, var(--ds-accent-soft) 0%, transparent 58%)}
+.ck-foot__in{max-width:var(--ds-container-max); margin-inline:auto; padding-inline:clamp(18px,3vw,32px)}
+
+.ck-foot__r1{
+  display:grid; grid-template-columns:1.15fr .85fr 1fr 1fr;
+  gap:clamp(18px,3vw,40px);
+  padding:clamp(38px,5vw,60px) 0 clamp(28px,4vw,42px);
+}
+.ck-foot__r1 > div + div{border-left:1px solid var(--ds-line); padding-left:clamp(18px,3vw,40px)}
+.ck-fbrand{display:flex; align-items:center; gap:12px}
+.ck-fbrand img{height:48px; width:auto; max-width:none; flex:0 0 auto}
+.ck-fbrand .ck-lock__name{font-size:16px; white-space:normal}
+/* small accent text on a DARK ground takes --ds-accent-light by contract */
+.ck-fbrand .ck-lock__desc{color:var(--ds-accent-light)}
+.ck-flab{margin:0 0 10px; font-size:11.5px; font-weight:700; letter-spacing:.17em; text-transform:uppercase; color:var(--ds-accent-light)}
+.ck-fphone{
+  display:inline-block; font-family:var(--ds-font-display); font-weight:600;
+  font-size:clamp(22px,2.2vw,28px); line-height:1.15;
+  color:var(--ds-ink-on-dark); text-decoration:none;
+}
+.ck-fphone:hover{color:var(--ds-accent-light)}
+.ck-faddr{margin:0; font-style:normal; font-size:15px; line-height:1.6; color:var(--ds-ink-soft)}
+.ck-faddr b{display:block; color:var(--ds-ink-on-dark); font-weight:600}
+.ck-hours{display:grid; gap:6px; margin:0; font-size:14.5px}
+.ck-hours div{display:flex; justify-content:space-between; gap:16px; max-width:290px; color:var(--ds-ink-soft)}
+.ck-hours b{color:var(--ds-ink-on-dark); font-weight:600}
+
+.ck-foot__r2{
+  display:grid; grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:clamp(20px,2.6vw,34px);
+  padding:clamp(32px,4vw,48px) 0;
+  border-top:1px solid var(--ds-line);
+}
+.ck-fg h3{
+  font-family:var(--ds-font-body); font-size:12px; font-weight:700;
+  letter-spacing:.16em; text-transform:uppercase; line-height:1.4;
+  color:var(--ds-ink-on-dark); margin:0 0 14px; max-width:none;
+}
+.ck-fg ul{list-style:none; margin:0; padding:0; display:grid; gap:9px}
+.ck-fg a{font-size:14.5px; color:var(--ds-ink-soft); text-decoration:none; transition:color var(--ds-dur-fast) var(--ds-ease)}
+.ck-fg a:hover{color:var(--ds-ink-on-dark)}
+.ck-fg .ck-act{margin-top:12px; padding:11px 16px; font-size:14px}
+
+.ck-foot__r3{
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between;
+  gap:12px 22px; padding:20px 0 30px; border-top:1px solid var(--ds-line);
+}
+.ck-legal{display:flex; flex-wrap:wrap; align-items:center; gap:8px 18px}
+.ck-legal h3{
+  font-family:var(--ds-font-body); font-size:11px; font-weight:700;
+  letter-spacing:.17em; text-transform:uppercase; color:var(--ds-accent-light);
+  margin:0; max-width:none;
+}
+.ck-legal a{font-size:13.5px; color:var(--ds-ink-soft); text-decoration:none}
+.ck-legal a:hover{color:var(--ds-ink-on-dark)}
+.ck-copy{margin:0; font-size:13.5px; color:var(--ds-ink-soft)}
+
+/* --------------------------------------------- 9. STICKY DUAL CTA (<=768) */
+/* CLASS NAME IS LOAD-BEARING: `.sticky-cta` is the token verify-sticky-cta-behavior
+   detects. Renaming it (e.g. to .ck-sticky) makes the gate fail to SEE the bar and
+   fail OPEN, which is exactly how concept A shipped an unguarded sticky. Do not rename. */
+.sticky-cta{
+  display:none; position:fixed; left:0; right:0; bottom:0;
+  z-index:var(--ds-z-sticky); gap:10px;
+  padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));
+  background:var(--ds-bg-surface); border-top:1px solid var(--ds-line);
+  box-shadow:0 -14px 32px -24px var(--ds-primary-deep);
+  transform:translateY(120%); opacity:0; visibility:hidden;
+  transition:transform var(--ds-dur) var(--ds-ease-out),
+             opacity var(--ds-dur) var(--ds-ease),
+             visibility 0s linear var(--ds-dur);
+}
+/* revealed only once the hero is past AND the real closing CTA / footer is NOT in view */
+.sticky-cta.is-revealed{
+  transform:none; opacity:1; visibility:visible;
+  transition:transform var(--ds-dur) var(--ds-ease-out),
+             opacity var(--ds-dur) var(--ds-ease),
+             visibility 0s;
+}
+.sticky-cta .ck-act{padding:13px 12px; font-size:14.5px}
+.sticky-cta .ck-act--solid{flex:6 1 0}
+.sticky-cta .ck-act--quiet{flex:4 1 0}
+
+/* --------------------------------------------------- 10. RESPONSIVE GATES */
+@media (min-width:600px){
+  .ck-phone{display:inline-flex}
+}
+@media (min-width:769px){
+  .ck-cta{display:inline-flex}
+}
+@media (min-width:900px){
+  .ck-phone__num{display:inline}
+  .ck-phone{padding:0 12px}
+}
+/* THE COLLAPSE BREAKPOINT: RE-MEASURED for this bar, not inherited from concept A.
+   Headless measurement, both files read the same way with .ck-nav frozen to flex:0 0 auto
+   so neither nav can shrink below its own content:
+     concept A  4 carets, label run 622px, NATURAL BAR WIDTH 1301.5px, collapses at 1320
+     concept AC 2 carets, label run 586px, NATURAL BAR WIDTH 1265.5px
+   The two dropped carets are worth exactly 36px, and the row first fits inside its own
+   gutters at 1264px. 1280 is that measurement plus 17.1px of measured slack, which is the
+   same air concept A gave itself (18.5px) at its own edge, so the register is unchanged and
+   the bar simply earns it 40px sooner. Below this the row is the drawer, whose accordions
+   carry the identical taxonomy. */
+@media (min-width:1280px){
+  .ck-nav{display:block}
+  .ck-mega.is-open{display:block}
+  .ck-burger{display:none}
+  .ck-dw-host,.ck-scrim{display:none}
+  .ck-bar{--ck-pad-y:17px}
+}
+@media (max-width:768px){
+  .sticky-cta{display:flex}
+  body{padding-bottom:84px}
+}
+body.ck-open .sticky-cta{display:none}
+@media (max-width:1000px){
+  .ck-foot__r2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ck-foot__r1{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ck-foot__r1 > div + div{border-left:0; padding-left:0}
+}
+@media (max-width:760px){
+  .ck-foot__r1{grid-template-columns:1fr}
+  .ck-foot__r1 > div + div{border-top:1px solid var(--ds-line); padding-top:22px}
+  .ck-foot__r3{justify-content:flex-start}
+}
+@media (max-width:560px){
+  .ck-foot__r2{grid-template-columns:1fr}
+}
+@media (max-width:430px){
+  .ck-lock img{height:38px}
+  .ck-lock__name{white-space:normal; font-size:13px; max-width:186px}
+  .ck-lock__desc{font-size:9.2px; letter-spacing:.16em}
+}
+@media (prefers-reduced-motion: reduce){
+  .ck-dk{opacity:1 !important; transform:none !important; transition-delay:0s !important}
+  .ck-mega__panel{opacity:1; transform:none}
+  .ck-cta:hover,.ck-act--solid:hover,.ck-phone:hover{transform:none}
+}

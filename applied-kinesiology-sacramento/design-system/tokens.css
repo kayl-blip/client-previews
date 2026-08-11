@@ -1,0 +1,161 @@
+/* ============================================================================
+   applied-kinesiology-sacramento — LOCKED BRAND TOKENS
+   ① BRAND CARD winner: concept-c "Warm Practice"  (owner pick, 2026-08-10)
+   Source card: _design/_tournament/brand-card/concept-c/brand-card.html
+
+   DERIVED FROM
+     - _handoff/applied-kinesiology-sacramento-tokens-spec.md (C6, the measured existing brand)
+     - _handoff/visual-direction.md (C7, primary_surface: light; surface_dominance balanced; energy bold)
+     - .claude/design-system-unified/00-globals/tokens/BRAND-TOKEN-SCHEMA.md (the token contract)
+     - .claude/design-system-unified/00-globals/specs/_PAGE-COMPOSITION-LIBRARY.md §V6 composition-medical-health
+
+   WHY THIS DIRECTION (owner rationale, recorded)
+     V6 medical-health prescribes a warm, human, first-person register, and this practice's
+     entire wedge is a 32-year solo practitioner who treats people conventional care failed.
+     The captured competitor set (Belli, Funk, Twin Creeks, Johnson Ranch) is uniformly cool
+     corporate blue; a warm paper ground + deepened teal separates this practice from all of them.
+     The deepened teal also avoids the accessibility trap in the existing #0CB3FA cyan, which is a
+     light-value colour that cannot carry white text at body size.
+
+   TOKEN PROVENANCE
+     IDENTITY families (colour / type / radius / shadow / spacing) come from the ① brand card.
+     SYSTEM families (z-index / opacity / motion-extension) are BRAND-AGNOSTIC and carry the
+     CANONICAL values read from design-system-unified/00-globals/tokens/tokens.css — they are not
+     invented here. `graft-system-tokens.mjs` is idempotent over this sheet.
+
+   ACCESSIBILITY — every accent variant below was DERIVED PROGRAMMATICALLY, not eyeballed.
+     Measured ratios (WCAG AA floor 4.5:1):
+       --ds-ink         on --ds-bg-surface ............. 14.15:1
+       --ds-ink         on --ds-bg-surface-2 ........... 12.99:1
+       --ds-ink-on-dark on --ds-primary-deep ........... 14.64:1
+       --ds-accent-ink  min across all light grounds ...  4.54:1
+       --ds-accent-deep on #fff ........................  5.42:1  (white on it: 5.42:1)
+       --ds-accent-light on --ds-primary-deep ..........  5.94:1
+       --ds-accent-light on the FOOTER's painted ground .  5.45:1  (worst measured pixel)
+         NOTE: the flat --ds-primary-deep value is NOT the ground to verify against. .ck-foot paints
+         radial-gradient(... var(--ds-accent-soft) ...) OVER it, lifting real painted pixels to
+         #1D313A / #1E2F38. The previous #159eba measured 4.62:1 against the flat token and PASSED
+         design-time review, then shipped 4.27:1 / 4.37:1 against the pixels actually painted —
+         below the 4.5 floor. Verify contrast against RENDERED pixels, never against the token.
+   ============================================================================ */
+
+:root {
+  /* ---- Color: brand identity ---- */
+  --ds-primary:        #0E9BB8;  /* brand accent — buttons, CTAs, primary brand surfaces */
+  --ds-primary-deep:   #1E2A33;  /* THE DARK GROUND — dark bands, site footer, heading ink */
+  --ds-primary-soft:   #E4F4F7;  /* tinted backgrounds, eyebrows, soft cards */
+  --ds-accent:         #0E9BB8;  /* hover, secondary CTA, decorative pop — LARGE display only */
+  /* SMALL accent text on light grounds. Darkened from #0a748a 2026-08-11: that value measured
+     4.51:1 on the hero's --ds-accent-soft radial (#E4ECEB) — passing, but 0.01 above the 4.5 floor,
+     which is not a margin, it is a rounding error. The binding case is p.bw-eyebrow sitting inside
+     the hero tint on both the bespoke home and dr-van-wagenen. #0a6b80 measures >=5.10:1 across all
+     five real hero grounds (#E4ECEB #EAEBE5 #F2EADF #FFFDFA #F7F3EC). Fixed at the TOKEN so all 37
+     usages lift together, rather than recolouring one eyebrow and breaking the accent convention
+     the other 47 pages follow. */
+  --ds-accent-ink:     #0a6b80;
+  --ds-accent-soft:    #DDEFF3;  /* tinted accent backgrounds */
+  --ds-accent-deep:    #0a748a;  /* CTA surface on light; white on it clears AA */
+  --ds-accent-light:   #2fb3ce;  /* accent FOREGROUND on dark grounds — see the contrast note above */
+  /* Text sitting ON a SOLID accent fill. This is a DIFFERENT role from --ds-ink-on-dark (body ink on a
+     dark ground) and must NOT be flipped by .surface-dark: the accent fill is the same colour on both
+     grounds, so its foreground must be too. A solid CTA inside .surface-dark previously inherited the
+     flipped --ds-ink-on-dark (#C3CDD4) and shipped 3.35:1 on #0A748A. 5.33:1 against --ds-accent-deep. */
+  --ds-ink-on-accent:  #fffdfa;
+
+  /* ---- Color: surfaces + ink ---- */
+  --ds-bg-surface:     #FFFDFA;  /* page ground — warm paper, not pure white */
+  --ds-bg-surface-2:   #F7F3EC;  /* card / elevated surface */
+  --ds-bg-warm:        #F2EADF;  /* warm alternate section band */
+  --ds-ink:            #232B31;  /* default body text */
+  --ds-ink-heading:    #1E2A33;  /* h1/h2/h3 on the default (light) ground — light-default brand */
+  --ds-ink-soft:       #55606A;  /* secondary text */
+  --ds-ink-on-dark:    #FFFFFF;  /* text on --ds-primary-deep */
+  --ds-line:           #E4DCD0;  /* borders, dividers — warm-tinted */
+
+  /* ---- Typography (families only; the scale is the SYSTEM's job) ---- */
+  --ds-font-display: 'Playfair Display', Georgia, serif;
+  --ds-font-body:    'Muli', 'Mulish', system-ui, -apple-system, sans-serif;
+
+  /* ---- Radius: the 3 CONSTRAINED role names ---- */
+  --ds-r-control: 8px;    /* buttons / inputs / badges / tags */
+  --ds-r-surface: 18px;   /* cards / panels / media frames */
+  --ds-r-pill:    999px;  /* pills / avatars / icons */
+
+  /* ---- Shadow (surface-dependent — re-declared in .surface-dark below) ---- */
+  --ds-shadow-card: 0 1px 2px rgba(30, 42, 51, .05), 0 8px 24px -12px rgba(30, 42, 51, .16);
+  --ds-shadow-lift: 0 2px 6px rgba(30, 42, 51, .07), 0 24px 48px -20px rgba(30, 42, 51, .26);
+
+  /* ---- Spacing + layout ---- */
+  --ds-space-xs: 8px;
+  --ds-space-sm: 14px;
+  --ds-space-md: 24px;
+  --ds-space-lg: 40px;
+  --ds-space-xl: 64px;
+  --ds-space-2xl: 96px;
+  --ds-container-max: 1160px;
+  --ds-section-py: 88px;
+
+  /* ---- Motion: the 2 required workhorses ---- */
+  --ds-dur:  .28s;
+  --ds-ease: cubic-bezier(.22, .61, .36, 1);
+
+  /* ---- SYSTEM family: motion extension (canonical, brand-agnostic) ---- */
+  --ds-dur-fast: .2s;
+  --ds-dur-slow: .6s;
+  --ds-ease-out: cubic-bezier(.16, 1, .3, 1);
+  --ds-dur-data: 1.4s;
+
+  /* ---- SYSTEM family: z-index scale (canonical, brand-agnostic) ---- */
+  --ds-z-below:   -1;
+  --ds-z-base:     0;
+  --ds-z-raised:   1;
+  --ds-z-sticky:   1000;
+  --ds-z-overlay:  1040;
+  --ds-z-drawer:   1050;
+  --ds-z-modal:    1060;
+  --ds-z-toast:    1080;
+
+  /* ---- SYSTEM family: opacity scale (canonical, brand-agnostic) ---- */
+  --ds-opacity-muted:    .72;
+  --ds-opacity-disabled: .45;
+  --ds-opacity-faint:    .12;
+  --ds-opacity-scrim:    .55;
+  --ds-opacity-texture:  .40;
+  --ds-opacity-veil:     .85;
+}
+
+/* ============================================================================
+   .surface-dark — the DARK FLIP of the SAME vars.
+   Not a second palette: the identical token names re-pointed so any component
+   built on tokens inverts correctly when it sits inside a dark band.
+   EVERY surface-dependent category is re-declared here (colour, line, accent,
+   AND shadow) — a category left out would let a dark section inherit the light
+   value, which is the dark-on-dark / cream-on-white trap.
+   The SYSTEM families (z-index / opacity / motion) are surface-INVARIANT and
+   deliberately stay in :root only.
+   ============================================================================ */
+.surface-dark,
+.section--dark,
+.bw-ctaband {
+  --ds-bg-surface:   #1E2A33;
+  --ds-bg-surface-2: #263440;
+  --ds-bg-warm:      #223039;
+  --ds-ink:          #FFFFFF;
+  --ds-ink-heading:  #FFFFFF;
+  --ds-ink-soft:     #C3CDD4;
+  --ds-line:         #3A4A56;
+  --ds-accent-ink:   #4FC0D8;  /* lightened further: clears 4.5:1 against the DARKEST realistic dark ground (#26404A), not just the flat band */
+  /* --ds-accent-deep is deliberately NOT re-pointed on dark: the full accent #0E9BB8 gives
+     white-on-accent 3.28:1, below the 4.5:1 floor for 16px bold button text. Inheriting
+     #0a748a keeps the primary CTA at 5.42:1 on BOTH surfaces. */
+  --ds-accent-soft:  #1C333C;
+  --ds-primary-soft: #26404A;
+
+  /* shadow is surface-dependent: on a dark ground the light-ground shadow is invisible,
+     so elevation is carried by a deeper, tighter shadow plus a light top rim. */
+  --ds-shadow-card: 0 1px 0 rgba(255, 255, 255, .04), 0 10px 28px -14px rgba(0, 0, 0, .72);
+  --ds-shadow-lift: 0 1px 0 rgba(255, 255, 255, .06), 0 28px 56px -22px rgba(0, 0, 0, .82);
+
+  background-color: var(--ds-primary-deep);
+  color: var(--ds-ink-on-dark);
+}

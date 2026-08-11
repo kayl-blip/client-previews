@@ -1,0 +1,1321 @@
+/* ============================================================================
+   applied-kinesiology-sacramento — STRUCTURAL SHEET (token-pure)
+   SYSTEM stage. Locked after the ① BRAND-CARD pick (concept-c) and the confirmed FEEL.
+
+   TOKEN-PURE BY CONTRACT: ZERO brand hex here. Every colour, radius, shadow, space and
+   duration resolves through a var() defined in applied-kinesiology-sacramento-tokens.css.
+   That is what lets a section flip to .surface-dark and have every descendant invert.
+
+   MEASURE DISCIPLINE (G8 A3): `ch` sits ONLY on display-font headings (h1/h2/h3), where it
+   resolves against the display face. Every body-font measure — and the pull-quote — uses rem.
+   NOTE for future maintainers: G8's display-font escape hatch tests for `font-family:var(--font…)`,
+   but BRAND-TOKEN-SCHEMA mandates `--ds-font-display` / `--ds-font-body`, so that hatch can never
+   fire on a schema-compliant sheet. rem sidesteps the mismatch without weakening the measure.
+
+   CARRIES: (1) the forced DOM grammar section > .container > .row > .col > OBJECT;
+   (2) typography applied; (3) section bands + the A2 arc seam; (4) object-level skins
+   (bw- and kit- skins) live on OBJECTS; structure layers carry LAYOUT ONLY.
+
+   DERIVED FROM: _design/feel-specimen.html (owner-confirmed 2026-08-10),
+   _handoff/visual-direction.md (C7), _PAGE-COMPOSITION-LIBRARY.md §V6 medical-health.
+   ============================================================================ */
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--ds-bg-surface);
+  color: var(--ds-ink);
+  font-family: var(--ds-font-body);
+  font-size: 17px;
+  line-height: 1.68;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, svg, video { max-width: 100%; height: auto; display: block; }
+
+/* ============================================================
+   1. THE FORCED DOM GRAMMAR — structure layers carry LAYOUT ONLY
+   ============================================================ */
+
+section { padding: var(--ds-section-py) 0; position: relative; }
+
+.container {
+  width: 100%;
+  max-width: var(--ds-container-max);
+  margin-inline: auto;
+  padding-inline: var(--ds-space-md);
+}
+.container--full { max-width: none; padding-inline: 0; }
+
+/* --row-gap is the SINGLE source for both the flex gap and the col span maths.
+   A span that subtracts a FIXED gap while the row uses a different one overflows the
+   line and silently wraps: span-7 + span-5 = 100% - 48px, plus a 64px .row--loose gap
+   = 100% + 16px. Each span now subtracts its share of the ACTUAL gap, so any span set
+   sums to exactly 100% at every gap. */
+.row { --row-gap: var(--ds-space-md); display: flex; flex-wrap: wrap; gap: var(--row-gap); }
+.row--tight   { --row-gap: var(--ds-space-sm); }
+.row--loose   { --row-gap: var(--ds-space-xl); }
+.row--center  { align-items: center; }
+.row--between { justify-content: space-between; }
+
+.col { flex: 1 1 0%; min-width: 0; }
+.col--full   { flex: 0 0 100%; width: 100%; }
+.col--span-3 { flex: 0 0 calc(25% - var(--row-gap) * 3 / 4); }      /* 4-up */
+.col--span-4 { flex: 0 0 calc(33.333% - var(--row-gap) * 2 / 3); }  /* 3-up */
+.col--span-5 { flex: 0 0 calc(41.666% - var(--row-gap) / 2); }     /* pairs with 7 */
+.col--span-6 { flex: 0 0 calc(50% - var(--row-gap) / 2); }         /* 2-up */
+.col--span-7 { flex: 0 0 calc(58.333% - var(--row-gap) / 2); }     /* pairs with 5 */
+.col--span-8 { flex: 0 0 calc(66.666% - var(--row-gap) / 2); }     /* pairs with 4 */
+
+/* ============================================================
+   2. TYPOGRAPHY
+   ============================================================ */
+
+h1, h2, h3, h4 {
+  font-family: var(--ds-font-display);
+  color: var(--ds-ink-heading);
+  margin: 0 0 .45em;
+  line-height: 1.14;
+  letter-spacing: -.012em;
+}
+h1 { font-size: clamp(36px, 4.4vw, 58px); line-height: 1.08; max-width: 20ch; }
+h2 { font-size: clamp(28px, 3vw, 40px); max-width: 20ch; }
+h3 { font-size: clamp(20px, 1.6vw, 24px); line-height: 1.28; max-width: 28ch; }
+h4 { font-size: 19px; }
+
+p { margin: 0 0 1.1em; }
+p:last-child { margin-bottom: 0; }
+
+a { color: var(--ds-accent-ink); text-underline-offset: 3px; }
+a:hover { color: var(--ds-accent-deep); }
+
+.bw-eyebrow {
+  font-family: var(--ds-font-body);
+  font-size: 12.5px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--ds-accent-ink);
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+.bw-lede       { font-size: 19px; color: var(--ds-ink-soft); max-width: 34rem; }
+.bw-body       { color: var(--ds-ink); max-width: 38rem; }
+.bw-small      { font-size: 14px; color: var(--ds-ink-soft); }
+.bw-disclaimer { font-size: 13.5px; color: var(--ds-ink-soft); max-width: 42rem; }
+
+/* ============================================================
+   3. SECTION BANDS + the A2 arc seam
+   ============================================================ */
+
+.section--soft { background-image: linear-gradient(180deg, var(--ds-bg-surface) 0%, var(--ds-bg-surface-2) 100%); }
+.section--warm { background-image: linear-gradient(180deg, var(--ds-bg-warm) 0%, var(--ds-bg-surface-2) 100%); }
+.section--hero {
+  overflow: hidden;
+  background-image:
+    radial-gradient(90% 120% at 88% -20%, var(--ds-accent-soft) 0%, transparent 60%),
+    linear-gradient(180deg, var(--ds-bg-warm) 0%, var(--ds-bg-surface) 78%);
+}
+.section--dark {
+  background-image:
+    radial-gradient(80% 120% at 10% 0%, var(--ds-accent-soft) 0%, transparent 55%),
+    linear-gradient(180deg, var(--ds-primary-deep) 0%, var(--ds-primary-deep) 100%);
+}
+
+.bw-seam { display: block; width: 100%; height: 78px; margin-bottom: -1px; }
+.bw-seam--flip { transform: rotate(180deg); margin: -1px 0 0; }
+
+/* ============================================================
+   4. OBJECT-LEVEL SKINS (bw- and kit- prefixes)
+   ============================================================ */
+
+.bw-btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 15px 26px;
+  border-radius: var(--ds-r-control);
+  font-family: var(--ds-font-body);
+  font-weight: 700; font-size: 16px;
+  text-decoration: none; cursor: pointer;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  transition: transform var(--ds-dur-fast) var(--ds-ease-out),
+              box-shadow var(--ds-dur) var(--ds-ease),
+              background-color var(--ds-dur) var(--ds-ease);
+}
+.bw-btn:hover { transform: translateY(-2px); box-shadow: var(--ds-shadow-lift); }
+.bw-btn:focus-visible { outline: 3px solid var(--ds-accent-deep); outline-offset: 3px; }
+.bw-btn--primary { background-color: var(--ds-accent-deep); color: var(--ds-ink-on-dark); }
+.bw-btn--quiet   { background-color: transparent; color: var(--ds-accent-ink); border-color: var(--ds-line); }
+
+.bw-card {
+  padding: var(--ds-space-lg) var(--ds-space-md);
+  background: var(--ds-bg-surface);
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-surface);
+  box-shadow: var(--ds-shadow-card);
+  transition: transform var(--ds-dur) var(--ds-ease),
+              box-shadow var(--ds-dur) var(--ds-ease),
+              border-color var(--ds-dur) var(--ds-ease);
+}
+.bw-card:hover { transform: translateY(-4px); box-shadow: var(--ds-shadow-lift); border-color: var(--ds-accent); }
+
+.bw-glass {
+  padding: var(--ds-space-md);
+  border-radius: var(--ds-r-surface);
+  background-image: linear-gradient(180deg, var(--ds-accent-soft) 0%, transparent 100%);
+  border: 1px solid var(--ds-line);
+  backdrop-filter: blur(9px);
+}
+
+.bw-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 14px;
+  border-radius: var(--ds-r-pill);
+  background: var(--ds-bg-surface);
+  border: 1px solid var(--ds-line);
+  font-size: 13.5px; font-weight: 600;
+  box-shadow: var(--ds-shadow-card);
+}
+.bw-chip b { color: var(--ds-accent-ink); }
+
+.bw-portrait {
+  position: relative; aspect-ratio: 1 / 1;
+  border-radius: var(--ds-r-pill);
+  overflow: hidden;
+  border: 10px solid var(--ds-accent-soft);
+  box-shadow: var(--ds-shadow-lift);
+  max-width: 400px;
+}
+.bw-portrait img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform var(--ds-dur-slow) var(--ds-ease-out);
+}
+.bw-portrait:hover img { transform: scale(1.03); }
+
+.bw-mark {
+  width: 46px; height: 46px;
+  border-radius: var(--ds-r-pill);
+  display: grid; place-items: center;
+  background: var(--ds-accent-soft);
+  color: var(--ds-accent-ink);
+  margin-bottom: 16px;
+}
+
+.bw-stat b {
+  display: block;
+  font-family: var(--ds-font-display);
+  font-size: 34px; line-height: 1;
+  color: var(--ds-ink-heading);
+}
+.bw-stat span { display: block; margin-top: 8px; font-size: 13.5px; color: var(--ds-ink-soft); }
+
+.bw-input, .bw-textarea, .bw-select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-control);
+  background: var(--ds-bg-surface);
+  color: var(--ds-ink);
+  font: inherit;
+  transition: border-color var(--ds-dur) var(--ds-ease), box-shadow var(--ds-dur) var(--ds-ease);
+}
+.bw-input:focus, .bw-textarea:focus, .bw-select:focus {
+  border-color: var(--ds-accent);
+  box-shadow: 0 0 0 3px var(--ds-accent-soft);
+}
+.bw-label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 7px; color: var(--ds-ink); }
+
+.bw-quote {
+  font-family: var(--ds-font-display);
+  font-size: clamp(24px, 2.7vw, 36px);
+  line-height: 1.32;
+  max-width: 26rem;
+  margin: 0;
+}
+.bw-attrib { margin-top: var(--ds-space-md); font-size: 14.5px; color: var(--ds-ink-soft); }
+
+/* ============================================================
+   4b. T-LEGAL DOCUMENT OBJECTS (.bw-legal / .bw-toc)
+   Required by LEGAL-SECTIONS.md (10-structure-library/sections/legal/menu.md) and
+   enforced by verify-legal-is-document.mjs (G-LEGAL-DOC): a T-LEGAL page IS a
+   document — one calm reading measure of flowing prose, anchored headings, an
+   optional jump-index, and NO imagery. These are OBJECT skins; the grammar layers
+   above still carry layout only. Token-pure like the rest of this sheet, and the
+   measures use rem (body font), never ch (G8 A3 measure discipline).
+   ============================================================ */
+
+.bw-legal { max-width: 47rem; }
+.bw-legal > :first-child { margin-top: 0; }
+.bw-legal > :last-child  { margin-bottom: 0; }
+.bw-legal p  { color: var(--ds-ink-soft); max-width: 40rem; margin: 0 0 var(--ds-space-md); }
+.bw-legal h2 { margin: var(--ds-space-xl) 0 var(--ds-space-sm); scroll-margin-top: 120px; }
+.bw-legal h3 { margin: var(--ds-space-lg) 0 var(--ds-space-xs); scroll-margin-top: 120px; }
+.bw-legal ul, .bw-legal ol { margin: 0 0 var(--ds-space-md); padding-left: 1.4em; color: var(--ds-ink-soft); }
+.bw-legal li { max-width: 39rem; margin: 0 0 .45em; }
+.bw-legal li::marker { color: var(--ds-accent-ink); }
+.bw-legal a { text-decoration: underline; }
+.bw-legal strong, .bw-legal b { color: var(--ds-ink); font-weight: 700; }
+.bw-legal dl { margin: 0 0 var(--ds-space-md); max-width: 40rem; }
+.bw-legal dt { font-weight: 700; color: var(--ds-ink); margin-top: var(--ds-space-sm); }
+.bw-legal dd { margin: .2em 0 0; color: var(--ds-ink-soft); }
+.bw-legal hr { border: 0; height: 1px; background: var(--ds-line); margin: var(--ds-space-lg) 0; }
+
+/* the effective-date line under the document title */
+.bw-legal__effective {
+  font-size: 13px; letter-spacing: .04em; text-transform: uppercase;
+  color: var(--ds-ink-soft); margin: 0 0 var(--ds-space-md);
+}
+
+/* the honesty fence — a visible note that a document is a working draft, never an
+   assertion of binding legal text. Left-accented so it reads above the prose. */
+.bw-legal__callout {
+  border: 1px solid var(--ds-line);
+  border-left: 3px solid var(--ds-accent-deep);
+  border-radius: var(--ds-r-control);
+  background: var(--ds-accent-soft);
+  padding: var(--ds-space-sm) var(--ds-space-md);
+  margin: 0 0 var(--ds-space-lg);
+  font-size: 14.5px; line-height: 1.62; color: var(--ds-ink);
+  max-width: 42rem;
+}
+
+/* the in-document jump index (LEGAL-SECTIONS #2) */
+.bw-toc {
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-surface);
+  background: var(--ds-bg-surface-2);
+  box-shadow: var(--ds-shadow-card);
+  padding: var(--ds-space-md);
+  margin: 0 0 var(--ds-space-lg);
+  max-width: 42rem;
+}
+.bw-toc__title {
+  font-family: var(--ds-font-body);
+  font-size: 12.5px; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--ds-accent-ink); font-weight: 700; margin: 0 0 var(--ds-space-sm);
+}
+.bw-toc__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.bw-toc__item { margin: 0; min-width: 0; }
+.bw-toc__link {
+  display: block; min-width: 0;
+  font-size: 14.5px; line-height: 1.4;
+  padding: 9px 10px; border-radius: var(--ds-r-control);
+  transition: color var(--ds-dur-fast) var(--ds-ease),
+              background-color var(--ds-dur-fast) var(--ds-ease);
+}
+.bw-toc__link:hover { color: var(--ds-accent-deep); background: var(--ds-accent-soft); }
+
+/* ============================================================
+   4c. INDEX / BROWSE OBJECTS (.bw-filters / .bw-grid / .bw-linklist)
+   The T-INDEX browse surface. The interactive half is driven by the DS browse
+   engine (00-globals/tokens/browse-engine.js, inlined by build.mjs whenever a
+   page carries [data-grid]), so the control HOOKS below are the engine's own
+   contract names (.search-input · .shop-count · .active-filters · .chip ·
+   a[data-cat] · .is-active) and the bw- classes are only their skin. Nothing
+   here is inert: every control the markup ships is one the engine binds.
+   Object skins only; the section > .container > .row > .col grammar is untouched.
+   ============================================================ */
+
+.search-input { max-width: 17rem; }
+.shop-count { font-size: 13.5px; color: var(--ds-ink-soft); }
+.active-filters { display: flex; flex-wrap: wrap; gap: var(--ds-space-xs); margin-top: var(--ds-space-sm); }
+.active-filters:empty { display: none; }
+.active-filters .chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  min-height: 34px; padding: 6px 13px;
+  border-radius: var(--ds-r-pill);
+  background: var(--ds-accent-soft);
+  border: 1px solid var(--ds-line);
+  font-size: 13.5px; font-weight: 600; color: var(--ds-accent-deep);
+  cursor: pointer;
+}
+.active-filters .chip::after { content: "\00d7"; font-size: 15px; line-height: 1; }
+
+.bw-filters {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--ds-space-sm);
+  padding: var(--ds-space-sm) var(--ds-space-md);
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-surface);
+  background: var(--ds-bg-surface);
+  box-shadow: var(--ds-shadow-card);
+}
+.bw-filters__label { font-size: 13px; font-weight: 700; color: var(--ds-ink-soft); text-transform: uppercase; letter-spacing: .1em; }
+.bw-filters__count { font-size: 13.5px; color: var(--ds-ink-soft); margin-left: auto; }
+.bw-filter {
+  display: inline-flex; align-items: center; gap: 7px;
+  min-height: 44px; padding: 9px 16px;
+  border-radius: var(--ds-r-pill);
+  border: 1px solid var(--ds-line);
+  background: var(--ds-bg-surface);
+  color: var(--ds-ink);
+  font: inherit; font-size: 14px; font-weight: 600;
+  cursor: pointer;
+  transition: color var(--ds-dur-fast) var(--ds-ease),
+              background-color var(--ds-dur-fast) var(--ds-ease),
+              border-color var(--ds-dur-fast) var(--ds-ease);
+}
+.bw-filter:hover { border-color: var(--ds-accent); color: var(--ds-accent-deep); }
+.bw-filter.is-active { background: var(--ds-accent-deep); border-color: var(--ds-accent-deep); color: var(--ds-ink-on-dark); }
+
+.bw-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
+  gap: var(--ds-space-md);
+  list-style: none; margin: 0; padding: 0;
+}
+.bw-grid > li { margin: 0; min-width: 0; }
+.bw-grid [hidden] { display: none; }
+
+.bw-tile {
+  display: block; height: 100%;
+  padding: var(--ds-space-md);
+  background: var(--ds-bg-surface);
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-surface);
+  box-shadow: var(--ds-shadow-card);
+  color: var(--ds-ink);
+  text-decoration: none;
+  transition: transform var(--ds-dur) var(--ds-ease),
+              box-shadow var(--ds-dur) var(--ds-ease),
+              border-color var(--ds-dur) var(--ds-ease);
+}
+.bw-tile:hover { transform: translateY(-3px); box-shadow: var(--ds-shadow-lift); border-color: var(--ds-accent); }
+.bw-tile b { display: block; font-family: var(--ds-font-display); font-size: 19px; line-height: 1.24; color: var(--ds-ink-heading); margin-bottom: 6px; }
+.bw-tile span { display: block; font-size: 14.5px; color: var(--ds-ink-soft); }
+
+.bw-linklist { list-style: none; margin: 0 0 var(--ds-space-md); padding: 0; }
+.bw-linklist li { margin: 0; border-bottom: 1px solid var(--ds-line); }
+.bw-linklist li:last-child { border-bottom: 0; }
+.bw-linklist a { display: block; min-height: 44px; padding: 11px 2px; font-weight: 600; text-decoration: none; }
+.bw-linklist a:hover { text-decoration: underline; }
+.bw-linklist span { display: block; font-size: 14px; font-weight: 400; color: var(--ds-ink-soft); }
+
+/* The shared applied-globals DEPTH signal, available as an explicit object skin.
+   .bw-card and .bw-btn already implement this exact micro-interaction; .bw-lift is the
+   same rise made explicit for tiles and controls that are not those two objects.
+   Motion-safe: the rise is suppressed under prefers-reduced-motion. */
+.bw-lift {
+  transition: transform var(--ds-dur) var(--ds-ease),
+              box-shadow var(--ds-dur) var(--ds-ease);
+}
+.bw-lift:hover { transform: translateY(-3px); box-shadow: var(--ds-shadow-lift); }
+@media (prefers-reduced-motion: reduce) { .bw-lift:hover { transform: none; } }
+
+/* ============================================================
+   5. UTILITIES + accessibility
+   ============================================================ */
+
+.kit-visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+.kit-skip-link {
+  position: absolute; left: -9999px; top: 0;
+  z-index: var(--ds-z-toast);
+  padding: 12px 18px;
+  background: var(--ds-accent-deep); color: var(--ds-ink-on-dark);
+  border-radius: var(--ds-r-control);
+}
+.kit-skip-link:focus { left: var(--ds-space-md); top: var(--ds-space-md); }
+
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid var(--ds-accent-deep);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   6. RESPONSIVE — the grammar reflows; the skins do not change
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .col--span-3, .col--span-4, .col--span-5,
+  .col--span-6, .col--span-7, .col--span-8 { flex: 0 0 100%; }
+  .row--loose { gap: var(--ds-space-lg); }
+  .bw-portrait { margin-inline: auto; max-width: 320px; }
+}
+
+@media (max-width: 600px) {
+  body { font-size: 16px; }
+  section { padding: var(--ds-space-xl) 0; }
+  .bw-btn { width: 100%; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    transition-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================================
+   5. TEMPLATE-TOURNAMENT WINNERS — promoted object skins (OBS-29 migration)
+   ----------------------------------------------------------------------------
+   The 8 owner-picked per-TYPE concepts each carried their object skins in an
+   INLINE <style> in their tournament preview. promote-concept.mjs extracts only
+   <main>, so those skins were left behind and every promoted page assembled
+   UNSTYLED (verify-no-orphan-classes / G-ORPHAN, OBS-29). They are migrated here,
+   into the LINKED structural sheet, verbatim except for the reconciliations noted.
+
+   PICKS: T-ARTICLE concept-a · T-FEATURE concept-a · T-HUB concept-b ·
+          T-INDEX concept-b · T-PERSONA concept-c · T-COMPANY concept-a ·
+          T-CONTACT concept-b · T-LEGAL concept-c
+
+   TOKEN-PURE BY CONTRACT: zero hex literals below; every colour resolves through a
+   var(--ds-*) from applied-kinesiology-sacramento-tokens.css, so every object still
+   inverts inside .surface-dark. Layout numbers (px/%) are structure, not brand.
+   SKINS ON OBJECTS ONLY — nothing below re-points section / .container / .row / .col
+   geometry, and nothing below hardcodes a container width (the cap stays
+   var(--ds-container-max)).
+   ============================================================================ */
+
+/* ---- SEAM SYSTEM (migrated + reconciled from T-ARTICLE/T-FEATURE/T-HUB/T-COMPANY/T-CONTACT).
+   The 5 winners each shipped their own `.bw-seam path { fill: … }`, which collide once they
+   share one sheet. Reconciled to ONE base rule + colour modifiers: the path inherits
+   currentColor, each seam declares the ground it is biting INTO. Token-pure. ---- */
+.bw-seam path { fill: currentColor; }
+.bw-seam { color: var(--ds-bg-surface); }
+.bw-seam--deep, .bw-seam--to-dark { color: var(--ds-primary-deep); }
+.bw-seam--to-warm { color: var(--ds-bg-warm); }
+.bw-seam--band  { margin-top: var(--ds-space-xl); margin-bottom: calc(var(--ds-section-py) * -1); }
+.bw-seam--flush { margin-bottom: calc(var(--ds-section-py) * -1); max-height: 78px; }
+.bw-seam--fluid { height: clamp(40px, 5vw, 78px); }
+
+/* ------------------------------------------------------------------
+   T-ARTICLE — concept-a (owner pick)
+   ------------------------------------------------------------------ */
+/* CONCEPT A preview rule. Keyed on [data-rail], NOT a class, so the composition promotes
+   with zero orphan classes (verify-no-orphan-classes scans class= only). Layout only. */
+[data-rail]{position:sticky;top:104px}
+@media (max-width:900px){[data-rail]{position:static;top:auto}}
+
+/* ------------------------------------------------------------------
+   T-FEATURE — concept-a (owner pick)
+   ------------------------------------------------------------------ */
+/* ============================================================================
+   T-FEATURE concept A "Descent" - OBJECT skins only.
+   Token-pure by contract: ZERO colour literals. Every colour resolves through a
+   var(--ds-*) so each object inverts for free inside a .surface-dark band.
+   Layout numbers (px / %) are structure, not brand, and stay literal.
+   Structure layers (section/.container/.row/.col) carry NO skin - every class
+   below sits on an OBJECT inside a .col leaf.
+   ============================================================================ */
+
+/* action cluster - the appointment spine, used at 3 points down the page */
+.bw-actions { display: flex; flex-wrap: wrap; gap: var(--ds-space-sm); margin-top: var(--ds-space-md); }
+.bw-actions--center { justify-content: center; }
+.bw-btn svg { width: 18px; height: 18px; flex: 0 0 auto; }
+
+/* Reading measure for body prose. NOT the structural sheet's .bw-body: verify-grid-accent
+   reserves the name bw-body for the page's SINGLE continuous ground texture and fails a
+   page that repeats it, and this site's own authored fragments never use it. Colour is
+   inherited (the .surface-dark flip re-points it), so this class carries measure only. */
+.bw-prose { max-width: 38rem; }
+
+/* hero stat pair (HERO #20 middle track) */
+.bw-statpair { display: grid; gap: var(--ds-space-md); }
+.bw-statpair .bw-stat {
+  padding-left: var(--ds-space-md);
+  border-left: 3px solid var(--ds-accent);
+}
+.bw-statpair .bw-stat b { font-size: 40px; }
+.bw-statpair .bw-stat span { max-width: 22rem; }
+
+/* hero motif frame - line art inherits ink via currentColor */
+.bw-motif { color: var(--ds-accent-ink); }
+.bw-motif svg { width: 100%; height: auto; max-width: 220px; margin-inline: auto; }
+
+/* §2 the big-type problem statement (SECTION-COMPONENTS #7) */
+.bw-statement {
+  font-family: var(--ds-font-display);
+  font-size: clamp(21px, 1.9vw, 27px);
+  line-height: 1.42;
+  color: var(--ds-ink-heading);
+  max-width: 44rem;
+  margin-bottom: var(--ds-space-md);
+}
+.bw-rule {
+  width: 64px; height: 3px; border: 0; margin: 0 0 var(--ds-space-md);
+  background: var(--ds-accent); border-radius: var(--ds-r-pill);
+}
+
+/* the standard pathway, enumerated. This is a re-segmentation of the approved §2
+   sentences, not new copy, and it is what stops this section sharing a pattern
+   signature with the mechanism row directly below it (the G-SVAR adjacency rule:
+   two neighbours of the same coarse shape read as one row stamped twice). */
+.bw-pathway {
+  counter-reset: step; list-style: none;
+  margin: 0 0 var(--ds-space-md); padding: 0;
+  max-width: 40rem;
+}
+.bw-pathway li {
+  position: relative;
+  padding: 0 0 var(--ds-space-sm) calc(var(--ds-space-lg) + var(--ds-space-xs));
+  color: var(--ds-ink-soft);
+}
+.bw-pathway li::before {
+  counter-increment: step; content: counter(step);
+  position: absolute; left: 0; top: 0;
+  width: 30px; height: 30px; border-radius: var(--ds-r-pill);
+  display: grid; place-items: center;
+  background: var(--ds-accent-soft); color: var(--ds-accent-ink);
+  font-size: 14px; font-weight: 700;
+}
+.bw-pathway li:not(:last-child)::after {
+  content: ""; position: absolute; left: 15px; top: 34px; bottom: 4px;
+  width: 1px; background: var(--ds-line);
+}
+
+/* media frame that STRETCHES to its sibling column (media-fits-track anchor:
+   width:100%;min-width:0 - the capped-media-vs-tall-stack sprawl is what
+   verify-section-density M3 fails, and stretch is the fix) */
+.bw-frame {
+  width: 100%; min-width: 0; height: 100%; margin: 0;
+  display: grid; place-items: center;
+  padding: var(--ds-space-lg);
+  background: var(--ds-bg-surface-2);
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-surface);
+  box-shadow: var(--ds-shadow-card);
+  color: var(--ds-accent-ink);
+}
+.bw-frame svg { width: 100%; height: auto; max-width: 300px; }
+.bw-frame figcaption { margin-top: var(--ds-space-sm); font-size: 13.5px; color: var(--ds-ink-soft); text-align: center; }
+
+/* CARD-VARIATIONS #3 - minimal icon-top, NO card chrome (spacing only) */
+.bw-icontop { padding-top: var(--ds-space-xs); }
+.bw-icontop svg { width: 40px; height: 40px; color: var(--ds-accent-ink); margin-bottom: var(--ds-space-sm); }
+.bw-icontop h3 { font-size: 20px; margin-bottom: 8px; }
+.bw-icontop p { color: var(--ds-ink-soft); font-size: 15.5px; margin: 0; }
+
+/* SECTION-COMPONENTS #27 - numbered process steps */
+.bw-fstep {
+  height: 100%;
+  padding: var(--ds-space-md);
+  border-top: 2px solid var(--ds-line);
+  transition: border-color var(--ds-dur) var(--ds-ease);
+}
+.bw-fstep:hover { border-color: var(--ds-accent); }
+.bw-fstep b {
+  display: block;
+  font-family: var(--ds-font-display);
+  font-size: 30px; line-height: 1;
+  color: var(--ds-accent-ink);
+  margin-bottom: var(--ds-space-sm);
+}
+.bw-fstep h3 { font-size: 18px; margin-bottom: 6px; }
+.bw-fstep p { font-size: 15px; color: var(--ds-ink-soft); margin: 0; }
+
+/* the six treatment tools, as links */
+.bw-chiplist { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--ds-space-xs); }
+.bw-chiplist li { margin: 0; }
+.bw-chiplist a { text-decoration: none; }
+.bw-chiplist .bw-chip { transition: border-color var(--ds-dur) var(--ds-ease), color var(--ds-dur) var(--ds-ease); }
+.bw-chiplist a:hover .bw-chip { border-color: var(--ds-accent); color: var(--ds-accent-deep); }
+
+/* SECTION-COMPONENTS #8 - manifesto / belief statement, left-aligned with rule above */
+.bw-belief {
+  font-family: var(--ds-font-display);
+  font-size: clamp(26px, 2.9vw, 38px);
+  line-height: 1.24;
+  color: var(--ds-ink-heading);
+  max-width: 24ch;
+  margin: 0 0 var(--ds-space-md);
+}
+
+/* SECTION-COMPONENTS #15 - comparison matrix, beside a capped media (no. 14b variant a).
+   A 4-column table has an INTRINSIC minimum width (measured 397px here) that no
+   percentage can shrink, so on a phone it pushes the whole DOCUMENT wide. Two
+   defences, in this order: the matrix RESTRUCTURES to stacked labelled rows below
+   600px (the menu's own "collapses to a single stacked column" rule), and above
+   that the wrapper - never the page - takes any residual horizontal scroll. */
+.bw-matrixwrap { width: 100%; min-width: 0; overflow-x: auto; }
+.bw-matrix { width: 100%; min-width: 0; border-collapse: collapse; font-size: 15px; }
+.bw-matrix caption { text-align: left; font-size: 13.5px; color: var(--ds-ink-soft); padding-bottom: var(--ds-space-sm); }
+.bw-matrix th, .bw-matrix td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--ds-line); vertical-align: top; }
+.bw-matrix thead th { font-size: 13px; line-height: 1.35; color: var(--ds-ink-soft); font-weight: 700; }
+.bw-matrix tbody th { font-weight: 600; color: var(--ds-ink); }
+.bw-matrix .is-this { background: var(--ds-accent-soft); color: var(--ds-accent-deep); font-weight: 700; }
+.bw-matrix thead .is-this { color: var(--ds-accent-deep); }
+
+/* CTA-PATTERNS #6 - ghost text-link with arrow */
+.bw-ghostlink { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; text-decoration: underline; }
+.bw-ghostlink svg { width: 15px; height: 15px; transition: transform var(--ds-dur) var(--ds-ease); }
+.bw-ghostlink:hover svg { transform: translateX(3px); }
+
+/* FAQ-ACCORDION #1 - classic expand-rows with a + indicator */
+.bw-faq { border-top: 1px solid var(--ds-line); max-width: 46rem; }
+.bw-faq details { border-bottom: 1px solid var(--ds-line); }
+.bw-faq summary {
+  display: flex; align-items: flex-start; gap: var(--ds-space-md);
+  padding: var(--ds-space-md) 0;
+  cursor: pointer; list-style: none;
+  font-family: var(--ds-font-display); font-size: 19px; line-height: 1.3;
+  color: var(--ds-ink-heading);
+}
+.bw-faq summary::-webkit-details-marker { display: none; }
+.bw-faq summary::after {
+  content: "+"; margin-left: auto; flex: 0 0 auto;
+  font-family: var(--ds-font-body); font-size: 24px; line-height: 1;
+  color: var(--ds-accent-ink);
+  transition: transform var(--ds-dur) var(--ds-ease);
+}
+.bw-faq details[open] summary::after { transform: rotate(45deg); }
+.bw-faq summary:hover { color: var(--ds-accent-deep); }
+.bw-faq .bw-answer { padding: 0 0 var(--ds-space-md); max-width: 40rem; }
+.bw-faq .bw-answer p { color: var(--ds-ink-soft); }
+/* a CLOSED <details> still hands its content a layout box in Chrome (content-visibility,
+   not display:none), so a hidden answer kept a 640x114 rect that reached the accent rule
+   of the block below it and read as 1.96:1 to the painted-pixel contrast meter. Removing
+   the box removes the phantom. */
+.bw-faq details:not([open]) .bw-answer { display: none; }
+
+/* The mechanism row puts its PROSE FIRST in the DOM, so a stacked phone reads
+   heading-then-media instead of media-then-heading (the reading-order defect
+   verify-mobile-quality flags). Only once the columns genuinely sit side by side
+   does the media track move to the left.
+   This is a LAYOUT-only .row modifier in the same family as .row--loose /
+   .row--center, NOT a bw-/kit- skin: the forced grammar bans SKINS on the
+   structure layers, and the structure layers are exactly where layout belongs. */
+@media (min-width: 901px) {
+  .row--mediaright > .col:last-child { order: -1; }
+}
+
+/* the §9 line, poured INLINE at the tail of §8 (never a second closing band - the chrome .precta is the site's single closing conversion band, G-CTA1) */
+.bw-tailask {
+  margin-top: var(--ds-space-lg);
+  padding-top: var(--ds-space-md);
+  border-top: 2px solid var(--ds-accent);
+  max-width: 46rem;
+}
+
+@media (max-width: 900px) {
+  .bw-statpair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bw-motif svg { max-width: 180px; }
+  .bw-frame { padding: var(--ds-space-md); }
+}
+@media (max-width: 600px) {
+  .bw-statpair { grid-template-columns: minmax(0, 1fr); }
+  .bw-actions .bw-btn { width: 100%; }
+
+  /* the matrix stops being a table and becomes one labelled card per row, so the
+     comparison survives on a phone without a sideways scroll */
+  .bw-matrix, .bw-matrix tbody, .bw-matrix tr, .bw-matrix td { display: block; width: 100%; }
+  .bw-matrix thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .bw-matrix tbody tr {
+    border: 1px solid var(--ds-line);
+    border-radius: var(--ds-r-surface);
+    background: var(--ds-bg-surface);
+    padding: var(--ds-space-sm) var(--ds-space-md);
+    margin-bottom: var(--ds-space-sm);
+  }
+  .bw-matrix tbody th {
+    display: block; width: 100%;
+    padding: 0 0 var(--ds-space-xs);
+    border-bottom: 1px solid var(--ds-line);
+    font-family: var(--ds-font-display); font-size: 17px;
+  }
+  .bw-matrix td {
+    display: flex; gap: var(--ds-space-sm); align-items: baseline;
+    padding: 9px 0; border-bottom: 0;
+  }
+  .bw-matrix td::before {
+    content: attr(data-col);
+    flex: 1 1 0; min-width: 0;
+    font-size: 13px; line-height: 1.35; color: var(--ds-ink-soft);
+  }
+  .bw-matrix td span { flex: 0 0 38%; min-width: 0; font-weight: 600; }
+  .bw-matrix .is-this { background: transparent; }
+  .bw-matrix .is-this span { color: var(--ds-accent-deep); }
+}
+
+/* ------------------------------------------------------------------
+   T-HUB — concept-b (owner pick)
+   ------------------------------------------------------------------ */
+/* ============================================================================
+   T-HUB CONCEPT B - "EDITORIAL RAIL" - concept-only object skins.
+   TOKEN-PURE BY CONTRACT: zero hex literals. Every colour resolves through a
+   var(--ds-*) declared in applied-kinesiology-sacramento-tokens.css, so every
+   object below inverts correctly inside a .surface-dark band.
+   Layout numbers (px / %) are structure, not brand, and stay literal.
+   SKINS ON OBJECTS ONLY - nothing here targets section / .container / .row / .col.
+   ============================================================================ */
+
+.bw-acts { display: flex; flex-wrap: wrap; gap: var(--ds-space-sm); margin-top: var(--ds-space-lg); }
+
+/* ---- hero: the framed treatment photograph (HERO-COMPOSITIONS #1) ---- */
+.bw-shot {
+  position: relative; margin: 0; overflow: hidden;
+  border-radius: var(--ds-r-surface);
+  border: 1px solid var(--ds-line);
+  box-shadow: var(--ds-shadow-lift);
+}
+.bw-shot img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4 / 3; }
+.bw-shot__cap {
+  position: absolute; left: var(--ds-space-sm); right: var(--ds-space-sm); bottom: var(--ds-space-sm);
+  display: flex; align-items: center; gap: var(--ds-space-xs);
+  padding: var(--ds-space-xs) var(--ds-space-sm);
+  border-radius: var(--ds-r-control);
+  background: var(--ds-bg-surface);
+  border: 1px solid var(--ds-line);
+  box-shadow: var(--ds-shadow-card);
+  font-size: 14px; font-weight: 600; color: var(--ds-ink);
+}
+.bw-shot__ico {
+  flex: 0 0 auto; width: 24px; height: 24px;
+  display: grid; place-items: center;
+  border-radius: var(--ds-r-pill);
+  background: var(--ds-accent-soft); color: var(--ds-accent-ink);
+}
+.bw-shot__ico svg { width: 14px; height: 14px; }
+.bw-shot--plain { box-shadow: var(--ds-shadow-card); }
+
+/* ---- the routed children as a reading list (SECTION-COMPONENTS #36 main column) ---- */
+.bw-linklist--rich a { padding: var(--ds-space-md) calc(var(--ds-space-xs) / 4); text-decoration: none; }
+.bw-linklist--rich a:hover { text-decoration: none; color: var(--ds-accent-deep); }
+.bw-linklist--rich a,
+.bw-listitem--static { font-family: var(--ds-font-display); font-size: 20px; line-height: 1.28; color: var(--ds-ink-heading); }
+.bw-linklist--rich a span,
+.bw-listitem--static span {
+  display: block; margin-top: calc(var(--ds-space-xs) * .75);
+  font-family: var(--ds-font-body); font-size: 15px; font-weight: 400; line-height: 1.62;
+  color: var(--ds-ink-soft); max-width: 42rem;
+}
+.bw-listitem--static { margin: 0; padding: var(--ds-space-md) calc(var(--ds-space-xs) / 4); color: var(--ds-ink-soft); }
+
+/* ---- the STICKY rail: the appointment CTA pinned for the whole scroll ---- */
+.bw-rail {
+  position: sticky; top: calc(var(--ds-space-2xl) + var(--ds-space-md));
+  padding: var(--ds-space-md);
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-surface);
+  background: var(--ds-bg-surface-2);
+  box-shadow: var(--ds-shadow-card);
+}
+.bw-rail__lede { font-size: 15px; color: var(--ds-ink-soft); margin: 0 0 var(--ds-space-md); }
+.bw-rail .bw-btn { width: 100%; justify-content: center; }
+.bw-rail__tel {
+  display: flex; align-items: center; justify-content: center; gap: var(--ds-space-xs);
+  min-height: 44px; margin-top: var(--ds-space-sm);
+  font-weight: 700; font-size: 15px; text-decoration: none;
+}
+.bw-rail__ico { width: 18px; height: 18px; color: var(--ds-accent-ink); }
+.bw-rail__ico svg { width: 100%; height: 100%; }
+.bw-rail__rec { margin: var(--ds-space-md) 0 0; padding-top: var(--ds-space-md); border-top: 1px solid var(--ds-line); }
+.bw-rail__rec dt { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--ds-ink-soft); font-weight: 700; }
+.bw-rail__rec dd { margin: calc(var(--ds-space-xs) / 4) 0 calc(var(--ds-space-md) / 2); font-family: var(--ds-font-display); font-size: 19px; color: var(--ds-ink-heading); }
+.bw-rail__rec dd:last-child { margin-bottom: 0; }
+
+/* ---- proof: the clearance codes as record chips (PROOF-SECTIONS #5) ---- */
+.bw-codes { list-style: none; display: flex; flex-wrap: wrap; gap: var(--ds-space-xs); margin: var(--ds-space-md) 0 0; padding: 0; }
+.bw-codes .bw-chip { font-family: var(--ds-font-body); font-size: 13px; color: var(--ds-ink-soft); }
+.bw-codes .bw-chip b { font-family: var(--ds-font-display); font-size: 15px; color: var(--ds-accent-ink); }
+
+/* ---- choose: the numbered route (SECTION-COMPONENTS #27) ---- */
+.bw-step {
+  height: 100%;
+  padding: var(--ds-space-md);
+  border-top: 2px solid var(--ds-accent);
+  border-radius: 0 0 var(--ds-r-surface) var(--ds-r-surface);
+  background: var(--ds-bg-surface-2);
+}
+.bw-step__n { display: block; font-family: var(--ds-font-display); font-size: 30px; line-height: 1; color: var(--ds-accent-light); margin-bottom: var(--ds-space-xs); }
+.bw-step b   { display: block; font-family: var(--ds-font-display); font-size: 19px; color: var(--ds-ink-heading); margin-bottom: calc(var(--ds-space-xs) * .75); }
+.bw-step p   { margin: 0; font-size: 14.5px; color: var(--ds-ink-soft); }
+
+@media (max-width: 900px) {
+  .bw-rail { position: static; margin-top: var(--ds-space-lg); }
+}
+
+/* ------------------------------------------------------------------
+   T-INDEX — concept-b (owner pick)
+   ------------------------------------------------------------------ */
+/* ============================================================================
+   T-INDEX · CONCEPT B — "Pinned rail, text index"  (page-scoped OBJECT skins only)
+   TOKEN-PURE BY CONTRACT: zero hex literals. Every colour resolves through a
+   var(--ds-*) from applied-kinesiology-sacramento-tokens.css, whose .surface-dark
+   block re-points the SAME names, so every object inverts inside the dark band.
+   Skins are tix-* OBJECT classes; section/.container/.row/.col carry layout only.
+
+   MEASURED NOTE — brand-card-standard.css repaints every EVEN <main> section at a
+   specificity that beats .section--dark. Checked in a browser: that is harmless on a
+   dark band (the tier gradient is written in the same var names .surface-dark
+   re-points, so it resolves dark), but it DOES drop .section--dark's radial accent
+   bloom. This concept lands its one dark band on an ODD section (§3), so that band
+   keeps its bloom — a small win over placing the dark at slot two.
+   ============================================================================ */
+
+/* --- the centred, type-led opener: no companion image, one column, tight measure --- */
+.tix-open { max-width: 46rem; margin-inline: auto; text-align: center; }
+.tix-open h1 { max-width: none; }
+.tix-open .bw-lede { max-width: 38rem; margin-inline: auto; }
+.tix-open .bw-filters { margin-top: var(--ds-space-lg); justify-content: center; }
+.tix-open .bw-filters__count { margin-left: 0; }
+.tix-open .active-filters { justify-content: center; }
+
+/* --- the rail: the pinned condition and the appointment ask ride the whole scroll --- */
+.tix-rail {
+  position: sticky;
+  top: var(--ds-space-md);
+  padding: var(--ds-space-lg) var(--ds-space-md);
+  background: var(--ds-bg-surface);
+  border: 1px solid var(--ds-line);
+  border-left: 3px solid var(--ds-accent-deep);
+  border-radius: var(--ds-r-surface);
+  box-shadow: var(--ds-shadow-card);
+}
+.tix-rail h2 { font-size: clamp(24px, 2.2vw, 30px); }
+.tix-rail p { font-size: 15.5px; }
+.tix-rail__media {
+  margin: var(--ds-space-md) 0;
+  padding: var(--ds-space-md);
+  border-radius: var(--ds-r-control);
+  border: 1px solid var(--ds-line);
+  background: var(--ds-accent-soft);
+}
+.tix-rail__media svg { width: 100%; height: auto; }
+.tix-rail__acts {
+  margin-top: var(--ds-space-md);
+  padding-top: var(--ds-space-md);
+  border-top: 1px solid var(--ds-line);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ds-space-sm);
+}
+.tix-rail__note { margin-top: var(--ds-space-md); }
+@media (max-width: 900px) { .tix-rail { position: static; } }
+
+/* --- the index itself: hairline text rows, two tracks, no pictures --- */
+.tix-index > li { border-top: 1px solid var(--ds-line); }
+.tix-row {
+  display: block;
+  height: 100%;
+  padding: var(--ds-space-sm) var(--ds-space-xs) var(--ds-space-md);
+  text-decoration: none;
+  color: var(--ds-ink);
+  border-radius: var(--ds-r-control);
+  transition: background-color var(--ds-dur) var(--ds-ease),
+              padding-left var(--ds-dur) var(--ds-ease);
+}
+.tix-row:hover { background: var(--ds-accent-soft); padding-left: var(--ds-space-sm); }
+@media (prefers-reduced-motion: reduce) { .tix-row:hover { padding-left: var(--ds-space-xs); } }
+.tix-row b {
+  display: block;
+  font-family: var(--ds-font-display);
+  font-size: 20px;
+  line-height: 1.22;
+  color: var(--ds-ink-heading);
+  margin-bottom: calc(var(--ds-space-xs) * 0.625);
+}
+.tix-row span { display: block; font-size: 14.5px; color: var(--ds-ink-soft); }
+
+/* --- A2 arc seam: this concept spends it at the index-to-dark edge, not at the fold --- */
+.tix-seam {
+  display: block;
+  width: 100%;
+  height: 78px;
+  margin-bottom: calc(var(--ds-section-py) * -1);
+  color: var(--ds-primary-deep);
+}
+@media (max-width: 600px) {
+  .tix-seam { height: 46px; margin-bottom: calc(var(--ds-space-xl) * -1); }
+}
+
+/* --- the routing band on the dark ground --- */
+.tix-limit { margin-top: var(--ds-space-md); }
+.tix-diagram { color: var(--ds-accent-ink); margin-bottom: var(--ds-space-md); }
+
+/* --- the education close --- */
+.tix-close-acts { margin-top: var(--ds-space-md); }
+
+/* ------------------------------------------------------------------
+   T-PERSONA — concept-c (owner pick)
+   ------------------------------------------------------------------ */
+/* ============================================================================
+   T-PERSONA concept C "The Ladder" - OBJECT SKINS ONLY.
+   Token-pure: every colour resolves through a var(--ds-*), so each object inverts
+   for free inside .surface-dark. Layout numbers are structure and stay literal.
+   Skins sit on OBJECTS; section / .container / .row / .col carry layout only.
+   ============================================================================ */
+
+/* ---- 1. THE OPPOSITIONAL OPENING (HERO-COMPOSITIONS #23) ---- */
+/* Both columns carry EQUAL ink. The catalog's faded-losing-column idiom is
+   deliberately refused: standard medicine is a sequence here, not a verdict. */
+.ak-c-open { padding-block: var(--ak-c-rhythm); }
+.ak-c-open h1 { max-width: 16ch; font-size: clamp(36px, 5.2vw, 64px); }
+.ak-c-lede { max-width: 42rem; font-size: clamp(17px, 1.4vw, 20px); }
+.ak-c-comparerow { margin-top: var(--ds-space-lg); align-items: stretch; }
+.ak-c-side {
+  height: 100%;
+  padding: var(--ds-space-md);
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-surface);
+  background: var(--ds-bg-surface);
+}
+.ak-c-side--ours {
+  background-image: linear-gradient(168deg, var(--ds-accent-soft) 0%, var(--ds-bg-surface) 100%);
+  border-color: var(--ds-accent);
+}
+.ak-c-side__t {
+  font-family: var(--ds-font-body);
+  font-size: 12px; letter-spacing: .15em; text-transform: uppercase;
+  font-weight: 700; color: var(--ds-accent-ink);
+  margin: 0 0 var(--ds-space-sm);
+}
+.ak-c-route { list-style: none; margin: 0; padding: 0; counter-reset: rt; }
+.ak-c-route li {
+  counter-increment: rt;
+  position: relative; padding: 9px 0 9px 34px;
+  border-bottom: 1px solid var(--ds-line);
+  font-size: 15.5px; line-height: 1.5; color: var(--ds-ink-soft);
+}
+.ak-c-route li:last-child { border-bottom: 0; }
+.ak-c-route li::before {
+  content: counter(rt, decimal-leading-zero);
+  position: absolute; left: 0; top: 11px;
+  font-family: var(--ds-font-body);
+  font-size: 12px; font-weight: 700; letter-spacing: .06em;
+  color: var(--ds-accent-ink);
+}
+.ak-c-ask {
+  font-family: var(--ds-font-display);
+  font-size: clamp(21px, 2vw, 28px); line-height: 1.3;
+  color: var(--ds-ink-heading);
+  margin-bottom: var(--ds-space-sm);
+  max-width: 20ch;
+}
+
+/* ---- 2. THE RUNGS (SECTION-COMPONENTS #27) ---- */
+/* Supporting material is carried INLINE. No rail, no card grid, no exit ramps.
+   ONE rhythm value drives every rung so the ladder's cadence is literally uniform:
+   leading == trailing == --ak-c-rhythm in each band, which is what the section-rhythm
+   gate measures and what makes a numbered read feel like even steps rather than drift. */
+:root { --ak-c-rhythm: clamp(52px, 5.6vw, 80px); }
+.ak-c-rung { padding-block: var(--ak-c-rhythm); }
+/* The rung numeral carries NO opacity token. --ds-opacity-muted (.72) over accent ink
+   on the warm band measured 2.88:1 against the 3.0 large-text floor: an opacity applied
+   to text is a contrast reduction, and the muted token is calibrated for decorative
+   marks, not for type. The numeral is held back by size and weight instead. */
+.ak-c-num {
+  font-family: var(--ds-font-display);
+  font-size: clamp(34px, 3.4vw, 46px); line-height: 1;
+  color: var(--ds-accent-ink);
+  margin: 0 0 var(--ds-space-xs);
+}
+.ak-c-links a { font-weight: 600; }
+.ak-c-links span { color: var(--ds-line); padding-inline: 5px; }
+.ak-c-motif { width: 100%; max-width: 190px; margin-inline: auto; color: var(--ds-accent-ink); opacity: var(--ds-opacity-muted); }
+
+/* ---- 3. THE STOP RUNG (the one dark band in the body) + the A2 arc seam ---- */
+.ak-c-stop { padding-block: var(--ak-c-rhythm); }
+
+/* --ak-c-paper is captured HERE, on :root, where --ds-bg-surface still holds its light
+   value. A custom property's var() references are substituted at the element that
+   DECLARES it, and descendants inherit the already-substituted result - so .surface-dark
+   re-pointing --ds-bg-surface further down cannot reach back into this one. That is the
+   whole mechanism: it lets an element inside the dark band paint itself in the paper
+   ground it is arcing away from, with no hex literal and no second dark-mode asset. */
+:root { --ak-c-paper: var(--ds-bg-surface); }
+.ak-c-seam {
+  position: absolute; top: 0; left: 0; right: 0;
+  width: 100%; height: clamp(40px, 4.4vw, 64px);
+  margin: 0; pointer-events: none;
+}
+.ak-c-seam path { fill: var(--ak-c-paper); }
+.ak-c-flags { list-style: none; margin: 0 0 var(--ds-space-md); padding: 0; counter-reset: fl; }
+.ak-c-flags li {
+  counter-increment: fl;
+  position: relative; padding: 11px 0 11px 40px;
+  border-bottom: 1px solid var(--ds-line);
+  font-size: 16.5px; line-height: 1.5; color: var(--ds-ink);
+}
+.ak-c-flags li:last-child { border-bottom: 0; }
+.ak-c-flags li::before {
+  content: counter(fl, decimal-leading-zero);
+  position: absolute; left: 0; top: 14px;
+  font-family: var(--ds-font-body);
+  font-size: 12px; font-weight: 700; letter-spacing: .06em;
+  color: var(--ds-accent-ink);
+}
+.ak-c-stop strong { color: var(--ds-ink-heading); }
+
+/* ---- 4. THE STANDALONE QUOTE RUNG (SECTION-COMPONENTS #57) ---- */
+.ak-c-creed { padding-block: var(--ak-c-rhythm); }
+.ak-c-creedline {
+  font-family: var(--ds-font-display);
+  font-size: clamp(19px, 2.1vw, 29px);
+  line-height: 1.4;
+  color: var(--ds-ink-heading);
+  max-width: 30ch;
+  margin: 0;
+}
+
+/* ---- 5. NUMBERED FAQ, everything visible (FAQ-ACCORDION #4) ---- */
+.ak-c-qa { list-style: none; margin: var(--ds-space-md) 0 0; padding: 0; counter-reset: qa; }
+.ak-c-qa > li {
+  counter-increment: qa;
+  position: relative;
+  padding: var(--ds-space-md) 0 var(--ds-space-md) 68px;
+  border-top: 1px solid var(--ds-line);
+}
+.ak-c-qa > li:last-child { border-bottom: 1px solid var(--ds-line); }
+.ak-c-qa > li::before {
+  content: counter(qa, decimal-leading-zero);
+  position: absolute; left: 0; top: calc(var(--ds-space-md) + 3px);
+  font-family: var(--ds-font-display);
+  font-size: 21px; line-height: 1;
+  color: var(--ds-accent-ink);
+}
+.ak-c-qa h3 { font-size: clamp(17px, 1.4vw, 20px); max-width: 34ch; margin-bottom: 8px; }
+.ak-c-qa .bw-body { max-width: 38rem; }
+
+/* ---- 6. THE LAST RUNG, the page's ONLY body CTA (PRICING-SECTIONS #6) ---- */
+.ak-c-last { padding-block: var(--ak-c-rhythm); }
+.ak-c-closeline {
+  margin-top: var(--ds-space-md);
+  padding-top: var(--ds-space-md);
+  border-top: 1px solid var(--ds-line);
+  font-family: var(--ds-font-display);
+  font-size: clamp(18px, 1.7vw, 24px);
+  line-height: 1.4;
+  color: var(--ds-ink-heading);
+  max-width: 30ch;
+}
+.ak-c-acts { display: flex; flex-wrap: wrap; gap: var(--ds-space-sm); margin-top: var(--ds-space-md); }
+
+/* ---- responsive: the grammar reflows, the skins do not change ---- */
+@media (max-width: 900px) {
+  .ak-c-motif { max-width: 150px; margin-top: var(--ds-space-lg); }
+}
+@media (max-width: 600px) {
+  .ak-c-qa > li { padding-left: 44px; }
+  .ak-c-qa > li::before { font-size: 17px; }
+  .ak-c-flags li { padding-left: 34px; font-size: 16px; }
+  .ak-c-acts .bw-btn { width: 100%; }
+}
+
+/* ------------------------------------------------------------------
+   T-COMPANY — concept-a (owner pick)
+   ------------------------------------------------------------------ */
+@media (max-width: 600px) { .bw-seam--band { margin-bottom: calc(var(--ds-space-xl) * -1); } }
+
+/* ============================================================================
+   CONCEPT A - "The signed letter".  Token-pure: every colour resolves through a
+   var(--ds-*) declared in the locked tokens sheet. Layout numbers are structure.
+   The container cap is the sheet's own var(--ds-container-max); nothing here
+   re-declares a width for the band wrapper.
+   ============================================================================ */
+
+/* the standard tier auto-bands every even section; these explicit grounds must win,
+   so they are declared at higher specificity AND later in the cascade. */
+.tier-standard main > section.section--plain { background-image: none; background-color: var(--ds-bg-surface); }
+.tier-standard main > section.section--warm  { background-image: linear-gradient(180deg, var(--ds-bg-warm) 0%, var(--ds-bg-surface) 100%); }
+.tier-standard main > section.section--dark  {
+  background-image:
+    radial-gradient(72% 130% at 12% 0%, var(--ds-accent-soft) 0%, transparent 58%),
+    linear-gradient(180deg, var(--ds-primary-deep) 0%, var(--ds-primary-deep) 100%);
+}
+
+/* ---- 1. FOUNDER EDITORIAL MASTHEAD (COMPANY-SECTIONS #1) ---- */
+.bw-founder__copy .bw-lede { max-width: 32rem; }
+.bw-founder__sub {
+  font-family: var(--ds-font-body); font-size: 15px; font-weight: 600;
+  letter-spacing: .01em; color: var(--ds-ink-soft);
+  margin: 0 0 var(--ds-space-md); padding-top: var(--ds-space-sm);
+  border-top: 1px solid var(--ds-line); max-width: 30rem;
+}
+.bw-founder__acts { display: flex; flex-wrap: wrap; gap: var(--ds-space-sm); margin-top: var(--ds-space-lg); }
+/* the load-bearing editorial move: a signed credibility line under a hairline. */
+.bw-founder__sig {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--ds-space-xs) var(--ds-space-sm);
+  margin-top: var(--ds-space-lg); padding-top: var(--ds-space-md);
+  border-top: 1px solid var(--ds-line);
+}
+.bw-founder__sig b { font-family: var(--ds-font-display); font-size: 21px; color: var(--ds-ink-heading); font-weight: 600; }
+.bw-founder__sig span { font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--ds-accent-ink); }
+.bw-founder__portrait {
+  margin: 0; position: relative; width: 100%; min-width: 0;
+  aspect-ratio: 4 / 5; overflow: hidden;
+  border-radius: var(--ds-r-surface);
+  border: 1px solid var(--ds-line);
+  box-shadow: var(--ds-shadow-lift);
+  background-color: var(--ds-bg-surface-2);
+}
+.bw-founder__portrait img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; }
+.bw-founder__portrait figcaption {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: var(--ds-space-lg) var(--ds-space-md) var(--ds-space-sm);
+  font-size: 13px; color: var(--ds-ink-on-dark);
+  background-image: linear-gradient(180deg, transparent 0%, var(--ds-primary-deep) 92%);
+}
+
+/* ---- 2. THE READING COLUMN + the persistent verification rail (SECTION-COMPONENTS #36) ---- */
+.bw-read { max-width: 36rem; }
+.bw-read > p { color: var(--ds-ink); }
+.bw-pull {
+  margin: 0 0 var(--ds-space-lg);
+  padding: var(--ds-space-md) 0 var(--ds-space-md) var(--ds-space-md);
+  border-left: 3px solid var(--ds-accent);
+  font-family: var(--ds-font-display);
+  font-size: clamp(19px, 1.7vw, 23px); line-height: 1.44;
+  color: var(--ds-ink-heading); max-width: 34rem;
+}
+.bw-aside {
+  position: sticky; top: var(--ds-space-2xl);
+  padding: var(--ds-space-md);
+  border-radius: var(--ds-r-surface);
+  box-shadow: var(--ds-shadow-lift);
+  background-image:
+    radial-gradient(90% 120% at 100% 0%, var(--ds-accent-soft) 0%, transparent 62%),
+    linear-gradient(180deg, var(--ds-primary-deep) 0%, var(--ds-primary-deep) 100%);
+}
+.bw-aside h3 { font-size: 19px; margin-bottom: var(--ds-space-sm); }
+.bw-aside dl { margin: 0 0 var(--ds-space-md); }
+.bw-aside dt { font-size: 11.5px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--ds-accent-ink); }
+.bw-aside dd {
+  margin: 3px 0 var(--ds-space-sm); padding-bottom: var(--ds-space-sm);
+  border-bottom: 1px solid var(--ds-line);
+  font-size: 15.5px; color: var(--ds-ink);
+}
+.bw-aside dd:last-of-type { border-bottom: 0; margin-bottom: 0; }
+.bw-aside .bw-btn { width: 100%; justify-content: center; }
+.bw-aside .bw-btn + .bw-btn { margin-top: var(--ds-space-xs); }
+.bw-aside__note { margin: var(--ds-space-sm) 0 0; font-size: 13.5px; color: var(--ds-ink-soft); }
+
+/* ---- 3. TRAINING, carried inline as topic columns (SECTION-COMPONENTS #50) ---- */
+.bw-tech { list-style: none; margin: var(--ds-space-md) 0 0; padding: 0; columns: 2; column-gap: var(--ds-space-lg); }
+.bw-tech li { break-inside: avoid; padding: 11px 0; border-bottom: 1px solid var(--ds-line); font-weight: 600; font-size: 15.5px; }
+.bw-notheld { margin-top: var(--ds-space-lg); padding: var(--ds-space-md); border: 1px solid var(--ds-line); border-left: 3px solid var(--ds-accent-deep); border-radius: var(--ds-r-control); background-color: var(--ds-bg-surface); }
+.bw-notheld p { margin: 0; font-size: 15.5px; color: var(--ds-ink); max-width: 40rem; }
+
+/* ---- 4. THE CREED, uncarded type on the dark ground (COMPANY-SECTIONS #2) ---- */
+.bw-manifesto__lead {
+  font-family: var(--ds-font-display);
+  font-size: clamp(28px, 3.4vw, 46px); line-height: 1.16; letter-spacing: -.014em;
+  color: var(--ds-ink-heading); margin: 0 0 var(--ds-space-lg); max-width: 22ch;
+}
+.bw-manifesto__value {
+  display: grid; grid-template-columns: 44px 1fr; gap: var(--ds-space-md);
+  padding: var(--ds-space-md) 0; border-top: 1px solid var(--ds-line);
+}
+.bw-manifesto__value i {
+  font-style: normal; font-size: 12px; font-weight: 700; letter-spacing: .14em;
+  color: var(--ds-accent-ink); padding-top: 7px;
+}
+.bw-manifesto__line { font-size: 18px; color: var(--ds-ink); margin: 0; max-width: 42rem; }
+.bw-manifesto__sign { margin-top: var(--ds-space-lg); font-size: 16px; color: var(--ds-ink-soft); max-width: 40rem; }
+
+/* ---- 5. ROOTS + the reachable practitioner card (COMPANY-SECTIONS #4) ---- */
+.bw-team__member {
+  padding: var(--ds-space-md);
+  border: 1px solid var(--ds-line); border-radius: var(--ds-r-surface);
+  background-color: var(--ds-bg-surface); box-shadow: var(--ds-shadow-card);
+}
+.bw-team__name { font-family: var(--ds-font-display); font-size: 22px; color: var(--ds-ink-heading); margin: 0 0 2px; }
+.bw-team__role { font-size: 11.5px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--ds-accent-ink); margin: 0 0 var(--ds-space-md); }
+.bw-team__contact { list-style: none; margin: 0; padding: var(--ds-space-sm) 0 0; border-top: 1px solid var(--ds-line); }
+.bw-team__contact li { display: flex; gap: 10px; align-items: baseline; padding: 7px 0; font-size: 15px; color: var(--ds-ink); }
+.bw-team__contact li::before { content: ""; flex: 0 0 auto; width: 6px; height: 6px; border-radius: var(--ds-r-pill); background-color: var(--ds-accent); }
+
+/* ---- 6. STILL LEARNING, a big-number band (TRUST-STATS-SECTIONS #4) ---- */
+.bw-figures { display: flex; flex-wrap: wrap; gap: var(--ds-space-xl); }
+.bw-figures .bw-stat { flex: 1 1 210px; min-width: 0; }
+.bw-figures .bw-stat b { font-size: clamp(38px, 4vw, 54px); color: var(--ds-accent-ink); }
+.bw-figures .bw-stat span { font-size: 15px; max-width: 20rem; }
+
+/* ---- 7. THE HONEST PRESS STRIP (COMPANY-SECTIONS #5) ---- */
+.bw-press__strip { padding: var(--ds-space-md) 0; border-top: 1px solid var(--ds-line); border-bottom: 1px solid var(--ds-line); }
+.bw-press__strip p { margin: 0; font-size: 17px; color: var(--ds-ink); max-width: 42rem; }
+.bw-press__close { margin-top: var(--ds-space-lg); font-size: 17px; color: var(--ds-ink); max-width: 42rem; }
+
+@media (max-width: 900px) {
+  .bw-aside { position: static; }
+  .bw-founder__portrait { aspect-ratio: 16 / 10; margin-top: var(--ds-space-lg); }
+  .bw-tech { columns: 1; }
+}
+
+/* ------------------------------------------------------------------
+   T-CONTACT — concept-b (owner pick)
+   ------------------------------------------------------------------ */
+/* Concept B object skins: token-pure. */
+.bw-phone{font-family:var(--ds-font-display);font-size:clamp(26px,2.6vw,34px);line-height:1.08;
+  display:inline-block;text-decoration:none;margin:0 0 var(--ds-space-xs)}
+.bw-hours{display:grid;grid-template-columns:minmax(92px,120px) 1fr;gap:6px var(--ds-space-md);max-width:440px;margin:0 0 var(--ds-space-md)}
+.bw-hours dt{font-weight:600;color:var(--ds-ink)}
+.bw-hours dd{margin:0;color:var(--ds-ink-soft)}
+.bw-routes{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:var(--ds-space-md);
+  list-style:none;margin:0;padding:0}
+.bw-routes > li{margin:0;min-width:0}
+@media (max-width:600px){.bw-seam--flush{margin-bottom:calc(var(--ds-space-xl) * -1)}}
+
+/* ------------------------------------------------------------------
+   T-LEGAL — concept-c (owner pick)
+   ------------------------------------------------------------------ */
+/* ---------------------------------------------------------------------------
+   CONCEPT C ONLY. Token-pure by contract: ZERO hex literals. Every colour
+   resolves through a var(--ds-*) from the linked tokens sheet (:root plus the
+   .surface-dark flip of the SAME names). The px/% values are LAYOUT geometry.
+   --------------------------------------------------------------------------- */
+
+/* the rail offset matches .bw-legal's own scroll-margin-top in the structural
+   sheet, so a jump link and the sticky rail clear the fixed header identically. */
+:root{ --tpl-rail-top: 120px; }
+
+/* LEGAL-SECTIONS #3: the rail variant of .bw-toc. The base object is a bordered
+   card; the rail strips the card back to a hairline-led column so it reads as an
+   edge of the document rather than a widget floating beside it. The .col it sits
+   in is a stretched flex item, so the rail has full-row height to stick within. */
+.bw-toc--rail{
+  position: sticky;
+  top: var(--tpl-rail-top);
+  max-height: calc(100vh - var(--tpl-rail-top) - var(--ds-space-lg));
+  overflow-y: auto;
+  margin: 0;
+  padding: 0 0 0 var(--ds-space-sm);
+  max-width: none;
+  background: transparent;
+  border: 0;
+  border-left: 2px solid var(--ds-line);
+  border-radius: 0;
+  box-shadow: none;
+}
+.bw-toc--rail .bw-toc__link{ padding-left: var(--ds-space-xs); padding-right: var(--ds-space-xs); }
+
+/* the appointment route, pinned under the index on a hairline so it rides with it */
+.tpl-act{
+  display: flex; flex-wrap: wrap;
+  gap: var(--ds-space-xs);
+  margin: var(--ds-space-md) 0 0;
+  padding-top: var(--ds-space-sm);
+  border-top: 1px solid var(--ds-line);
+  max-width: none;
+}
+.tpl-act .bw-btn{ font-size: 14.5px; padding: 12px 18px; }
+
+/* the structural sheet collapses .col--span-* to 100% at 900px; the rail must
+   UNSTICK at the same breakpoint or it would pin a full-width block over the
+   prose. Below this it degrades to the LEGAL-SECTIONS #2 inline shape. */
+@media (max-width: 900px){
+  .bw-toc--rail{
+    position: static;
+    max-height: none; overflow: visible;
+    padding-left: 0; border-left: 0;
+    margin-bottom: var(--ds-space-lg);
+  }
+}
+
+/* ---- comparison matrix on a phone (G-CCONTRAST fail-closed fix) ----
+   The mobile treatment above already RESTACKES the matrix into labelled rows (each td carries its
+   column name via td::before), and it hid the thead with the 1px clip idiom. A 1px-clipped cell is
+   not zero-size and not off-canvas, so verify-computed-contrast can neither measure nor skip it and
+   fails CLOSED on 2 header cells. The column names are already carried by the td::before labels and
+   the row <th scope="row">, so on a phone the duplicate header row is display:none rather than
+   clipped: nothing is lost, and there is no unmeasurable text left on the page. */
+@media (max-width: 900px) {
+  .bw-matrix thead { display: none; }
+}
