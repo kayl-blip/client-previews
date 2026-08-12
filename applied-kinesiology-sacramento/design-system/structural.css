@@ -36,6 +36,12 @@ body {
 
 img, svg, video { max-width: 100%; height: auto; display: block; }
 
+/* The UA stylesheet's `figure { margin: 1em 40px }` was silently sizing every figure that did not
+   declare its own margin. Measured 17px/40px on .bw-portrait and .bw-motif, which shrank the hero
+   portrait box to 351.3px inside a 431.3px column and forced a 1.284x upscale of a 259px source.
+   Every other figure in this build sets margin explicitly, so this reset reaches only those two. */
+figure { margin: 0; }
+
 /* ============================================================
    1. THE FORCED DOM GRAMMAR — structure layers carry LAYOUT ONLY
    ============================================================ */
@@ -56,10 +62,41 @@ section { padding: var(--ds-section-py) 0; position: relative; }
    = 100% + 16px. Each span now subtracts its share of the ACTUAL gap, so any span set
    sums to exactly 100% at every gap. */
 .row { --row-gap: var(--ds-space-md); display: flex; flex-wrap: wrap; gap: var(--row-gap); }
+/* `gap` only spaces COLUMNS inside one row; consecutive .row siblings had NO separation at all
+   (measured 0px between a heading row and the cards row under it on every multi-row section of
+   about). That single missing rhythm is what made the page read as cramped. Scoped to `.container`
+   so the full-bleed seam rows are untouched, and a seam row is excluded outright because its whole
+   job is to sit flush against the band it hands onto. */
+.container > .row + .row { margin-top: var(--ds-space-lg); }
+.row:has(.bw-seam) { margin-top: 0; }
 .row--tight   { --row-gap: var(--ds-space-sm); }
 .row--loose   { --row-gap: var(--ds-space-xl); }
 .row--center  { align-items: center; }
 .row--between { justify-content: space-between; }
+/* A card row whose item count does not divide by its span class wraps an ORPHAN: about shipped
+   4 x col--span-4 (a 3-up class) so the 4th dropped onto its own line and sized to its own
+   content (measured 192.4px against three 239.4px siblings), and patient-info shipped 5 for a
+   3+2 split. Fixed spans cannot express "however many there are, evenly". This variant lets the
+   grid decide the column count, so any card count fills its lines and every cell is equal height.
+   .col keeps its place in the DOM grammar (section > container > row > col > OBJECT); it just
+   stops carrying a flex basis. */
+.row--cards {
+  display: grid;
+  /* 15.5rem forced a 4-column maximum, so patient-info's FIVE cards still split 4 + 1 and the
+     orphan sized itself (measured 316/316/316/316/286.5). 12rem lets auto-fit reach five tracks at
+     the 1160 container while still collapsing to exactly three or four when that is the count —
+     auto-fit removes empty tracks, so a 3-card row stays a 3-up. grid-auto-rows:1fr is the backstop:
+     if a count ever does wrap, every row is still the same height. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  grid-auto-rows: 1fr;
+  align-items: stretch;
+}
+/* 12rem lets five cards share one line, which is right for SHORT cards but not for cards carrying a
+   real paragraph: patient-info's five measured 203px wide and 366px TALL — a column of text one
+   phrase wide. --wide raises the floor to 20rem so the same grid lands three per line at ~355px,
+   which is a readable measure. Same auto-fit rules, so it still collapses cleanly on narrow screens. */
+.row--cards--wide { grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
+.row--cards > .col { flex: initial; width: auto; min-width: 0; }
 
 .col { flex: 1 1 0%; min-width: 0; }
 .col--full   { flex: 0 0 100%; width: 100%; }
@@ -77,10 +114,29 @@ section { padding: var(--ds-section-py) 0; position: relative; }
 h1, h2, h3, h4 {
   font-family: var(--ds-font-display);
   color: var(--ds-ink-heading);
-  margin: 0 0 .45em;
+  /* .45em put ~18px under an h2 while `p { margin-bottom: 1.1em }` puts ~18.7px BETWEEN paragraphs,
+     so a heading was spaced exactly like an ordinary paragraph break and never bound to the text it
+     introduces. Measured on the built pages: h2 sat 12px below its eyebrow but 18px above its own
+     subtext. Tightened below, and given real room ABOVE (see the rule under this one) so the
+     proximity now says "this heading belongs to what follows". */
+  /* CORRECTION: I first cut this to .34em, reading "heading to subtext" as bind-them-tighter. That
+     was wrong and made the page cramped — measured 13.6px under an h2 and 7.8px under a card's h3.
+     .5em gives 20px under an h2 and 11.5px under an h3, which reads as a deliberate relationship
+     rather than a squeeze, while still being clearly less than the space ABOVE (see below). */
+  margin: 0 0 .5em;
   line-height: 1.14;
   letter-spacing: -.012em;
 }
+/* Space ABOVE a heading separates it from the block that ended; space BELOW binds it to its own
+   text. Only applies once there IS something above it. */
+:where(main) h2:not(:first-child),
+:where(main) h3:not(:first-child),
+:where(main) h4:not(:first-child) { margin-top: .62em; }
+/* An eyebrow, or the accent rule, forms ONE unit with the heading under it — never break that. */
+:where(main) .bw-eyebrow + h1, :where(main) .bw-eyebrow + h2,
+:where(main) .bw-eyebrow + h3, :where(main) .bw-eyebrow + h4,
+:where(main) .bw-rule + h1,    :where(main) .bw-rule + h2,
+:where(main) .bw-crumbs + h1,  :where(main) .bw-crumbs + h2 { margin-top: 0; }
 h1 { font-size: clamp(36px, 4.4vw, 58px); line-height: 1.08; max-width: 20ch; }
 h2 { font-size: clamp(28px, 3vw, 40px); max-width: 20ch; }
 h3 { font-size: clamp(20px, 1.6vw, 24px); line-height: 1.28; max-width: 28ch; }
@@ -149,6 +205,18 @@ a:hover { color: var(--ds-accent-deep); }
 .bw-btn--primary { background-color: var(--ds-accent-deep); color: var(--ds-ink-on-dark); }
 .bw-btn--quiet   { background-color: transparent; color: var(--ds-accent-ink); border-color: var(--ds-line); }
 
+/* ---- FILLED CONTROLS OWN THEIR TEXT COLOUR IN EVERY STATE -------------------------------------
+   The generic `a:hover { color: var(--ds-accent-deep) }` above is specificity (0,1,1) and beats
+   `.bw-btn--primary` (0,1,0), so hovering a SOLID button repainted its label to the accent — the
+   exact colour of that button's own fill. Measured on the built page: rest 5.42:1, hover
+   **1.0:1**, rgb(10,116,138) text on rgb(10,116,138) ground. The label disappeared.
+   A control with a filled background must never inherit a link colour, so every filled variant
+   re-asserts its own on-fill ink for :hover and :focus-visible. .bw-filter.is-active survives today
+   only because its rule happens to sit one line AFTER .bw-filter:hover — pinned here so it no
+   longer depends on source order. */
+.bw-btn--primary:hover, .bw-btn--primary:focus-visible { color: var(--ds-ink-on-dark); }
+.bw-filter.is-active:hover, .bw-filter.is-active:focus-visible { color: var(--ds-ink-on-dark); }
+
 .bw-card {
   padding: var(--ds-space-lg) var(--ds-space-md);
   background: var(--ds-bg-surface);
@@ -159,6 +227,35 @@ a:hover { color: var(--ds-accent-deep); }
               box-shadow var(--ds-dur) var(--ds-ease),
               border-color var(--ds-dur) var(--ds-ease);
 }
+/* EQUAL-HEIGHT CARDS — but ONLY where the card IS the column.
+   .row is flex so the .col already stretches to its tallest sibling; the card never filled it, so a
+   shorter description left a visibly shorter card (measured 4 of 4 rows ragged, worst 47px on
+   about's 4-up: 215.9/239.4/215.9/192.4 inside cols that were all 239.4).
+   `height:100%` on EVERY .bw-card was too broad and I shipped a real regression with it: contact's
+   enquiry FORM also carries .bw-card, but it sits BELOW an h2 and a paragraph inside its column, so
+   100% resolved against a height that never accounted for them and the form overflowed its section
+   by a measured 81.9px, spilling into the band underneath. `:only-child` is the honest condition —
+   a card that owns its column stretches; a card sharing a column with other content sizes to its
+   own content, as it always did. */
+.row > .col > .bw-card:only-child,
+.row--cards > .col > .bw-card {
+  height: 100%;
+  display: flex; flex-direction: column;
+}
+/* with equal heights the trailing action would float wherever the copy ended; pinning it to the
+   bottom aligns every "Read more" across the row, which is what makes the row read as a set */
+.bw-card > .bw-btn, .bw-card > .bw-ghostlink { margin-top: auto; align-self: flex-start; }
+/* a .bw-stat used as a card's headline figure carries no bottom margin of its own, so the text
+   under it sat at a measured 0px. Give the figure its own breathing room. */
+.bw-card > .bw-stat { margin-bottom: var(--ds-space-sm); }
+.bw-card > .bw-stat + p { margin-top: 0; }
+/* a card's title sat 11.5px off its own body text — the tightest pair left on the page after the
+   row rhythm landed. --ds-space-sm (14px) is the scale's answer for a within-component gap. */
+.bw-card h3, .bw-tile b, .bw-step b { margin-bottom: var(--ds-space-sm); }
+/* block components carry no bottom margin, so a paragraph following one butted straight against it
+   (measured 0px after .bw-ladder and .bw-chiplist on the home page). */
+.bw-ladder + p, .bw-chiplist + p, .bw-figures + p, .bw-notheld + p { margin-top: var(--ds-space-md); }
+.bw-card > p:last-child, .bw-card > .bw-small:last-child { margin-bottom: 0; }
 .bw-card:hover { transform: translateY(-4px); box-shadow: var(--ds-shadow-lift); border-color: var(--ds-accent); }
 
 .bw-glass {
@@ -186,7 +283,12 @@ a:hover { color: var(--ds-accent-deep); }
   overflow: hidden;
   border: 10px solid var(--ds-accent-soft);
   box-shadow: var(--ds-shadow-lift);
-  max-width: 400px;
+  /* images_team_doctor.jpg is only 259x258. With the figure margin reset above, a 400px cap would
+     paint the image at 380px = a 1.47x upscale; 290px paints it at 270px = 1.042x, which is below
+     the visible-softening threshold. This cap is a CONSEQUENCE OF THE SOURCE FILE, not a design
+     preference: supply a portrait at >=800px and this can rise again. */
+  max-width: 290px;
+  margin-inline: auto;
 }
 .bw-portrait img {
   width: 100%; height: 100%; object-fit: cover;
@@ -302,6 +404,12 @@ a:hover { color: var(--ds-accent-deep); }
   display: block; min-width: 0;
   font-size: 14.5px; line-height: 1.4;
   padding: 9px 10px; border-radius: var(--ds-r-control);
+  /* This rule never declared text-decoration, so the UA default `a { underline }` leaked through
+     and every TOC row rendered underlined (measured: 13 underlined anchors across the 6 pages that
+     carry a .bw-toc). A navigation row is a TARGET, not prose: the tinted pill on :hover/:focus
+     below is the affordance. In-prose links keep their underline deliberately - removing that
+     would be an accessibility regression, not a modernisation. */
+  text-decoration: none;
   transition: color var(--ds-dur-fast) var(--ds-ease),
               background-color var(--ds-dur-fast) var(--ds-ease);
 }
@@ -352,12 +460,34 @@ a:hover { color: var(--ds-accent-deep); }
   color: var(--ds-ink);
   font: inherit; font-size: 14px; font-weight: 600;
   cursor: pointer;
+  /* THIRD instance of the same defect as .bw-toc__link and the figure margin: this rule styles a
+     pill BUTTON (44px target, border, fill, is-active state) but never declared text-decoration,
+     so the UA default underlined every filter chip. A control is not prose. */
+  text-decoration: none;
   transition: color var(--ds-dur-fast) var(--ds-ease),
               background-color var(--ds-dur-fast) var(--ds-ease),
               border-color var(--ds-dur-fast) var(--ds-ease);
 }
 .bw-filter:hover { border-color: var(--ds-accent); color: var(--ds-accent-deep); }
 .bw-filter.is-active { background: var(--ds-accent-deep); border-color: var(--ds-accent-deep); color: var(--ds-ink-on-dark); }
+
+/* ---- underline policy, stated once so it stops leaking back in ----------------------------
+   Prose links KEEP their underline: it is the only non-colour cue that a run of text is a link,
+   and stripping it is an accessibility regression, not a modernisation. What must NOT be
+   underlined is anything that is a CONTROL or a TITLE rather than a run of prose:
+     - a heading that happens to link (the underline fights the type)
+     - an action row sitting beside a .bw-btn (an underlined phone number next to a solid button
+       reads as two different systems)
+   Each of these rules exists because the element's own rule never declared text-decoration and
+   the user-agent default won by default. */
+:where(main) h1 a, :where(main) h2 a, :where(main) h3 a, :where(main) h4 a { text-decoration: none; }
+:where(main) h1 a:hover, :where(main) h2 a:hover,
+:where(main) h3 a:hover, :where(main) h4 a:hover { color: var(--ds-accent-deep); }
+.tix-rail__acts a, .tix-close-acts a { text-decoration: none; }
+.tix-rail__acts a:hover, .tix-close-acts a:hover { text-decoration: underline; }
+/* a breadcrumb trail is wayfinding, not a sentence */
+.bw-crumbs a { text-decoration: none; }
+.bw-crumbs a:hover { text-decoration: underline; }
 
 .bw-grid {
   display: grid;
@@ -367,6 +497,39 @@ a:hover { color: var(--ds-accent-deep); }
 }
 .bw-grid > li { margin: 0; min-width: 0; }
 .bw-grid [hidden] { display: none; }
+
+/* --- MOBILE SLIDER -----------------------------------------------------------------------------
+   A stack of six full-width testimonial cards is a long scroll on a phone. --slide turns the SAME
+   grid into a swipeable rail below 760px and leaves the desktop grid exactly as it was.
+   Deliberately built with native overflow scrolling and scroll-snap, NOT a JS carousel:
+     - the browse-engine filtering is untouched, because hiding an item with [hidden]{display:none}
+       removes it from the rail exactly as it removed it from the grid;
+     - there is no autoplay and no animation, so it cannot violate the reduced-motion promise the
+       accessibility page makes — the user drives every movement;
+     - it stays keyboard- and screen-reader-reachable because it is still a <ul> of <li>.
+   grid-auto-columns is 84% so the NEXT card always peeks: that peek is the affordance telling the
+   reader there is more sideways, without adding arrows that would need JS. */
+/* six testimonials against the base .bw-grid (minmax 248px) landed 4 + 2 at the 1160 container.
+   A wider floor gives a clean 3 + 3 and a more readable measure for a quote. Scoped to --slide, so
+   the conditions index (20 items on the same .bw-grid) keeps its denser 4-up. */
+@media (min-width: 761px) {
+  .bw-grid--slide { grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
+}
+@media (max-width: 760px) {
+  .bw-grid--slide {
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    grid-auto-columns: 84%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--ds-space-md);
+    padding-bottom: var(--ds-space-sm);
+    -webkit-overflow-scrolling: touch;
+  }
+  .bw-grid--slide > li { scroll-snap-align: center; }
+  .bw-grid--slide > li > .bw-card { height: 100%; }
+}
 
 .bw-tile {
   display: block; height: 100%;
@@ -434,7 +597,9 @@ a:hover { color: var(--ds-accent-deep); }
   .col--span-3, .col--span-4, .col--span-5,
   .col--span-6, .col--span-7, .col--span-8 { flex: 0 0 100%; }
   .row--loose { gap: var(--ds-space-lg); }
-  .bw-portrait { margin-inline: auto; max-width: 320px; }
+  /* held at the desktop cap for the same reason: 320px would paint a 300px image from a 259px
+     source (1.16x). Raise both together once a larger portrait is supplied. */
+  .bw-portrait { margin-inline: auto; max-width: 290px; }
 }
 
 @media (max-width: 600px) {
@@ -482,7 +647,18 @@ a:hover { color: var(--ds-accent-deep); }
 .bw-seam--deep, .bw-seam--to-dark { color: var(--ds-primary-deep); }
 .bw-seam--to-warm { color: var(--ds-bg-warm); }
 .bw-seam--band  { margin-top: var(--ds-space-xl); margin-bottom: calc(var(--ds-section-py) * -1); }
-.bw-seam--flush { margin-bottom: calc(var(--ds-section-py) * -1); max-height: 78px; }
+/* PINNED, not pulled. The old mechanism was `margin-bottom: calc(var(--ds-section-py) * -1)` — a
+   -88px pull meant to cancel the owning section's 88px bottom padding. That is arithmetically
+   unsafe: a negative bottom margin can only collapse a box as far as its own height, and with
+   .bw-seam--fluid the seam is clamp(40px,5vw,78px) = 72px at 1440, so 16px of the pull was silently
+   discarded and a band of the page ground stayed stranded under the arc (measured 88px on services
+   before this, 17px with the pull alone). Pinning to the section's bottom edge is exact at every
+   width — the section is position:relative, so this needs no other change. */
+.bw-seam--flush {
+  position: absolute; left: 0; right: 0; bottom: -1px;
+  width: 100%; margin: 0;
+  max-height: 78px;
+}
 .bw-seam--fluid { height: clamp(40px, 5vw, 78px); }
 
 /* ------------------------------------------------------------------
@@ -575,6 +751,12 @@ a:hover { color: var(--ds-accent-deep); }
    verify-section-density M3 fails, and stretch is the fix) */
 .bw-frame {
   width: 100%; min-width: 0; height: 100%; margin: 0;
+  /* The frame filled whatever column it sat in, so a SQUARE illustration dropped into a col--full
+     produced a 1112px-wide frame around a 300px drawing (measured on about: figureBox 1112x382,
+     image 1024x300). Four pages do this — about, applied-kinesiology, patient-info, who-its-for.
+     Capping the frame keeps it a figure instead of a band; narrower columns (431px hero, 328px
+     card) are already under the cap and are unaffected. */
+  max-width: 560px; margin-inline: auto;
   display: grid; place-items: center;
   padding: var(--ds-space-lg);
   background: var(--ds-bg-surface-2);
@@ -1225,7 +1407,15 @@ a:hover { color: var(--ds-accent-deep); }
 /* ---- 6. STILL LEARNING, a big-number band (TRUST-STATS-SECTIONS #4) ---- */
 .bw-figures { display: flex; flex-wrap: wrap; gap: var(--ds-space-xl); }
 .bw-figures .bw-stat { flex: 1 1 210px; min-width: 0; }
-.bw-figures .bw-stat b { font-size: clamp(38px, 4vw, 54px); color: var(--ds-accent-ink); }
+/* 54px was sized for SHORT numerals (dr-van-wagenen ships "32" and "70-100"). A real licence or NPI
+   is 8-10 glyphs, and at 54px "1730196569" measured 327px inside a 230px cell — the value bled out
+   of its box and read as overlapping text. The no-text-overlap gate does not catch this because the
+   CELLS never overlap; only the glyphs spill. Capped, with a wrap guard so no value can ever bleed. */
+.bw-figures .bw-stat b {
+  font-size: clamp(30px, 2.6vw, 40px);
+  color: var(--ds-accent-ink);
+  overflow-wrap: anywhere;
+}
 .bw-figures .bw-stat span { font-size: 15px; max-width: 20rem; }
 
 /* ---- 7. THE HONEST PRESS STRIP (COMPANY-SECTIONS #5) ---- */
@@ -1251,7 +1441,8 @@ a:hover { color: var(--ds-accent-deep); }
 .bw-routes{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:var(--ds-space-md);
   list-style:none;margin:0;padding:0}
 .bw-routes > li{margin:0;min-width:0}
-@media (max-width:600px){.bw-seam--flush{margin-bottom:calc(var(--ds-space-xl) * -1)}}
+/* the mobile pull is obsolete now that --flush is pinned: `bottom:-1px` is width-independent,
+   and re-declaring a negative margin here would reintroduce the same capped-pull bug at 375. */
 
 /* ------------------------------------------------------------------
    T-LEGAL — concept-c (owner pick)
