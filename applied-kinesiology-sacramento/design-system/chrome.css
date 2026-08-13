@@ -314,10 +314,17 @@ body.ck-open{overflow:hidden}
 .ck-dw__close svg{width:18px; height:18px}
 
 /* the ONLY scrolling region in the drawer */
+/* The bottom fade is the SCROLL AFFORDANCE. Without it the list is cut by a hard horizontal edge
+   wherever the scroll port ends -- captured at 375px with "Patient Info" sliced exactly through the
+   middle of the word, which reads as a rendering fault rather than as "there is more below". The
+   mask makes the same overflow read as intentional and tells the thumb to keep going. Top edge is
+   left solid: the first row must sit crisply under the drawer head. */
 .ck-dw__nav{
   flex:1 1 auto; min-height:0;
   overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
-  padding:2px 12px 16px;
+  padding:2px 12px 26px;
+  -webkit-mask-image:linear-gradient(to bottom, #000 calc(100% - 26px), transparent 100%);
+          mask-image:linear-gradient(to bottom, #000 calc(100% - 26px), transparent 100%);
 }
 .ck-dw__nav ul{list-style:none; margin:0; padding:0}
 
@@ -336,24 +343,40 @@ body.ck-open .ck-dk:nth-child(5){transition-delay:.10s}
 body.ck-open .ck-dk:nth-child(6){transition-delay:.12s}
 body.ck-open .ck-dk:nth-child(7){transition-delay:.14s}
 
-.ck-dk__row{display:flex; align-items:stretch; gap:4px}
+.ck-dk__row{display:flex; align-items:center; gap:4px; position:relative}
+/* the current section gets a short accent tick in the gutter rather than colour alone, so the
+   "you are here" signal survives a greyscale render and does not depend on hue */
 .ck-dk__link{
-  flex:1 1 auto; display:flex; align-items:center; min-height:56px; padding:8px 4px;
+  flex:1 1 auto; display:flex; align-items:center; min-height:58px; padding:8px 4px 8px 12px;
   font-family:var(--ds-font-display); font-size:18px; font-weight:600; line-height:1.2;
   color:var(--ds-ink-heading); text-decoration:none;
   transition:color var(--ds-dur-fast) var(--ds-ease);
 }
-.ck-dk__link:hover{color:var(--ds-accent-deep)}
-.ck-dk__link[aria-current="page"]{color:var(--ds-accent-deep)}
-.ck-dk__acc{
-  flex:0 0 auto; width:52px; min-height:56px; display:grid; place-items:center;
-  cursor:pointer; background:none; border:0; border-left:1px solid var(--ds-line);
-  color:var(--ds-ink-soft); border-radius:var(--ds-r-control);
-  transition:color var(--ds-dur-fast) var(--ds-ease);
+.ck-dk__link::before{
+  content:""; position:absolute; left:0; top:50%; transform:translateY(-50%);
+  width:3px; height:0; border-radius:var(--ds-r-pill); background:var(--ds-accent);
+  transition:height var(--ds-dur) var(--ds-ease-out);
 }
-.ck-dk__acc:hover{color:var(--ds-accent-deep)}
-.ck-dk__acc svg{width:14px; height:14px; transition:transform var(--ds-dur) var(--ds-ease)}
-.ck-dk[data-open="true"] .ck-dk__acc{color:var(--ds-accent-deep)}
+.ck-dk__link:hover{color:var(--ds-accent-deep)}
+.ck-dk__link:hover::before{height:20px}
+.ck-dk__link[aria-current="page"]{color:var(--ds-accent-deep)}
+.ck-dk__link[aria-current="page"]::before{height:26px}
+
+/* WAS: a 52px full-height cell whose only border was border-left, WITH border-radius set. Chrome
+   draws a single bordered edge on a rounded box as a curved stub, so each toggle rendered as a
+   detached rounded rectangle and the column of them read as a stack of broken boxes down the right
+   edge -- the loudest defect in the 375px capture. A disc has no edge to break: it is a closed
+   shape, it separates itself from the label by its own fill instead of by a rule, and the filled
+   open-state doubles as the expanded indicator. 44px keeps the touch target at the AA floor. */
+.ck-dk__acc{
+  flex:0 0 auto; width:44px; height:44px; display:grid; place-items:center;
+  cursor:pointer; border:0; border-radius:50%;
+  background:var(--ds-bg-surface-2); color:var(--ds-ink-soft);
+  transition:background var(--ds-dur-fast) var(--ds-ease), color var(--ds-dur-fast) var(--ds-ease);
+}
+.ck-dk__acc:hover{background:var(--ds-line); color:var(--ds-accent-deep)}
+.ck-dk__acc svg{width:15px; height:15px; transition:transform var(--ds-dur) var(--ds-ease)}
+.ck-dk[data-open="true"] .ck-dk__acc{background:var(--ds-accent-deep); color:var(--ds-ink-on-dark)}
 .ck-dk[data-open="true"] .ck-dk__acc svg{transform:rotate(180deg)}
 
 .ck-dk__panel{display:grid; grid-template-rows:0fr; transition:grid-template-rows var(--ds-dur) var(--ds-ease)}
