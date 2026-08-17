@@ -21,8 +21,23 @@
    to sit against. This paints TWO placed masses instead: a warm one behind the
    type column and an accent bloom behind the practitioner rail, so each half of
    the composition has its own ground. Same three tokens, no new colour. */
+/* SEAM ARITHMETIC, fixed 2026-08-17 (owner screenshot: the wave's right end was amputated,
+   leaving a hard step instead of a curve).
+   `.bw-seam--band` cancels its section's bottom padding with a negative margin hard-coded to
+   `--ds-section-py` (and to `--ds-space-xl` below 600px). That is exact for every section that
+   uses the DEFAULT `section` padding — and this hero is the one section that overrides it, so the
+   pull exceeded the pad and the surplus hung below the hero's `overflow: hidden` and was cut:
+       >=901  pad 64 vs pull 88 -> 24px of arc cut
+       601-900 pad 40 vs pull 88 -> 48px cut (80% of a 60px seam)
+       <=600  pad 40 vs pull 64 -> 24px cut
+   All three matched the rendered measurements exactly. The pad and the pull are now ONE variable,
+   so they cannot drift apart again; a future change to the hero's bottom padding carries the seam
+   with it automatically. NOTE for anyone tempted by `--bw-seam--flush` here instead: pinning would
+   also fix the cut, but its 78px box against this hero's 64/40px bottom padding would overlap the
+   action row and the practitioner rail. Matching the pull is the safe fix. */
 .tier-bespoke .bw-hero {
-  padding: var(--ds-space-2xl) 0 var(--ds-space-xl);
+  --hero-pad-b: var(--ds-space-xl);
+  padding: var(--ds-space-2xl) 0 var(--hero-pad-b);
   overflow: hidden;
   background-color: var(--ds-bg-surface);
   background-image:
@@ -86,8 +101,13 @@
   background-image: linear-gradient(180deg, var(--ds-bg-surface-2) 0%, var(--ds-bg-warm) 100%);
 }
 
+/* the seam's pull IS the hero's bottom pad, so the arc always lands exactly on the section's
+   bottom edge and nothing hangs below the clip. Wins over the generic `.bw-seam--band` rule
+   (0,1,0) and over its <=600px override (0,1,0 in a later media block) on specificity (0,3,0). */
+.tier-bespoke .bw-hero .bw-seam--band { margin-bottom: calc(var(--hero-pad-b) * -1); }
+
 @media (max-width: 900px) {
-  .tier-bespoke .bw-hero { padding: var(--ds-space-xl) 0 var(--ds-space-lg); }
+  .tier-bespoke .bw-hero { --hero-pad-b: var(--ds-space-lg); }
   .tier-bespoke .bw-hero h1 { max-width: none; }
   .tier-bespoke .bw-seam { height: 60px; }
 }

@@ -64,6 +64,13 @@
 
   /* ---- Color: surfaces + ink ---- */
   --ds-bg-surface:     #FFFDFA;  /* page ground — warm paper, not pure white */
+  /* The SAME paper value, deliberately NEVER re-pointed by .surface-dark below. It exists for the
+     one case where an element sitting INSIDE a dark band has to paint the colour of the LIGHT band
+     it hands onto: an arc seam. `--ds-bg-surface` cannot serve there, because inside .surface-dark
+     it resolves to #1E2A33 and the seam paints dark-on-dark and disappears (measured on
+     dr-van-wagenen: fill #1e2a33 against a band of #fffdfa, delta 225). Added 2026-08-17.
+     Do not re-declare this in the dark block — being surface-INVARIANT is the entire point. */
+  --ds-bg-paper:       #FFFDFA;
   --ds-bg-surface-2:   #F7F3EC;  /* card / elevated surface */
   --ds-bg-warm:        #F2EADF;  /* warm alternate section band */
   --ds-ink:            #232B31;  /* default body text */

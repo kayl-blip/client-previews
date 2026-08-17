@@ -841,6 +841,27 @@ main { counter-reset: bw-shead; }
 .bw-seam { color: var(--ds-bg-surface); }
 .bw-seam--deep, .bw-seam--to-dark { color: var(--ds-primary-deep); }
 .bw-seam--to-warm { color: var(--ds-bg-warm); }
+/* A DEFAULT seam (no --to-* / --deep modifier) hands onto the LIGHT band below it, so it must paint
+   paper. `--ds-bg-surface` above expresses that correctly on a light ground and WRONGLY inside a
+   dark one, where .surface-dark re-points it to #1E2A33: the arc then paints dark-on-dark, vanishes,
+   and the light section below begins on a hard flat edge. Found 2026-08-17 on dr-van-wagenen by
+   sampling the pixels actually painted (fill #1e2a33 against a band of #fffdfa, delta 225); the
+   `.bw-seam--flush-top` comment further down already documents this failure mode.
+   `--ds-bg-paper` is the surface-INVARIANT paper token, so this holds on either ground.
+
+   BOTH QUALIFIERS ARE LOAD-BEARING, do not simplify either away:
+   - `.bw-seam--band` (not `.bw-seam`): only the in-flow BOTTOM seam hands onto the next section.
+     A first version targeted any `.bw-seam` and flipped who-its-for's `.ak-c-seam` from a correct
+     #1e2a33 to #fffdfa — that one is absolutely positioned at the TOP of its dark band, an ENTRY
+     seam, so it should stay dark. Caught by pixel-diffing fill against the band below.
+   - `:has(+ section:not(.surface-dark))`: "inside a dark band" does not by itself mean paper. It
+     depends on the band handed ONTO. A dark band followed by another dark band keeps a dark seam.
+   If a browser lacks :has() the rule simply never applies, which degrades to today's behaviour
+   rather than to a new wrong colour. */
+section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
+  .bw-seam--band:not(.bw-seam--deep):not(.bw-seam--to-dark):not(.bw-seam--to-warm):not(.bw-seam--flip) {
+  color: var(--ds-bg-paper);
+}
 .bw-seam--band  { margin-top: var(--ds-space-xl); margin-bottom: calc(var(--ds-section-py) * -1); }
 /* PINNED, not pulled. The old mechanism was `margin-bottom: calc(var(--ds-section-py) * -1)` — a
    -88px pull meant to cancel the owning section's 88px bottom padding. That is arithmetically
@@ -1373,15 +1394,26 @@ main { counter-reset: bw-shead; }
 .tix-row span { display: block; font-size: 14.5px; color: var(--ds-ink-soft); }
 
 /* --- A2 arc seam: this concept spends it at the index-to-dark edge, not at the fold --- */
+/* PINNED, not pulled — fixed 2026-08-17. The pull was `margin-bottom: calc(var(--ds-section-py) *
+   -1)`, i.e. -88px (-64px below 600px) on a box only 78px tall (46px below 600px). A negative bottom
+   margin cannot collapse a box further than its own height, and this seam is nested inside
+   container--full > .row > .col, so the wrapper collapsed to ZERO height and the section's whole
+   bottom padding was laid out BELOW the arc. Measured strip of stranded light ground between the arc
+   and the dark band it hands onto: 10px at 1440, 18px at 375. Caught by pixel-diffing the seam's
+   fill against the ground on both sides — at 375 both sides read #f7f3ec, so the dark arc was
+   floating in light on a page whose seam looked correct at desktop.
+   Pinning to the section's bottom edge is exact at every width. The section is position:relative
+   (global `section` rule) and its bottom padding (88px / 64px) exceeds the seam height, so the arc
+   overlays empty padding and never covers content. */
 .tix-seam {
-  display: block;
+  position: absolute; left: 0; right: 0; bottom: -1px;
   width: 100%;
   height: 78px;
-  margin-bottom: calc(var(--ds-section-py) * -1);
+  margin: 0;
   color: var(--ds-primary-deep);
 }
 @media (max-width: 600px) {
-  .tix-seam { height: 46px; margin-bottom: calc(var(--ds-space-xl) * -1); }
+  .tix-seam { height: 46px; }
 }
 
 /* --- the routing band on the dark ground --- */
