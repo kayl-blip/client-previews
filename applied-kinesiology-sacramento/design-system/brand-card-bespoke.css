@@ -13,15 +13,26 @@
    TOKEN-PURE: zero brand hex. Every value resolves through the locked tokens sheet.
    ============================================================================ */
 
-/* --- the bespoke hero runs taller and carries the split portrait (V6 B3) --- */
+/* --- the bespoke hero runs taller and carries the practitioner rail (V6 B3) ---
+   GROUND REBUILT 2026-08-17 alongside .ak-hero (structural sheet). The outgoing
+   ground was ONE top-to-bottom linear wash with a single wide radial over it,
+   which at 1440 painted a flat grey-cream field across the whole band - the
+   "washed photocopy" read, and the reason the empty right-hand third had nothing
+   to sit against. This paints TWO placed masses instead: a warm one behind the
+   type column and an accent bloom behind the practitioner rail, so each half of
+   the composition has its own ground. Same three tokens, no new colour. */
 .tier-bespoke .bw-hero {
   padding: var(--ds-space-2xl) 0 var(--ds-space-xl);
   overflow: hidden;
+  background-color: var(--ds-bg-surface);
   background-image:
-    radial-gradient(90% 120% at 88% -20%, var(--ds-accent-soft) 0%, transparent 60%),
-    linear-gradient(180deg, var(--ds-bg-warm) 0%, var(--ds-bg-surface) 78%);
+    radial-gradient(36% 50% at 98% -10%, var(--ds-accent-soft) 0%, transparent 60%),
+    radial-gradient(104% 64% at 14% -6%, var(--ds-bg-warm) 0%, transparent 74%);
 }
-.tier-bespoke .bw-hero h1 { max-width: 16ch; }
+/* The 16ch cap is what forced the H1 into four ragged lines with a one-word
+   orphan. It lived HERE, at tier specificity, so the object sheet could not
+   loosen it. Measure now belongs to .ak-hero h1 (20ch + text-wrap:balance). */
+.tier-bespoke .ak-hero h1 { font-size: clamp(38px, 4.3vw, 62px); }
 
 /* --- the homepage may run wider than the template pages --- */
 .tier-bespoke .container { max-width: var(--ds-container-max); }
@@ -79,4 +90,12 @@
   .tier-bespoke .bw-hero { padding: var(--ds-space-xl) 0 var(--ds-space-lg); }
   .tier-bespoke .bw-hero h1 { max-width: none; }
   .tier-bespoke .bw-seam { height: 60px; }
+}
+
+/* The hero H1's phone step-down. It has to live HERE, next to the clamp: the
+   structural sheet's equivalent rule is the same specificity (0,2,1) and loses on
+   source order because this sheet is linked after it. 38px ran the headline to six
+   lines on a 327px measure. */
+@media (max-width: 600px) {
+  .tier-bespoke .ak-hero h1 { font-size: 33px; line-height: 1.12; }
 }

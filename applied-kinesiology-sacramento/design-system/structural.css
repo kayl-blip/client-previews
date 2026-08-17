@@ -1787,6 +1787,235 @@ main { counter-reset: bw-shead; }
   .bw-matrix thead { display: none; }
 }
 
+/* ===========================================================================
+   .ak-hero — the REBUILT homepage hero (HERO-COMPOSITIONS #18, asymmetric grid)
+   Replaces the #1 split-portrait, 2026-08-17. See the pick: ledger on the section.
+
+   THE MEASUREMENTS THAT DROVE IT (1440, before):
+     type column 617x613 · media column 431x290 · G-DENSITY colD 0.53
+     H1 broke to FOUR lines with a one-word orphan ("Responded")
+     portrait: a 259x258 source in a 290px ring-circle, floating in 431px of column
+
+   THE BINDING CONSTRAINT: images_team_doctor.jpg is 259x258 and it is the ONLY
+   photograph this practice owns (every other candidate is quarantined in
+   _unused-assets/ as unlicensed stock, on the owner's instruction). The imagery
+   rules forbid substituting a generated face for the practitioner. So the media
+   column cannot be made big - it must be made INTENTIONAL. The rail is sized to
+   the source (320px rail, --ds-space-md padding => 270px plate = 1.04x upscale,
+   the same threshold .bw-portrait documents above), and the height the old
+   composition wasted is spent on facts the page already carries: the
+   practitioner's name and credential, the office address, the phone number.
+   No new claim is introduced anywhere in this hero.
+   =========================================================================== */
+.ak-hero { position: relative; }
+
+.ak-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: var(--ds-space-xl);
+  /* center, NOT stretch. Measured at 1440 the two columns already land within 1px
+     of each other (type 177..738, rail 178..740) because the rail's content height
+     and the type column's are within 3px by construction, so stretch buys no
+     alignment. It costs something though: stretching forced the rail to be a flex
+     container, and G-DENSITY then read its VERTICAL stack (plate 270 / address 92)
+     as a two-COLUMN split and reported the hero at colD 0.66 instead of 0.01. */
+  align-items: center;
+}
+
+/* --- type column --------------------------------------------------------- */
+/* the eyebrow gets the same hairline lead-in the .bw-shead section headers use,
+   so the hero opens in the page's own voice instead of a bare caps line. */
+.ak-hero__brow { display: flex; align-items: center; gap: var(--ds-space-sm); }
+.ak-hero__brow::before {
+  content: ""; flex: 0 0 auto;
+  width: 40px; height: 2px;
+  background: currentColor; opacity: .5;
+}
+
+/* The H1 is 63 characters. The outgoing 16ch cap forced 4 ragged lines and left
+   "Responded" alone on the last one. A wider measure plus text-wrap:balance lets
+   the browser even the lines out; the cap is the guard for when balance is
+   unsupported (it degrades to a normal wrap at a sane measure, never to a
+   full-width 1160px line). The ch sits on the H1 itself, which owns the display
+   font, so it resolves against the right face. */
+.ak-hero h1 {
+  font-family: var(--ds-font-display);
+  max-width: 20ch;
+  text-wrap: balance;
+  letter-spacing: -.012em;
+  line-height: 1.05;
+}
+
+/* --- the practitioner rail ----------------------------------------------- */
+/* deliberately a BLOCK, not a flex column — see the align-items note on the grid. */
+/* padding:0 + overflow:hidden so the portrait runs FULL-BLEED to the card's edges and
+   the radius clips it. The photo is the object; the meta is its caption. While the only
+   source was 259px the photo had to be an inset thumbnail, which is what made the hero
+   read as a headshot floating in a box. */
+.ak-hero__card {
+  background: var(--ds-bg-surface-2);
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-surface);
+  box-shadow: var(--ds-shadow-card);
+  padding: 0;
+  overflow: hidden;
+}
+.ak-hero__meta { padding: var(--ds-space-md); }
+
+/* Full-bleed square plate at the top of the card. 360px displayed from a 900px
+   source is a 0.4x DOWNSCALE — still sharp at 2x device pixel ratio (720px < 900px),
+   which is what the 259px original could never do. object-position leans right
+   because the sitter's head sits right of centre in the frame. */
+.ak-hero__plate {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--ds-bg-warm);
+  border-bottom: 1px solid var(--ds-line);
+}
+.ak-hero__plate img {
+  display: block; width: 100%; height: 100%;
+  object-fit: cover; object-position: 58% 42%;
+}
+
+.ak-hero__who {
+  margin: 0;
+  display: flex; flex-direction: column; gap: 3px;
+}
+.ak-hero__who b {
+  font-family: var(--ds-font-display);
+  font-size: 19px; font-weight: 600; line-height: 1.25;
+  color: var(--ds-ink-heading);
+}
+.ak-hero__who span { font-size: 14px; color: var(--ds-ink-soft); }
+
+.ak-hero__at {
+  margin: var(--ds-space-md) 0 0;
+  padding-top: var(--ds-space-md);
+  border-top: 1px solid var(--ds-line);
+  font-size: 15px; line-height: 1.5; color: var(--ds-ink-soft);
+}
+.ak-hero__label {
+  display: block;
+  font-size: 11.5px; font-weight: 700;
+  letter-spacing: .11em; text-transform: uppercase;
+  color: var(--ds-accent-ink);
+  margin-bottom: 5px;
+}
+.ak-hero__tel {
+  display: inline-block;
+  margin-top: var(--ds-space-sm);
+  font-family: var(--ds-font-display);
+  font-size: 21px; font-weight: 600;
+  color: var(--ds-ink-heading);
+  text-decoration: none;
+  border-bottom: 2px solid var(--ds-accent);
+  padding-bottom: 1px;
+  transition: color var(--ds-dur) var(--ds-ease);
+}
+.ak-hero__tel:hover, .ak-hero__tel:focus-visible { color: var(--ds-accent-ink); }
+
+/* --- below the split: the rail becomes a strip, not a stacked block -------- */
+/* The old hero stacked a 290px circle UNDER the whole type column on a phone,
+   which is why the band measured 1268px tall at 375. As a horizontal strip the
+   same information costs roughly a fifth of that. */
+@media (max-width: 900px) {
+  .ak-hero__grid { grid-template-columns: minmax(0, 1fr); gap: var(--ds-space-lg); }
+  .ak-hero h1 { max-width: none; }
+  /* the card's two parts (portrait / meta) sit side by side as a strip rather than a
+     tall stack — a 360px portrait above a meta block would cost half a phone screen. */
+  .ak-hero__card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+  }
+  .ak-hero__tel { justify-self: start; }
+}
+
+/* PHONE (<=600) card: portrait + name on row 1, address and phone spanning FULL width
+   below. `display:contents` dissolves the meta wrapper so its three children become
+   grid items of the card itself — without it the address is trapped in a 139px column
+   beside the plate and "568 N Sunrise Ave, Ste 200 / Roseville, CA 95661" wrapped to
+   FOUR lines. */
+@media (max-width: 600px) {
+  .ak-hero__card {
+    grid-template-areas: "plate who" "at at" "tel tel";
+    column-gap: var(--ds-space-md);
+    padding: var(--ds-space-md);
+    align-items: center;
+  }
+  .ak-hero__meta  { display: contents; }
+  /* a SQUARE inset avatar, not a full-bleed column. Stretching the plate to the meta's
+     height made it 120x337 — a 1:2.8 keyhole that cropped 218px (65%) off the width of
+     a square source and sliced through his head. Fixing the ASPECT is the fix; no
+     object-position can rescue a 1:2.8 window onto a 1:1 photograph. */
+  .ak-hero__plate {
+    grid-area: plate;
+    width: 116px; aspect-ratio: 1 / 1; height: auto;
+    margin: 0;
+    border: 1px solid var(--ds-line);
+    border-radius: var(--ds-r-control);
+  }
+  /* 19px left "D.C." orphaned on a third line in the ~155px column beside the plate;
+     16.5px lands the name on two ("Dr. Brian Van / Wagenen, D.C."). */
+  .ak-hero__who { grid-area: who; }
+  .ak-hero__who b { font-size: 16.5px; }
+  .ak-hero__at  { grid-area: at; }
+  .ak-hero__tel { grid-area: tel; }
+}
+
+/* TABLET (601-900): the strip is ~720px wide, so stacking the address under the
+   portrait left the whole right-hand half of the card empty — the same dead-right
+   -side the owner has already called out twice on other sections. Three parts
+   across instead: portrait | name | address + phone, divided by a rule. */
+@media (min-width: 601px) and (max-width: 900px) {
+  .ak-hero__card { grid-template-columns: 200px minmax(0, 1fr); align-items: stretch; }
+  /* the strip is short here (~208px), so a full-height 200px column reads as a near
+     square and the photo can go back to full-bleed. Undoes the phone rule's inset
+     avatar, which would otherwise leave 84px of bare ground beside a 116px plate. */
+  .ak-hero__plate {
+    width: auto; aspect-ratio: auto; height: 100%;
+    margin: 0; border: none; border-radius: 0;
+    border-right: 1px solid var(--ds-line);
+  }
+  /* inside the meta, name and contact sit side by side so the strip's right half is
+     not left empty — the same dead-right-side already called out on other sections. */
+  .ak-hero__meta {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, auto);
+    column-gap: var(--ds-space-lg);
+    align-items: center;
+    padding: var(--ds-space-lg) var(--ds-space-md);
+  }
+  .ak-hero__who { grid-row: 1; }
+  .ak-hero__at {
+    grid-column: 2; grid-row: 1;
+    margin: 0; padding-top: 0;
+    border-top: none;
+    border-left: 1px solid var(--ds-line);
+    padding-left: var(--ds-space-lg);
+  }
+  .ak-hero__tel {
+    grid-column: 2; grid-row: 2;
+    margin-top: var(--ds-space-sm);
+    padding-left: var(--ds-space-lg);
+    border-left: 1px solid var(--ds-line);
+    align-self: start;
+  }
+}
+
+/* On a PHONE the band's height is set by the LEDE, not by the rail: the bespoke
+   tier sizes it at 20px, which ran the hero paragraph to TEN lines at 375 and put
+   the band at 1334px. The desktop size is right at a 36rem measure and wrong at a
+   327px one, so it steps down here rather than being lowered everywhere. */
+@media (max-width: 600px) {
+  .tier-bespoke .ak-hero .bw-lede { font-size: 17px; line-height: 1.62; }
+  /* the H1's phone size is NOT set here: its clamp lives in the tier sheet at the
+     SAME specificity (0,2,1) and that sheet loads after this one, so it wins on
+     source order. The step-down sits beside the clamp instead. */
+}
+
 /* SECTION REVEAL
    One quiet entrance: each top-level <main> section fades up as it scrolls into
    view. Deliberately restrained (opacity plus a small translate, nothing else),

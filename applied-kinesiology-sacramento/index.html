@@ -12,11 +12,11 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400..700&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="design-system/tokens.css?v=5d619531">
   <link rel="stylesheet" href="design-system/chrome.css?v=702c6183">
-  <link rel="stylesheet" href="design-system/structural.css?v=46dbe793">
-  <link rel="stylesheet" href="design-system/brand-card-bespoke.css?v=24042e73">
+  <link rel="stylesheet" href="design-system/structural.css?v=0b6a17dc">
+  <link rel="stylesheet" href="design-system/brand-card-bespoke.css?v=a4ff48ec">
 
 <link rel="canonical" href="https://kayl-blip.github.io/client-previews/applied-kinesiology-sacramento/">
 <meta property="og:type" content="website">
@@ -483,29 +483,45 @@
 
 
 
-<section class="bw-hero">
+<section class="bw-hero ak-hero">
   <div class="container">
-    <div class="row row--center row--loose">
-      <div class="col col--span-7">
+    <div class="row">
+      <div class="col col--full">
         <img class="bw-bandtex bw-bandtex--warm" src="assets/gen_texture_warm_light.jpg" alt="" aria-hidden="true" width="1920" height="1080" loading="lazy" decoding="async">
-        <p class="bw-eyebrow">Suffering from pain and nothing seems to work?</p>
-        <h1>Applied Kinesiology in Roseville, for Pain That Has Not Responded</h1>
-        <p class="bw-lede">This is the Roseville practice that combines an applied-kinesiology assessment with an FDA-cleared device stack, for pain that has not responded to anything else. The examination establishes what is actually driving the problem. The equipment is what it gets treated with. One licensed practitioner does both, in one office on North Sunrise Avenue.</p>
-        <p class="bw-acts">
-          <a class="bw-btn bw-btn--primary bw-lift" href="book/">Book an appointment</a>
-          <a class="bw-btn bw-btn--quiet" href="tel:+19167714151">Call the clinic</a>
-        </p>
-      </div>
-      <div class="col col--span-5">
-        <figure class="bw-portrait">
-          <img src="assets/images_team_doctor.jpg" alt="Dr. Brian Van Wagenen, D.C., the practice's only practitioner" width="259" height="258" loading="eager" decoding="async">
-        </figure>
+        <div class="ak-hero__grid">
+          <div class="ak-hero__type">
+            <p class="bw-eyebrow ak-hero__brow">Suffering from pain and nothing seems to work?</p>
+            <h1>Applied Kinesiology in Roseville, for Pain That Has Not Responded</h1>
+            <p class="bw-lede">This is the Roseville practice that combines an applied-kinesiology assessment with an FDA-cleared device stack, for pain that has not responded to anything else. The examination establishes what is actually driving the problem. The equipment is what it gets treated with. One licensed practitioner does both, in one office on North Sunrise Avenue.</p>
+            <p class="bw-acts">
+              <a class="bw-btn bw-btn--primary bw-lift" href="book/">Book an appointment</a>
+              <a class="bw-btn bw-btn--quiet" href="tel:+19167714151">Call the clinic</a>
+            </p>
+          </div>
+          <aside class="ak-hero__card">
+            <figure class="ak-hero__plate">
+              <img src="assets/images_team_doctor_hires.jpg" alt="Dr. Brian Van Wagenen, D.C., the practice's only practitioner" width="900" height="897" loading="eager" decoding="async" fetchpriority="high">
+            </figure>
+            <div class="ak-hero__meta">
+              <p class="ak-hero__who">
+                <b>Dr. Brian Van Wagenen, D.C.</b>
+                <span>The practice's only practitioner</span>
+              </p>
+              <p class="ak-hero__at">
+                <span class="ak-hero__label">The office</span>
+                568 N Sunrise Ave, Ste 200<br>Roseville, CA 95661
+              </p>
+              <a class="ak-hero__tel" href="tel:+19167714151">(916) 771-4151</a>
+            </div>
+          </aside>
+        </div>
       </div>
     </div>
   </div>
   <div class="container container--full">
     <div class="row">
       <div class="col col--full">
+        
         <svg class="bw-seam bw-seam--band bw-seam--to-dark" viewBox="0 0 1440 78" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 78 C 240 8, 520 0, 720 26 C 940 54, 1200 78, 1440 34 L 1440 78 Z"/></svg>
       </div>
     </div>
