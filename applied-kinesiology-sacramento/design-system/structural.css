@@ -2016,6 +2016,58 @@ main { counter-reset: bw-shead; }
      source order. The step-down sits beside the clamp instead. */
 }
 
+/* ===========================================================================
+   .ak-overlap — the ABOUT hero's capability-overlap diagram (S3c token-built motif)
+   Added 2026-08-17, replacing the practitioner photograph in that hero.
+
+   It is MARKUP, not a file, for the reason S3c already records: flux/dev returns
+   gradient mush for an abstract concept. Drawn here it is crisp at any size, costs
+   nothing, carries no licence, and every stroke is currentColor so the dual-surface
+   token flip inverts it for free if the section ever moves to a dark ground.
+   =========================================================================== */
+.ak-overlap {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  margin-inline: auto;
+  color: var(--ds-ink-heading);
+  fill: none;
+  stroke: none;
+}
+.ak-overlap__field {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.25;
+  opacity: .38;
+}
+/* the lens is the argument: the two fields only overlap here. Kept faint so it reads
+   as a shaded region rather than a third solid shape. */
+.ak-overlap__lens { fill: var(--ds-accent); opacity: .13; stroke: none; }
+.ak-overlap__pin  { fill: var(--ds-accent-ink); stroke: none; }
+.ak-overlap__leader {
+  fill: none; stroke: currentColor; stroke-width: 1.25;
+  opacity: .35; stroke-dasharray: 3 4;
+}
+.ak-overlap__lab {
+  font-family: var(--ds-font-body);
+  font-size: 12px; font-weight: 700;
+  letter-spacing: .11em;
+  fill: var(--ds-ink-heading);
+  stroke: none;
+}
+.ak-overlap__lab--mid { fill: var(--ds-accent-ink); }
+.ak-overlap__sub {
+  font-family: var(--ds-font-body);
+  font-size: 12.5px; font-weight: 400;
+  fill: var(--ds-ink-soft);
+  stroke: none;
+}
+
+@media (max-width: 900px) {
+  .ak-overlap { max-width: 340px; }
+}
+
 /* SECTION REVEAL
    One quiet entrance: each top-level <main> section fades up as it scrolls into
    view. Deliberately restrained (opacity plus a small translate, nothing else),
