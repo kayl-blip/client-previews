@@ -2100,6 +2100,101 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
   .ak-overlap { max-width: 340px; }
 }
 
+/* ===========================================================================
+   .ak-pieces / .ak-cadence - two more S3c token-built motifs, added 2026-08-18.
+
+   WHY THEY EXIST. hormone-therapy-management and nutritional-counseling were
+   carrying anatomy illustrations chosen for the slot rather than the subject (a
+   knee joint beside a paragraph about a nutrition credential). S3c's rule is that
+   a CONCRETE subject gets a generated image and an ABSTRACT argument gets drawn
+   markup. Each page's real-image slots now carry on-topic endocrine / digestive
+   anatomy; these two motifs carry the arguments those pages actually make, and
+   they sit in sections that previously held no image at all, so the CWB-063
+   real-image floor of 3 is untouched (inline SVG does not count toward it).
+
+   Same mechanism as .ak-overlap: every stroke is currentColor and every fill is
+   a token, so the .surface-dark flip inverts both for free. .ak-pieces lands on a
+   DARK band, which is exactly the case that mechanism exists for.
+   =========================================================================== */
+.ak-pieces,
+.ak-cadence {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  margin: var(--ds-space-md) auto 0;
+  color: var(--ds-ink-heading);
+  fill: none;
+  stroke: none;
+}
+
+/* --- .ak-pieces: three appointments that never meet, then one that does ----- */
+.ak-pieces__node {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.25;
+  opacity: .38;
+}
+/* the gap IS the argument, so the stubs stop short of each other on purpose */
+.ak-pieces__stub {
+  fill: none; stroke: currentColor; stroke-width: 1.25;
+  opacity: .3; stroke-dasharray: 3 4;
+}
+.ak-pieces__thread {
+  fill: none; stroke: var(--ds-accent-ink);
+  stroke-width: 2; stroke-linecap: round;
+}
+.ak-pieces__pin { fill: var(--ds-accent-ink); stroke: none; }
+.ak-pieces__rule {
+  fill: none; stroke: currentColor;
+  stroke-width: 1; opacity: .18;
+}
+
+/* --- .ak-cadence: one change, then the same baseline, three times ----------- */
+.ak-cadence__base {
+  fill: none; stroke: currentColor; stroke-width: 1.25;
+  opacity: .34; stroke-dasharray: 4 5;
+}
+.ak-cadence__stem {
+  fill: none; stroke: var(--ds-accent-ink);
+  stroke-width: 1.5; stroke-linecap: round;
+}
+.ak-cadence__step { fill: var(--ds-accent-ink); stroke: none; }
+.ak-cadence__mark {
+  fill: none; stroke: currentColor;
+  stroke-width: 1.25; opacity: .45;
+}
+.ak-cadence__num {
+  font-family: var(--ds-font-body);
+  font-size: 11px; font-weight: 700;
+  fill: var(--ds-bg-surface);
+  stroke: none;
+}
+
+/* shared type scale, matching .ak-overlap so the three motifs read as one family */
+.ak-pieces__lab,
+.ak-cadence__lab {
+  font-family: var(--ds-font-body);
+  font-size: 12px; font-weight: 700;
+  letter-spacing: .11em;
+  fill: var(--ds-ink-heading);
+  stroke: none;
+}
+.ak-pieces__lab--key,
+.ak-cadence__lab--key { fill: var(--ds-accent-ink); }
+.ak-pieces__sub,
+.ak-cadence__sub {
+  font-family: var(--ds-font-body);
+  font-size: 12.5px; font-weight: 400;
+  fill: var(--ds-ink-soft);
+  stroke: none;
+}
+
+@media (max-width: 900px) {
+  .ak-pieces,
+  .ak-cadence { max-width: 460px; }
+}
+
 /* SECTION REVEAL
    One quiet entrance: each top-level <main> section fades up as it scrolls into
    view. Deliberately restrained (opacity plus a small translate, nothing else),
