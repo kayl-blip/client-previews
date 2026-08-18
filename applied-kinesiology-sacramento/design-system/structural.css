@@ -663,13 +663,27 @@ main { counter-reset: bw-shead; }
   -webkit-mask-image: linear-gradient(180deg, transparent 0, black 12%, black 88%, transparent 100%);
   mask-image: linear-gradient(180deg, transparent 0, black 12%, black 88%, transparent 100%);
 }
-/* --- .ak-rail--fit — a rail whose column is SHORTER than the prose beside it -----------------
-   G-MQUAL caught this: at 700px in the "two halves" band the rail is taller than its own text
-   column, so a centre-aligned row pushes the media 156px ABOVE the heading and the reader meets
-   the pictures before the sentence that explains them (measured: media top 1746, heading top
-   1902). The conditions band keeps the full 700px because its prose column is taller and the
-   same gate passes it. Height here is set from the shorter of the two columns, not by taste. */
-.ak-rail--fit { height: 470px; }
+/* --- .ak-rail--fit — a 700px rail in a column whose heading starts LOW ------------------------
+   G-MQUAL blocked this band at 700px: the media rendered 156px ABOVE its heading, so the reader
+   met the pictures before the sentence explaining them. The first fix was to shrink the rail to
+   470px, which passed but only by 13px and was not what was wanted.
+
+   Measured geometry at 1440 explains it and gives the better fix. Both columns STRETCH to the row
+   height (925px), and .bw-frame centres its content, so a 700px rail sits at row top + 112 while
+   the heading sits at row top + 203: the eyebrow above the h2 pushes the heading down, and the
+   centred rail starts above it. Bottom-aligning the rail inside its own column instead puts a
+   700px rail at row top + 225, which is 22px BELOW the heading, and the reading order is right.
+
+   Verified at the widths G-MQUAL tests: at 1200 the column is 813 and the heading offset 97, so a
+   bottom-aligned 700 lands 16px below it; at 1024 the column is 827 and the heading offset 136,
+   which 700 cannot clear, so that step down to 560 is a requirement rather than a taste call. */
+.ak-rail--fit { height: 560px; }
+@media (min-width: 1200px) {
+  .ak-rail--fit { height: 700px; }
+}
+/* .bw-frame is `display:grid; place-items:center`; overriding the block axis to `end` drops the
+   rail to the foot of the stretched column without touching the column itself. */
+.bw-frame:has(> .ak-rail--fit) { align-items: end; }
 
 .ak-rail__col { overflow: hidden; min-width: 0; }
 .ak-rail__track {
