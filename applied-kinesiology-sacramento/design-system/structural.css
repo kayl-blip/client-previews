@@ -706,6 +706,23 @@ main { counter-reset: bw-shead; }
    that motion "stands still" holds. Under reduce this renders as two static
    crossed bands of service names, which still reads as a finished graphic.
    =========================================================================== */
+/* .ak-vidfig / .ak-loopvid — a motif slot holding a looping video instead of a drawn
+   diagram. Fills its column: the first pass capped it at 340px and it read as a stamp
+   rather than as the section's image. aspect-ratio holds the box before the file
+   arrives, so the poster and the video occupy the same space and nothing reflows.
+   The source is 512 square against a column that runs to about 430px, so it is still
+   downsampling on a 1x screen rather than being stretched. */
+.ak-vidfig { margin: 0; width: 100%; }
+.ak-loopvid {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: var(--ds-r-surface);
+  background: var(--ds-bg-warm);
+}
+
 .ak-wordcross {
   position: absolute;
   inset: 0;
@@ -725,14 +742,16 @@ main { counter-reset: bw-shead; }
   overflow: hidden;
 }
 .ak-wordcross__rail--h { left: -30%; width: 160%; }
-.ak-wordcross__rail--h1 { top: 26%; }
-.ak-wordcross__rail--h2 { top: 72%; }
+.ak-wordcross__rail--h1 { top: 18%; }
+.ak-wordcross__rail--h2 { top: 50%; }
+.ak-wordcross__rail--h3 { top: 82%; }
 
 /* writing-mode turns the flex main axis vertical AND rotates the glyphs, so one markup
    shape serves both orientations; the vertical rails need no separate track structure. */
 .ak-wordcross__rail--v { top: -30%; height: 160%; writing-mode: vertical-rl; }
-.ak-wordcross__rail--v1 { left: 24%; }
-.ak-wordcross__rail--v2 { left: 74%; }
+.ak-wordcross__rail--v1 { left: 18%; }
+.ak-wordcross__rail--v2 { left: 50%; }
+.ak-wordcross__rail--v3 { left: 82%; }
 
 .ak-wordcross__track {
   display: flex;
@@ -763,12 +782,18 @@ main { counter-reset: bw-shead; }
   vertical-align: middle;
 }
 
-/* four different periods, deliberately not multiples of one another */
+/* SIX periods, 40s to 60s in 4s steps. The previous set ran 34s to 67s, a 2x spread that
+   made the fastest rail visibly race the slowest. This band is the same relationship the
+   .ak-rail pair uses (42s against 52s, about 1.24x): every rail is plainly on its own
+   clock, but none of them looks hurried next to another. Steps of 4 mean no two share a
+   period and no period is a multiple of another, so the field never re-synchronises. */
 @media (prefers-reduced-motion: no-preference) {
-  .ak-wordcross__rail--h1 .ak-wordcross__track { animation: ak-word-left  34s linear infinite; }
-  .ak-wordcross__rail--h2 .ak-wordcross__track { animation: ak-word-right 53s linear infinite; }
-  .ak-wordcross__rail--v1 .ak-wordcross__track { animation: ak-word-up    41s linear infinite; }
-  .ak-wordcross__rail--v2 .ak-wordcross__track { animation: ak-word-down  67s linear infinite; }
+  .ak-wordcross__rail--h1 .ak-wordcross__track { animation: ak-word-left  40s linear infinite; }
+  .ak-wordcross__rail--v1 .ak-wordcross__track { animation: ak-word-up    44s linear infinite; }
+  .ak-wordcross__rail--h2 .ak-wordcross__track { animation: ak-word-right 48s linear infinite; }
+  .ak-wordcross__rail--v2 .ak-wordcross__track { animation: ak-word-down  52s linear infinite; }
+  .ak-wordcross__rail--h3 .ak-wordcross__track { animation: ak-word-right 56s linear infinite; }
+  .ak-wordcross__rail--v3 .ak-wordcross__track { animation: ak-word-up    60s linear infinite; }
 }
 @keyframes ak-word-left  { from { transform: translateX(0); }    to { transform: translateX(-50%); } }
 @keyframes ak-word-right { from { transform: translateX(-50%); } to { transform: translateX(0); } }
@@ -780,8 +805,9 @@ main { counter-reset: bw-shead; }
   /* the phone plate is a short 104px band, so the vertical rails have no room to read
      and are dropped rather than squeezed into three cramped glyphs. */
   .ak-wordcross__rail--v { display: none; }
-  .ak-wordcross__rail--h1 { top: 30%; }
-  .ak-wordcross__rail--h2 { top: 66%; }
+  .ak-wordcross__rail--h1 { top: 22%; }
+  .ak-wordcross__rail--h2 { top: 52%; }
+  .ak-wordcross__rail--h3 { top: 82%; }
 }
 
 .ak-rail__col { overflow: hidden; min-width: 0; }
@@ -2210,10 +2236,12 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
    source was 259px the photo had to be an inset thumbnail, which is what made the hero
    read as a headshot floating in a box. */
 .ak-hero__card {
-  background: var(--ds-bg-surface-2);
-  border: 1px solid var(--ds-line);
-  border-radius: var(--ds-r-surface);
-  box-shadow: var(--ds-shadow-card);
+  /* Card chrome removed 2026-08-18. This was a raised surface because it framed a
+     PHOTOGRAPH: a portrait needs an edge to sit against. It now holds a field of drifting
+     words that belongs to the hero ground itself, and a border plus shadow around drifting
+     text reads as a widget rather than as part of the page. Background, border, radius and
+     shadow all gone; padding and overflow stay, because overflow:hidden is what clips the
+     rails to the card and padding:0 is what lets the word field run full-bleed. */
   padding: 0;
   overflow: hidden;
 }

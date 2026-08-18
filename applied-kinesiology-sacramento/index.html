@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="design-system/tokens.css?v=5214a254">
   <link rel="stylesheet" href="design-system/chrome.css?v=702c6183">
-  <link rel="stylesheet" href="design-system/structural.css?v=2e314d88">
+  <link rel="stylesheet" href="design-system/structural.css?v=8ccc74c7">
   <link rel="stylesheet" href="design-system/brand-card-bespoke.css?v=3ef9033a">
 
 <link rel="canonical" href="https://kayl-blip.github.io/client-previews/applied-kinesiology-sacramento/">
@@ -527,6 +527,18 @@
                     <span>Sciatica</span><span>Whiplash</span><span>Scoliosis</span><span>Migraine</span><span>Fatigue</span>
                   </div>
                 </div>
+                <div class="ak-wordcross__rail ak-wordcross__rail--h ak-wordcross__rail--h3">
+                  <div class="ak-wordcross__track">
+                    <span>Assessment</span><span>Mobility</span><span>Alignment</span><span>Recovery</span><span>Function</span><span>Strength</span>
+                    <span>Assessment</span><span>Mobility</span><span>Alignment</span><span>Recovery</span><span>Function</span><span>Strength</span>
+                  </div>
+                </div>
+                <div class="ak-wordcross__rail ak-wordcross__rail--v ak-wordcross__rail--v3">
+                  <div class="ak-wordcross__track">
+                    <span>Knee</span><span>Elbow</span><span>Wrist</span><span>Ankle</span><span>Hip</span>
+                    <span>Knee</span><span>Elbow</span><span>Wrist</span><span>Ankle</span><span>Hip</span>
+                  </div>
+                </div>
               </div>
             </figure>
             <div class="ak-hero__meta">
@@ -950,19 +962,20 @@
         <p class="bw-prose">What this offers is not a better adjustment. It is the step that decides what to correct, before anything is corrected at all.</p>
       </div>
       <div class="col col--span-5">
-        <figure class="bw-motif">
+        <figure class="bw-motif ak-vidfig">
           
-          <svg viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Diagram of a loop returning to its own starting point beside a line that leaves it.">
-            <circle cx="82" cy="100" r="52"/>
-            <path d="M82 48v14M76 54l6-6 6 6"/>
-            <circle cx="82" cy="100" r="5"/>
-            <circle class="ak-loop__runner" cx="82" cy="48" r="4.5"/>
-            <g class="ak-loop__out">
-              <path d="M140 100h48"/>
-              <path d="M176 90l12 10-12 10"/>
-            </g>
-            <path d="M134 100h6"/>
-          </svg>
+          <video class="ak-loopvid" src="assets/vid_adjust_loop.mp4" poster="assets/img_clinic_adjust_table.jpg"
+                 width="512" height="512" loop muted playsinline preload="metadata"
+                 aria-label="A clinician's hands resting on the upper back of a clothed patient lying on a treatment table, held still."></video>
+          <script>
+            (function () {
+              var v = document.currentScript.previousElementSibling;
+              if (!v || v.tagName !== 'VIDEO') return;
+              if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+              v.setAttribute('autoplay', '');
+              var play = v.play(); if (play && play.catch) play.catch(function () {});
+            })();
+          </script>
         </figure>
       </div>
     </div>
