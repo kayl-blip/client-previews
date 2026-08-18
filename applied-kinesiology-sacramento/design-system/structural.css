@@ -663,6 +663,14 @@ main { counter-reset: bw-shead; }
   -webkit-mask-image: linear-gradient(180deg, transparent 0, black 12%, black 88%, transparent 100%);
   mask-image: linear-gradient(180deg, transparent 0, black 12%, black 88%, transparent 100%);
 }
+/* --- .ak-rail--fit — a rail whose column is SHORTER than the prose beside it -----------------
+   G-MQUAL caught this: at 700px in the "two halves" band the rail is taller than its own text
+   column, so a centre-aligned row pushes the media 156px ABOVE the heading and the reader meets
+   the pictures before the sentence that explains them (measured: media top 1746, heading top
+   1902). The conditions band keeps the full 700px because its prose column is taller and the
+   same gate passes it. Height here is set from the shorter of the two columns, not by taste. */
+.ak-rail--fit { height: 470px; }
+
 .ak-rail__col { overflow: hidden; min-width: 0; }
 .ak-rail__track {
   display: flex;
@@ -705,6 +713,25 @@ main { counter-reset: bw-shead; }
 }
 @keyframes ak-rail-left  { from { transform: translateX(0); }    to { transform: translateX(-50%); } }
 @keyframes ak-rail-right { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+
+/* CARD ROWS: PIN THE TRAILING LINK TO THE BOTTOM.
+   The grid was already giving every card in a row the same height. What read as ragged was the
+   INSIDE of the card: the link sits immediately after its paragraph, so on a card with two lines
+   of copy the link floats halfway up while its neighbour's sits near the base.
+
+   The ask was `justify-content: space-between`. That does put the last child on the floor, but it
+   also distributes the slack into EVERY gap, so on the short cards ("Cold laser therapy", "PEMF
+   therapy") the icon drifts away from the heading and the heading away from its text. Pinning only
+   the last child with margin-top:auto puts the links on one line and leaves the top of every card
+   tight, which is the "balanced in the eyes of human" part of the ask. Same technique already used
+   on the testimonial grid, so the two card systems behave alike. */
+.bw-spine .bw-card {
+  display: flex;
+  flex-direction: column;
+}
+.bw-spine .bw-card > p:last-child { margin-top: auto; }
+/* the trailing link keeps its own breathing room from the copy above it even when pinned */
+.bw-spine .bw-card > p:last-child:not(:first-child) { padding-top: var(--ds-space-sm); }
 
 .bw-grid > li:has(> .bw-card, > .bw-glass) { display: flex; }
 .bw-grid > li > .bw-card,
