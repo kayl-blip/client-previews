@@ -685,6 +685,143 @@ main { counter-reset: bw-shead; }
    rail to the foot of the stretched column without touching the column itself. */
 .bw-frame:has(> .ak-rail--fit) { align-items: end; }
 
+/* ===========================================================================
+   .ak-wordcross — the hero plate, as two crossing rails of WORDS.
+   Replaced the practitioner photograph that sat here. Two tracks run at opposite
+   angles and in opposite directions so they scissor through each other; the words
+   are the practice's own service names, taken verbatim from the services band and
+   the nav rather than invented for the graphic.
+
+   DECORATIVE, and that classification is load-bearing in two places. Every one of
+   these names is already a real link in the nav and in the services section, so a
+   screen reader gains nothing from hearing them a third time drifting past: the
+   whole block is aria-hidden. That is also what keeps it clear of the
+   no-text-overlap gate, which excludes aria-hidden and role=presentation text by
+   design (its own header lists "decorative watermark" as an intended exclusion).
+   Two rails that cross MUST overlap where they cross; marking the block decorative
+   is the honest description of what it is, not a way around the check.
+
+   MOTION IS OPT-IN. Same contract as .ak-rail: the animation is declared only
+   under prefers-reduced-motion: no-preference, so the accessibility page's promise
+   that motion "stands still" holds. Under reduce this renders as two static
+   crossed bands of service names, which still reads as a finished graphic.
+   =========================================================================== */
+.ak-wordcross {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  display: grid;
+  place-content: center;
+  background: var(--ds-bg-warm);
+  /* the words fade out toward every edge so they read as a field, not a list */
+  -webkit-mask-image: radial-gradient(120% 120% at 50% 50%, black 42%, transparent 88%);
+  mask-image: radial-gradient(120% 120% at 50% 50%, black 42%, transparent 88%);
+}
+/* BOTH rails share ONE centre line. First attempt put them at top 38% and 58%, and with
+   equal-and-opposite rotations that 20% vertical offset moves the intersection off the
+   left edge: the two lines converge outside the frame and read as a shallow V, not a
+   cross. Sitting both on 50% and translating back by half their own height makes the
+   pivots coincide, so equal-and-opposite angles cross exactly at the centre of the plate. */
+.ak-wordcross__rail {
+  position: absolute;
+  left: -35%;
+  top: 50%;
+  width: 170%;
+  display: flex;
+  overflow: hidden;
+  transform-origin: 50% 50%;
+}
+/* Steeper than the first pass (-19/+19). At a shallow angle the two rails run nearly
+   parallel through the middle of the plate and their words sat ON each other, which was
+   unreadable mush exactly at the point the eye goes to. +/-29 makes the crossing closer to
+   perpendicular so the collision is brief, and the two rails are then separated by WEIGHT
+   as well as angle: A is the accent and reads as the figure, B is soft ink at low opacity
+   and reads as the ground. Two rails that cross have to overlap somewhere; the job is to
+   make sure only one of them is being read at that moment. */
+.ak-wordcross__rail--a { transform: translateY(-50%) rotate(-29deg); }
+.ak-wordcross__rail--b { transform: translateY(-50%) rotate(29deg); }
+
+.ak-wordcross__track {
+  display: flex;
+  flex: none;
+  gap: var(--ds-space-md);
+  white-space: nowrap;
+  align-items: center;
+}
+.ak-wordcross__track span {
+  font-family: var(--ds-font-display);
+  font-size: clamp(13px, 1.7vw, 17px);
+  line-height: 1.1;
+  color: var(--ds-ink-heading);
+}
+/* figure / ground, not a checkerboard. The first pass alternated colour word-by-word
+   WITHIN each rail, which made both rails equally loud and left nothing to read first. */
+.ak-wordcross__rail--a span { color: var(--ds-accent-ink); opacity: .66; }
+.ak-wordcross__rail--b span { color: var(--ds-ink-heading); opacity: .3; }
+/* the separator is drawn, not typed, so it never lands in a text node */
+.ak-wordcross__track span::after {
+  content: "";
+  display: inline-block;
+  width: 5px; height: 5px;
+  margin-left: var(--ds-space-md);
+  border-radius: 50%;
+  background: currentColor;
+  opacity: .45;
+  vertical-align: middle;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ak-wordcross__rail--a .ak-wordcross__track { animation: ak-word-left 38s linear infinite; }
+  .ak-wordcross__rail--b .ak-wordcross__track { animation: ak-word-right 46s linear infinite; }
+}
+@keyframes ak-word-left  { from { transform: translateX(0); }    to { transform: translateX(-50%); } }
+@keyframes ak-word-right { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+
+@media (max-width: 600px) {
+  .ak-wordcross__track span { font-size: 11.5px; }
+}
+
+/* ===========================================================================
+   .ak-loop — section 08's motif, animated. A 10s cycle that DRAWS the argument.
+
+   WHY THIS IS NOT A GENERATED GIF. The ask was a 5-second loop showing what the
+   section is about. That subject ("the same correction repeating, and the problem
+   returning with it") is an ABSTRACT argument, and S6 forbids generating those
+   outright: "Any abstract brand motif. Those are token-built in markup (S3c);
+   generation demonstrably fails on them and produces gradient mush." That is a
+   recorded result from three failed attempts on this build, not a guess. GIF is
+   also the wrong container: 256 colours, no hardware decode, and megabytes for a
+   few seconds. Animating the motif that already sits here costs zero extra bytes,
+   stays crisp at any size, and inherits the tokens.
+
+   WHAT IT SHOWS, tied to the copy. A runner travels the ring four times, returning to
+   the point it started from, which is "a problem driven by something else keeps
+   returning, and you keep returning with it". The exit line then draws itself
+   once, which is "the step that decides what to correct, before anything is
+   corrected at all". One 10s cycle carries both halves of the paragraph.
+
+   Motion opt-in, as everywhere else on this site: declared only under
+   prefers-reduced-motion: no-preference, so under reduce the motif renders exactly
+   as it did before, a static loop beside a static line.
+   =========================================================================== */
+.ak-loop__runner { fill: currentColor; stroke: none; transform-origin: 82px 100px; }
+.ak-loop__out    { stroke-dasharray: 62; stroke-dashoffset: 0; }
+
+/* 10s cycle: the runner completes FOUR laps (2.5s each) before the exit draws, so the
+   repetition is felt as repetition rather than glimpsed once. The exit then draws across
+   laps three and four and holds to the end of the cycle. Both animations share the same
+   10s period so they never drift out of phase. */
+@media (prefers-reduced-motion: no-preference) {
+  .ak-loop__runner { animation: ak-loop-spin 2.5s linear infinite; }
+  .ak-loop__out    { animation: ak-loop-draw 10s ease-in-out infinite; }
+}
+@keyframes ak-loop-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+/* the exit stays hidden while the ring repeats, then draws once and holds */
+@keyframes ak-loop-draw {
+  0%, 55%   { stroke-dashoffset: 62; }
+  78%, 100% { stroke-dashoffset: 0; }
+}
+
 .ak-rail__col { overflow: hidden; min-width: 0; }
 .ak-rail__track {
   display: flex;
