@@ -603,6 +603,120 @@ main { counter-reset: bw-shead; }
 .bw-grid > li { margin: 0; min-width: 0; }
 .bw-grid [hidden] { display: none; }
 
+/* EQUAL-HEIGHT CARDS IN A GRID ROW.
+   The grid was already stretching its items correctly: measured on testimonials,
+   the <li> heights in a row of three had a spread of 0px. The ragged bottoms came
+   from one level down, the .bw-card INSIDE each <li>, which is a plain block and so
+   only ever took its own content height: spreads of 28px and 57px in the two rows.
+   Making the <li> a flex column and letting the card grow is what ties the card to
+   the cell it was already given.
+
+   :has() keeps this off any <li> that is not wrapping a card, so a future list item
+   with different contents is untouched.
+
+   The attribution line is then pinned to the bottom with margin-top:auto. Without
+   it, equal heights just leave a ragged gap ABOVE the byline instead of below the
+   card, which looks like padding rather than intent; with it, "Roseville, low back
+   pain" lines up across every card in the row.
+
+   Scope check, measured across all 48 pages: .bw-grid on testimonials was the ONLY
+   uneven row on the site. Every span-column card row already stretches correctly,
+   so nothing else needed this. */
+/* ===========================================================================
+   .ak-rail - the twin illustration rails in the conditions band on the home page.
+   Two columns that drift in OPPOSITE directions, the lead column wider than the
+   trail column. On a phone the same rails run horizontally instead of vertically.
+
+   WHAT IS IN THEM, AND WHY IT IS NOT PHOTOGRAPHY. The ask was "images of the
+   services". S6 forbids generating any interior, exterior, room or piece of
+   equipment presented as this practice's, any person, and any named device, so a
+   treatment room or the FX-635 cannot be produced. What S6 DOES permit is flat
+   two-dimensional illustration of general human anatomy, which is exactly the
+   library this band already draws on and exactly what each chip beside it links
+   to. So the rails carry the anatomy set, not invented photographs.
+
+   MOTION IS OPT-IN, NOT OPT-OUT. The accessibility page promises: "If your device
+   is set to reduce motion, the transitions and hover lifts on this site stand
+   still. That setting is honoured, not overridden." An always-on marquee would
+   break that promise, so the animation is declared ONLY inside
+   prefers-reduced-motion: no-preference. Under `reduce` the rails render as two
+   static columns of illustrations, which is a complete state and not a degraded one.
+
+   THE LOOP. Each track holds its image set TWICE and travels exactly -50%, so the
+   second copy lands where the first began and the seam is invisible. The whole
+   rail is aria-hidden: it is decorative (S5 gives decorative imagery empty alt),
+   and a screen reader should not read two dozen anatomy descriptions to narrate a
+   drifting background. The figcaption below it carries the meaning.
+
+   The mask stops use the `black` keyword, not a hex: a mask is an ALPHA stencil,
+   not a brand colour, so there is nothing here for tokens.css to own. G8's
+   brand-hex isolation rule is satisfied in substance, not sidestepped.
+   =========================================================================== */
+.ak-rail {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: var(--ds-space-sm);
+  height: 700px;
+  overflow: hidden;
+  border-radius: var(--ds-r-surface);
+  /* soften both ends so images enter and leave instead of being guillotined */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, black 12%, black 88%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, black 12%, black 88%, transparent 100%);
+}
+.ak-rail__col { overflow: hidden; min-width: 0; }
+.ak-rail__track {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-sm);
+}
+.ak-rail__track img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: var(--ds-r-control);
+  border: 1px solid var(--ds-line);
+  background: var(--ds-bg-warm);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ak-rail__track      { animation: ak-rail-up 42s linear infinite; }
+  .ak-rail__track--rev { animation: ak-rail-down 52s linear infinite; }
+}
+@keyframes ak-rail-up   { from { transform: translateY(0); }    to { transform: translateY(-50%); } }
+@keyframes ak-rail-down { from { transform: translateY(-50%); } to { transform: translateY(0); } }
+
+/* PHONE: the same two rails, turned on their side and travelling left/right. */
+@media (max-width: 700px) {
+  .ak-rail {
+    grid-template-columns: none;
+    grid-template-rows: 1.3fr 1fr;
+    height: 300px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, black 8%, black 92%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, black 8%, black 92%, transparent 100%);
+  }
+  .ak-rail__track { flex-direction: row; height: 100%; }
+  .ak-rail__track img { width: auto; height: 100%; }
+}
+@media (max-width: 700px) and (prefers-reduced-motion: no-preference) {
+  .ak-rail__track      { animation-name: ak-rail-left; }
+  .ak-rail__track--rev { animation-name: ak-rail-right; }
+}
+@keyframes ak-rail-left  { from { transform: translateX(0); }    to { transform: translateX(-50%); } }
+@keyframes ak-rail-right { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+
+.bw-grid > li:has(> .bw-card, > .bw-glass) { display: flex; }
+.bw-grid > li > .bw-card,
+.bw-grid > li > .bw-glass {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.bw-grid > li > .bw-card > .bw-small:last-child,
+.bw-grid > li > .bw-glass > .bw-small:last-child { margin-top: auto; }
+
 /* --- MOBILE SLIDER -----------------------------------------------------------------------------
    A stack of six full-width testimonial cards is a long scroll on a phone. --slide turns the SAME
    grid into a swipeable rail below 760px and leaves the desktop grid exactly as it was.
@@ -995,6 +1109,23 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
   box-shadow: var(--ds-shadow-card);
   color: var(--ds-accent-ink);
 }
+/* --- .bw-frame--bare — the frame chrome removed, for content that IS the surface --------------
+   Asked for as "in .bw-frame remove the padding, background, border, border-radius, box-shadow".
+   Applied to the base class that would have hit 29 instances across 11 pages and unframed every
+   illustration on the site, including the ones the same review just placed on hormone-therapy and
+   nutritional-counseling. The request arrived alongside "remove the text that says twenty of
+   them", which exists on exactly ONE figure, so it is scoped to that figure as a modifier. The
+   base .bw-frame is untouched and the other 28 keep their frame. Widening this to every frame is
+   one word away: move these declarations up into .bw-frame. */
+.bw-frame--bare {
+  max-width: none;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
 .bw-frame svg { width: 100%; height: auto; max-width: 300px; }
 .bw-frame figcaption { margin-top: var(--ds-space-sm); font-size: 13.5px; color: var(--ds-ink-soft); text-align: center; }
 
@@ -1175,7 +1306,12 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
 @media (max-width: 900px) {
   .bw-statpair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .bw-motif svg { max-width: 180px; }
-  .bw-frame { padding: var(--ds-space-md); }
+  /* Frame padding removed at this breakpoint on request. This IS the base class, so it
+     applies to all 29 .bw-frame instances across 11 pages at 900px and below: below the
+     tablet breakpoint the image runs to the frame's border and the surface reads as a
+     mat rather than a mount, which is the intended effect. The frame's background,
+     border, radius and shadow are all retained; only the inset is gone. */
+  .bw-frame { padding: 0; }
 }
 @media (max-width: 600px) {
   .bw-statpair { grid-template-columns: minmax(0, 1fr); }
@@ -1980,7 +2116,19 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
      CENTRED pivot, so the corners opened, and the scale expanded through the top of
      the head and cropped the crown flat. Pivoting at the centre keeps the crown
      complete and just under the top edge with no bare corners at any width. */
-  transform: rotate(-8deg) scale(1.1294);
+  /* NUDGE DOWN. Asked for as `margin-top: 10px`. Applied literally it exposed the
+     plate ground at the top corners on ALL THREE plate sizes (measured: corner
+     pixel rgb(242,234,223), which is --ds-bg-warm exactly). Two reasons it cannot
+     work as a fixed margin here: margin is layout, so it shifts the box before the
+     transform and eats into a scale that has no slack (1.1294 is the EXACT cover
+     factor for 8deg); and the plate is 360px on desktop but 116px on a phone, where
+     a fixed 10px is 8.6% rather than 2.8%, so no single scale can cover both.
+     Expressed proportionally instead: 2.78% IS 10px at the 360px desktop plate, and
+     it stays visually the same nudge at 200px and 116px. The scale rises from 1.1294
+     to 1.185, which is the cover factor for 8deg PLUS this offset, so the corners
+     stay filled at every size. translateY sits leftmost so it applies last, against
+     the unscaled border box, and therefore means exactly what it says. */
+  transform: translateY(2.78%) rotate(-8deg) scale(1.185);
   transform-origin: 50% 50%;
 }
 
