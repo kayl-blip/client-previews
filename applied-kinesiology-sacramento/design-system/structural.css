@@ -710,36 +710,29 @@ main { counter-reset: bw-shead; }
   position: absolute;
   inset: 0;
   overflow: hidden;
-  display: grid;
-  place-content: center;
-  background: var(--ds-bg-warm);
-  /* the words fade out toward every edge so they read as a field, not a list */
-  -webkit-mask-image: radial-gradient(120% 120% at 50% 50%, black 42%, transparent 88%);
-  mask-image: radial-gradient(120% 120% at 50% 50%, black 42%, transparent 88%);
+  /* NO background: the words drift over the card's own surface. This block used to paint
+     --ds-bg-warm and sit inside a bordered plate; both are gone so nothing frames it. */
+  -webkit-mask-image: radial-gradient(125% 125% at 50% 50%, black 38%, transparent 92%);
+  mask-image: radial-gradient(125% 125% at 50% 50%, black 38%, transparent 92%);
 }
-/* BOTH rails share ONE centre line. First attempt put them at top 38% and 58%, and with
-   equal-and-opposite rotations that 20% vertical offset moves the intersection off the
-   left edge: the two lines converge outside the frame and read as a shallow V, not a
-   cross. Sitting both on 50% and translating back by half their own height makes the
-   pivots coincide, so equal-and-opposite angles cross exactly at the centre of the plate. */
+
+/* FOUR rails: two horizontal, two vertical, forming a crosshatch rather than an X.
+   Every rail runs at its OWN speed and its own direction, so the field never settles
+   into a pattern the eye can lock onto and no two rails stay in step. */
 .ak-wordcross__rail {
   position: absolute;
-  left: -35%;
-  top: 50%;
-  width: 170%;
   display: flex;
   overflow: hidden;
-  transform-origin: 50% 50%;
 }
-/* Steeper than the first pass (-19/+19). At a shallow angle the two rails run nearly
-   parallel through the middle of the plate and their words sat ON each other, which was
-   unreadable mush exactly at the point the eye goes to. +/-29 makes the crossing closer to
-   perpendicular so the collision is brief, and the two rails are then separated by WEIGHT
-   as well as angle: A is the accent and reads as the figure, B is soft ink at low opacity
-   and reads as the ground. Two rails that cross have to overlap somewhere; the job is to
-   make sure only one of them is being read at that moment. */
-.ak-wordcross__rail--a { transform: translateY(-50%) rotate(-29deg); }
-.ak-wordcross__rail--b { transform: translateY(-50%) rotate(29deg); }
+.ak-wordcross__rail--h { left: -30%; width: 160%; }
+.ak-wordcross__rail--h1 { top: 26%; }
+.ak-wordcross__rail--h2 { top: 72%; }
+
+/* writing-mode turns the flex main axis vertical AND rotates the glyphs, so one markup
+   shape serves both orientations; the vertical rails need no separate track structure. */
+.ak-wordcross__rail--v { top: -30%; height: 160%; writing-mode: vertical-rl; }
+.ak-wordcross__rail--v1 { left: 24%; }
+.ak-wordcross__rail--v2 { left: 74%; }
 
 .ak-wordcross__track {
   display: flex;
@@ -750,19 +743,19 @@ main { counter-reset: bw-shead; }
 }
 .ak-wordcross__track span {
   font-family: var(--ds-font-display);
-  font-size: clamp(13px, 1.7vw, 17px);
+  font-size: clamp(12px, 1.5vw, 15px);
   line-height: 1.1;
   color: var(--ds-ink-heading);
 }
-/* figure / ground, not a checkerboard. The first pass alternated colour word-by-word
-   WITHIN each rail, which made both rails equally loud and left nothing to read first. */
-.ak-wordcross__rail--a span { color: var(--ds-accent-ink); opacity: .66; }
-.ak-wordcross__rail--b span { color: var(--ds-ink-heading); opacity: .3; }
-/* the separator is drawn, not typed, so it never lands in a text node */
+/* the two axes are separated by weight so the crosshatch has a foreground and a
+   background instead of four equally loud lines fighting each other. */
+.ak-wordcross__rail--h span { color: var(--ds-accent-ink); opacity: .6; }
+.ak-wordcross__rail--v span { color: var(--ds-ink-heading); opacity: .26; }
+
 .ak-wordcross__track span::after {
   content: "";
   display: inline-block;
-  width: 5px; height: 5px;
+  width: 4px; height: 4px;
   margin-left: var(--ds-space-md);
   border-radius: 50%;
   background: currentColor;
@@ -770,56 +763,25 @@ main { counter-reset: bw-shead; }
   vertical-align: middle;
 }
 
+/* four different periods, deliberately not multiples of one another */
 @media (prefers-reduced-motion: no-preference) {
-  .ak-wordcross__rail--a .ak-wordcross__track { animation: ak-word-left 38s linear infinite; }
-  .ak-wordcross__rail--b .ak-wordcross__track { animation: ak-word-right 46s linear infinite; }
+  .ak-wordcross__rail--h1 .ak-wordcross__track { animation: ak-word-left  34s linear infinite; }
+  .ak-wordcross__rail--h2 .ak-wordcross__track { animation: ak-word-right 53s linear infinite; }
+  .ak-wordcross__rail--v1 .ak-wordcross__track { animation: ak-word-up    41s linear infinite; }
+  .ak-wordcross__rail--v2 .ak-wordcross__track { animation: ak-word-down  67s linear infinite; }
 }
 @keyframes ak-word-left  { from { transform: translateX(0); }    to { transform: translateX(-50%); } }
 @keyframes ak-word-right { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+@keyframes ak-word-up    { from { transform: translateY(0); }    to { transform: translateY(-50%); } }
+@keyframes ak-word-down  { from { transform: translateY(-50%); } to { transform: translateY(0); } }
 
 @media (max-width: 600px) {
-  .ak-wordcross__track span { font-size: 11.5px; }
-}
-
-/* ===========================================================================
-   .ak-loop — section 08's motif, animated. A 10s cycle that DRAWS the argument.
-
-   WHY THIS IS NOT A GENERATED GIF. The ask was a 5-second loop showing what the
-   section is about. That subject ("the same correction repeating, and the problem
-   returning with it") is an ABSTRACT argument, and S6 forbids generating those
-   outright: "Any abstract brand motif. Those are token-built in markup (S3c);
-   generation demonstrably fails on them and produces gradient mush." That is a
-   recorded result from three failed attempts on this build, not a guess. GIF is
-   also the wrong container: 256 colours, no hardware decode, and megabytes for a
-   few seconds. Animating the motif that already sits here costs zero extra bytes,
-   stays crisp at any size, and inherits the tokens.
-
-   WHAT IT SHOWS, tied to the copy. A runner travels the ring four times, returning to
-   the point it started from, which is "a problem driven by something else keeps
-   returning, and you keep returning with it". The exit line then draws itself
-   once, which is "the step that decides what to correct, before anything is
-   corrected at all". One 10s cycle carries both halves of the paragraph.
-
-   Motion opt-in, as everywhere else on this site: declared only under
-   prefers-reduced-motion: no-preference, so under reduce the motif renders exactly
-   as it did before, a static loop beside a static line.
-   =========================================================================== */
-.ak-loop__runner { fill: currentColor; stroke: none; transform-origin: 82px 100px; }
-.ak-loop__out    { stroke-dasharray: 62; stroke-dashoffset: 0; }
-
-/* 10s cycle: the runner completes FOUR laps (2.5s each) before the exit draws, so the
-   repetition is felt as repetition rather than glimpsed once. The exit then draws across
-   laps three and four and holds to the end of the cycle. Both animations share the same
-   10s period so they never drift out of phase. */
-@media (prefers-reduced-motion: no-preference) {
-  .ak-loop__runner { animation: ak-loop-spin 2.5s linear infinite; }
-  .ak-loop__out    { animation: ak-loop-draw 10s ease-in-out infinite; }
-}
-@keyframes ak-loop-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-/* the exit stays hidden while the ring repeats, then draws once and holds */
-@keyframes ak-loop-draw {
-  0%, 55%   { stroke-dashoffset: 62; }
-  78%, 100% { stroke-dashoffset: 0; }
+  .ak-wordcross__track span { font-size: 11px; }
+  /* the phone plate is a short 104px band, so the vertical rails have no room to read
+     and are dropped rather than squeezed into three cramped glyphs. */
+  .ak-wordcross__rail--v { display: none; }
+  .ak-wordcross__rail--h1 { top: 30%; }
+  .ak-wordcross__rail--h2 { top: 66%; }
 }
 
 .ak-rail__col { overflow: hidden; min-width: 0; }
@@ -2266,8 +2228,9 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
   margin: 0;
   aspect-ratio: 1 / 1;
   overflow: hidden;
-  background: var(--ds-bg-warm);
-  border-bottom: 1px solid var(--ds-line);
+  /* container stripped 2026-08-18: the plate held a photograph and needed a ground and a
+     dividing rule under it. It now holds drifting words, which read as part of the card
+     rather than as a framed object, so the warm fill and the border-bottom are gone. */
 }
 .ak-hero__plate img {
   display: block; width: 100%; height: 100%;
@@ -2371,7 +2334,7 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
    FOUR lines. */
 @media (max-width: 600px) {
   .ak-hero__card {
-    grid-template-areas: "plate who" "at at" "tel tel";
+    grid-template-areas: "plate plate" "who who" "at at" "tel tel";
     column-gap: var(--ds-space-md);
     padding: var(--ds-space-md);
     align-items: center;
@@ -2381,12 +2344,15 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
      height made it 120x337 — a 1:2.8 keyhole that cropped 218px (65%) off the width of
      a square source and sliced through his head. Fixing the ASPECT is the fix; no
      object-position can rescue a 1:2.8 window onto a 1:1 photograph. */
+  /* was a 116px inset avatar square, sized for a portrait. Four rails of words inside
+     116px is unreadable, so with the photo gone the plate spans the full card width as a
+     short band instead and the name moves onto its own row beneath it. */
   .ak-hero__plate {
     grid-area: plate;
-    width: 116px; aspect-ratio: 1 / 1; height: auto;
-    margin: 0;
-    border: 1px solid var(--ds-line);
-    border-radius: var(--ds-r-control);
+    width: 100%; aspect-ratio: auto; height: 104px;
+    margin: 0 0 var(--ds-space-sm);
+    border: 0;
+    border-radius: 0;
   }
   /* 19px left "D.C." orphaned on a third line in the ~155px column beside the plate;
      16.5px lands the name on two ("Dr. Brian Van / Wagenen, D.C."). */
@@ -2408,7 +2374,6 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
   .ak-hero__plate {
     width: auto; aspect-ratio: auto; height: 100%;
     margin: 0; border: none; border-radius: 0;
-    border-right: 1px solid var(--ds-line);
   }
   /* inside the meta, name and contact sit side by side so the strip's right half is
      not left empty — the same dead-right-side already called out on other sections. */
