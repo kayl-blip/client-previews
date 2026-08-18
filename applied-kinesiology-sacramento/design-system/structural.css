@@ -1715,6 +1715,55 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
 /* ---- 6. STILL LEARNING, a big-number band (TRUST-STATS-SECTIONS #4) ---- */
 .bw-figures { display: flex; flex-wrap: wrap; gap: var(--ds-space-xl); }
 .bw-figures .bw-stat { flex: 1 1 210px; min-width: 0; }
+
+/* ===========================================================================
+   CARD ROWS ON PHONES: scroll, do not stack.
+   A row of 4 receipt cards stacked full width is four screens of scrolling for
+   content the reader is meant to GLANCE at, and on desktop it was reading as one
+   tall column rather than a row. Desktop is handled by each row's own grid; this
+   block is the phone treatment.
+
+   :has(> :nth-child(3)) makes the rule SELF-LIMITING: a row only becomes a slider
+   once it holds 3 or more cards. A 2-card row (bw-figures on dr-van-wagenen,
+   bw-statpair on applied-kinesiology) keeps stacking, where stacking is correct
+   and a 2-item slider would be silly. Any future page picks this up for free.
+
+   No negative margin-inline bleed here on purpose: the container sits inside a
+   .container whose padding is a clamp(), so a fixed bleed would not line up and
+   would risk horizontal page overflow, which the mobile-quality gate fails on.
+   The 78% card width is what makes the next card peek and signals scrollability.
+
+   The class is DOUBLED (.bw-ladder.bw-ladder) on purpose. .tier-bespoke .bw-ladder in the
+   bespoke sheet is also specificity 0,2,0 and that sheet loads AFTER this one, so a single
+   class lost the cascade: overflow-x and scroll-snap applied but display stayed grid and the
+   cards kept stacking. Doubling takes it to 0,3,0 and the slider wins without !important.
+   =========================================================================== */
+@media (max-width: 700px) {
+  .bw-ladder.bw-ladder:has(> :nth-child(3)),
+  .bw-figures.bw-figures:has(> :nth-child(3)),
+  .bw-statpair.bw-statpair:has(> :nth-child(3)) {
+    display: flex;
+    flex-wrap: nowrap;
+    grid-template-columns: none;
+    gap: var(--ds-space-sm);
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x mandatory;
+    padding-bottom: var(--ds-space-xs);
+    scrollbar-width: none;
+  }
+  .bw-ladder.bw-ladder:has(> :nth-child(3))::-webkit-scrollbar,
+  .bw-figures.bw-figures:has(> :nth-child(3))::-webkit-scrollbar,
+  .bw-statpair.bw-statpair:has(> :nth-child(3))::-webkit-scrollbar { display: none; }
+
+  .bw-ladder.bw-ladder:has(> :nth-child(3)) > *,
+  .bw-figures.bw-figures:has(> :nth-child(3)) > *,
+  .bw-statpair.bw-statpair:has(> :nth-child(3)) > * {
+    flex: 0 0 78%;
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+}
 /* 54px was sized for SHORT numerals (dr-van-wagenen ships "32" and "70-100"). A real licence or NPI
    is 8-10 glyphs, and at 54px "1730196569" measured 327px inside a 230px cell — the value bled out
    of its box and read as overlapping text. The no-text-overlap gate does not catch this because the
@@ -1909,6 +1958,30 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
 .ak-hero__plate img {
   display: block; width: 100%; height: 100%;
   object-fit: cover; object-position: 58% 42%;
+  /* LEVELLING THE PORTRAIT. The tilt is in the SOURCE photograph, not in any CSS:
+     nothing transformed it before. Measured on the untouched file, the dominant edge
+     orientation across the frame is 127deg, a diagonal, which is exactly what reads
+     as "leaning"; horizontal+vertical edge energy is only 27.79%.
+
+     ANGLE. A sweep from +8 to -15deg scored each candidate on where its edge energy
+     sits. +8deg was the direction control and is WORSE (dominant edge 179deg), which
+     is how the sign was confirmed rather than assumed. Everything from -7deg onward
+     snaps the dominant orientation to 0deg or 90deg, i.e. the frame stops reading as
+     diagonal. -10deg is the numerical optimum (H+V 31.98%) but -8deg is within half a
+     point (about 31.3%) and needs materially less overscan, so -8 wins on the trade.
+
+     SCALE. Rotating a square inside a square container opens wedges of bare plate
+     ground at the corners unless the image is scaled by cos|d|+sin|d|. At 8deg that
+     is 1.1294 exactly, so no ground shows and the zoom is the smallest that can
+     cover, which preserves the most of the photograph.
+
+     ORIGIN. 50% 50%, deliberately. An off-centre pivot was tried first (50% 42%, to
+     sit on the face) and it FAILED twice over: cos+sin is the cover factor only for a
+     CENTRED pivot, so the corners opened, and the scale expanded through the top of
+     the head and cropped the crown flat. Pivoting at the centre keeps the crown
+     complete and just under the top edge with no bare corners at any width. */
+  transform: rotate(-8deg) scale(1.1294);
+  transform-origin: 50% 50%;
 }
 
 .ak-hero__who {
