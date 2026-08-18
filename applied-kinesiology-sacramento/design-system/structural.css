@@ -2194,7 +2194,7 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
 
 .ak-hero__grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-columns: minmax(0, 1fr) 400px;
   gap: var(--ds-space-xl);
   /* center, NOT stretch. Measured at 1440 the two columns already land within 1px
      of each other (type 177..738, rail 178..740) because the rail's content height
@@ -2301,16 +2301,52 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
   transform-origin: 50% 50%;
 }
 
+/* Was a flex COLUMN holding just the name and the role. It is now a ROW: a small round
+   portrait, then that same two-line stack beside it. The stack had to be wrapped in its
+   own element so the row has two children rather than three, otherwise the name and the
+   role would sit side by side. */
 .ak-hero__who {
   margin: 0;
-  display: flex; flex-direction: column; gap: 3px;
+  display: flex; flex-direction: row; align-items: center;
+  gap: var(--ds-space-sm);
 }
+.ak-hero__whotext { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .ak-hero__who b {
   font-family: var(--ds-font-display);
   font-size: 19px; font-weight: 600; line-height: 1.25;
   color: var(--ds-ink-heading);
 }
-.ak-hero__who span { font-size: 14px; color: var(--ds-ink-soft); }
+/* scoped to the text stack: a bare `.ak-hero__who span` would also style the avatar
+   wrapper and the stack wrapper, both of which are spans. */
+.ak-hero__whotext > span { font-size: 14px; color: var(--ds-ink-soft); }
+
+/* The portrait, small and round. It carries the SAME levelling transform the large plate
+   used before the word cross replaced it: rotate(-8deg) to take out the tilt that is baked
+   into the photograph, scale(1.185) because a rotated square needs cos|d|+sin|d| plus the
+   translate budget to keep its corners covered, and translateY(2.78%) to bring the crown
+   down into frame. In a circular mask an uncovered corner is even more obvious than in a
+   square one, so the scale is doing real work here. */
+.ak-hero__avatar {
+  flex: none;
+  display: block;
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--ds-bg-warm);
+  border: 1px solid var(--ds-line);
+}
+.ak-hero__avatar img {
+  display: block; width: 100%; height: 100%;
+  object-fit: cover; object-position: 58% 42%;
+  /* -12deg, taken further left than the -8deg the large plate used, because at 72px the
+     residual tilt still read. The scale is not free-chosen: covering a rotated square needs
+     cos|d|+sin|d|, which is 1.1860 at 12deg, PLUS twice the translateY budget (2 x 2.78%),
+     giving 1.2416. Set to 1.245 for a hair of margin. Under-scaling here would expose the
+     plate ground at the rim, and a gap in a CIRCULAR mask is far more obvious than in a
+     square one because the eye already knows the shape it is expecting. */
+  transform: translateY(2.78%) rotate(-12deg) scale(1.245);
+  transform-origin: 50% 50%;
+}
 
 .ak-hero__at {
   margin: var(--ds-space-md) 0 0;
