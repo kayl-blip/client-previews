@@ -729,8 +729,13 @@ main { counter-reset: bw-shead; }
   overflow: hidden;
   /* NO background: the words drift over the card's own surface. This block used to paint
      --ds-bg-warm and sit inside a bordered plate; both are gone so nothing frames it. */
-  -webkit-mask-image: radial-gradient(125% 125% at 50% 50%, black 38%, transparent 92%);
-  mask-image: radial-gradient(125% 125% at 50% 50%, black 38%, transparent 92%);
+  /* The fade used to start at 38% of the radius, which killed the verticals well short
+     of the top and bottom edges and stopped the horizontals long before the right one.
+     Holding full opacity to 80% and only feathering the last stretch lets both axes run
+     to the boundary of the plate, which is what "max out the parent" asks for, while
+     still avoiding a hard guillotine on a half-drawn word. */
+  -webkit-mask-image: radial-gradient(155% 155% at 50% 50%, black 80%, transparent 100%);
+  mask-image: radial-gradient(155% 155% at 50% 50%, black 80%, transparent 100%);
 }
 
 /* FOUR rails: two horizontal, two vertical, forming a crosshatch rather than an X.
@@ -2196,13 +2201,23 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
   display: grid;
   grid-template-columns: minmax(0, 1fr) 400px;
   gap: var(--ds-space-xl);
-  /* center, NOT stretch. Measured at 1440 the two columns already land within 1px
-     of each other (type 177..738, rail 178..740) because the rail's content height
-     and the type column's are within 3px by construction, so stretch buys no
+  /* STRETCH, changed from center on 2026-08-19. The original note is kept below because
+     it was correct at the time: stretching made the aside a flex container whose VERTICAL
+     stack of plate + address read to G-DENSITY as a two-COLUMN split, taking the hero from
+     colD 0.01 to 0.66. That stack no longer exists. The address left the card on 08-18 and
+     the practitioner lockup left on 08-19, so the aside now holds exactly ONE child, the
+     word field, and there is no second box for the gate to mistake for a column. Stretch
+     is what lets that field take the full height of the row instead of stopping at a
+     square. If G-DENSITY ever reports a column split on this hero again, suspect this line
+     first; the fallback is center plus an explicit plate height.
+
+     ORIGINAL NOTE: "center, NOT stretch. Measured at 1440 the two columns already land
+     within 1px of each other (type 177..738, rail 178..740) because the rail's content
+     height and the type column's are within 3px by construction, so stretch buys no
      alignment. It costs something though: stretching forced the rail to be a flex
-     container, and G-DENSITY then read its VERTICAL stack (plate 270 / address 92)
-     as a two-COLUMN split and reported the hero at colD 0.66 instead of 0.01. */
-  align-items: center;
+     container, and G-DENSITY then read its VERTICAL stack (plate 270 / address 92) as a
+     two-COLUMN split and reported the hero at colD 0.66 instead of 0.01." */
+  align-items: stretch;
 }
 
 /* --- type column --------------------------------------------------------- */
@@ -2254,7 +2269,13 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
 .ak-hero__plate {
   position: relative;
   margin: 0;
-  aspect-ratio: 1 / 1;
+  /* aspect-ratio dropped 2026-08-19. It was 1/1 because this plate held a SQUARE
+     photograph. It now holds the word field, and with the lockup moved out of the card
+     there is nothing else in the aside, so the field should take the height the row
+     gives it instead of stopping at a square. min-height keeps it substantial if the
+     prose column is ever short. */
+  height: 100%;
+  min-height: 420px;
   overflow: hidden;
   /* container stripped 2026-08-18: the plate held a photograph and needed a ground and a
      dividing rule under it. It now holds drifting words, which read as part of the card
@@ -2305,8 +2326,12 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
    portrait, then that same two-line stack beside it. The stack had to be wrapped in its
    own element so the row has two children rather than three, otherwise the name and the
    role would sit side by side. */
+/* The lockup now sits AFTER the buttons and closes the hero, so it needs a hairline
+   to separate it from the call to action rather than running straight on from it. */
 .ak-hero__who {
-  margin: 0;
+  margin: var(--ds-space-lg) 0 0;
+  padding-top: var(--ds-space-md);
+  border-top: 1px solid var(--ds-line);
   display: flex; flex-direction: row; align-items: center;
   gap: var(--ds-space-sm);
 }
