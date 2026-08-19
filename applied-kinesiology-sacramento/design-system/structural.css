@@ -727,6 +727,22 @@ main { counter-reset: bw-shead; }
   position: absolute;
   inset: 0;
   overflow: hidden;
+
+  /* --ak-p IS THE LATTICE PITCH, AND IT DRIVES BOTH AXES. That single fact is the whole
+     fix. Both axes used to be placed at 18% / 50% / 82%, which sounds even and is not:
+     the plate is 400 wide by 696 tall, so the same percentages put the rows 222px apart
+     and the columns 128px apart. The cells came out at 128x222 and the field read as a
+     stretched grid rather than as a board. One shared pitch makes the cells SQUARE.
+
+     The value is clamped on BOTH axes on purpose. 32cqw alone is right while the plate is
+     tall and narrow, but at 601-900 and on a phone the plate gets wide and short, and a
+     width-derived pitch then throws the outer rows clean off the top and bottom edges.
+     20cqh is the guard for that case; min() takes whichever axis is the binding one.
+
+     The 128px fallback is the resolved desktop value (32% of a 400px plate), so a browser
+     without container query units gets exactly today's desktop lattice and the media
+     queries below carry the other two bands. */
+  --ak-p: 128px;
   /* NO background: the words drift over the card's own surface. This block used to paint
      --ds-bg-warm and sit inside a bordered plate; both are gone so nothing frames it. */
   /* The fade used to start at 38% of the radius, which killed the verticals well short
@@ -738,25 +754,58 @@ main { counter-reset: bw-shead; }
   mask-image: radial-gradient(155% 155% at 50% 50%, black 80%, transparent 100%);
 }
 
-/* FOUR rails: two horizontal, two vertical, forming a crosshatch rather than an X.
-   Every rail runs at its OWN speed and its own direction, so the field never settles
-   into a pattern the eye can lock onto and no two rails stay in step. */
+/* PX FALLBACK LADDER — for browsers WITHOUT container query units, and for nothing else.
+   It has to sit ABOVE the @supports block: both carry the same specificity, so whichever
+   is declared last wins, and the container query value must be the one that wins wherever
+   it is understood. The numbers are simply the resolved min(32cqw, 20cqh) at each band's
+   plate size: 400x696 gives 128 (the base declared above), 340x460 gives 92. */
+@media (max-width: 900px) { .ak-wordcross { --ak-p: 92px; } }
+
+/* Container query units where the browser has them. Kept behind @supports rather than
+   declared straight onto .ak-wordcross so the px ladder further down stays the answer on a
+   browser that cannot resolve cqw/cqh: an unsupported unit sitting inside a custom property
+   makes every calc() that consumes it invalid at computed-value time, and eight rails would
+   collapse into the top-left corner rather than degrade. */
+@supports (height: 1cqh) {
+  .ak-wordcross { --ak-p: min(32cqw, 20cqh); }
+}
+
+/* EIGHT rails on ONE shared pitch: five horizontal, three vertical. Five rows and not
+   three because the pitch is now square — a 696px plate takes five 128px steps to fill,
+   and three would have stranded a third of the plate empty at the top and another third
+   at the bottom. Every rail still runs at its own speed and its own direction, so the
+   field never settles into a pattern the eye can lock onto.
+
+   Both families are placed from the CENTRE outwards, 50% +/- n * pitch, rather than from
+   an edge: that is what makes the outer margins equal on both sides at every plate size.
+
+   Each rail is then pulled back by half its own thickness. `top` and `left` position a
+   rail's LEADING EDGE, but the line a reader sees is its middle, so without the translate
+   the columns sat 86px from the left edge and 58px from the right — off-centre by exactly
+   half a rail. The translate is on the RAIL; the marquee animation is on the TRACK inside
+   it, so the two transforms are on different elements and never overwrite each other. */
 .ak-wordcross__rail {
   position: absolute;
   display: flex;
   overflow: hidden;
 }
-.ak-wordcross__rail--h { left: -30%; width: 160%; }
-.ak-wordcross__rail--h1 { top: 18%; }
-.ak-wordcross__rail--h2 { top: 50%; }
-.ak-wordcross__rail--h3 { top: 82%; }
+/* Rails are exactly the size of the plate. They used to overhang it by 60% either way
+   (left:-30%; width:160%), which bought nothing — the rail already clips its own content
+   and the plate clips it again — while inflating the track length each rail needed in
+   order to stay full by the same 60%. */
+.ak-wordcross__rail--h { left: 0; width: 100%; transform: translateY(-50%); }
+.ak-wordcross__rail--h1 { top: calc(50% - 2 * var(--ak-p)); }
+.ak-wordcross__rail--h2 { top: calc(50% - 1 * var(--ak-p)); }
+.ak-wordcross__rail--h3 { top: 50%; }
+.ak-wordcross__rail--h4 { top: calc(50% + 1 * var(--ak-p)); }
+.ak-wordcross__rail--h5 { top: calc(50% + 2 * var(--ak-p)); }
 
 /* writing-mode turns the flex main axis vertical AND rotates the glyphs, so one markup
    shape serves both orientations; the vertical rails need no separate track structure. */
-.ak-wordcross__rail--v { top: -30%; height: 160%; writing-mode: vertical-rl; }
-.ak-wordcross__rail--v1 { left: 18%; }
+.ak-wordcross__rail--v { top: 0; height: 100%; writing-mode: vertical-rl; transform: translateX(-50%); }
+.ak-wordcross__rail--v1 { left: calc(50% - 1 * var(--ak-p)); }
 .ak-wordcross__rail--v2 { left: 50%; }
-.ak-wordcross__rail--v3 { left: 82%; }
+.ak-wordcross__rail--v3 { left: calc(50% + 1 * var(--ak-p)); }
 
 .ak-wordcross__track {
   display: flex;
@@ -787,32 +836,46 @@ main { counter-reset: bw-shead; }
   vertical-align: middle;
 }
 
-/* SIX periods, 40s to 60s in 4s steps. The previous set ran 34s to 67s, a 2x spread that
-   made the fastest rail visibly race the slowest. This band is the same relationship the
-   .ak-rail pair uses (42s against 52s, about 1.24x): every rail is plainly on its own
-   clock, but none of them looks hurried next to another. Steps of 4 mean no two share a
-   period and no period is a multiple of another, so the field never re-synchronises. */
+/* EIGHT periods. What matters to the eye is not the period, it is PIXELS PER SECOND, and
+   the two are only the same thing when the tracks are the same length. These eight are not:
+   a row of three service phrases is roughly 450 to 520px per set while a column of five
+   joint names is 300 to 420px, so identical periods would have made the columns visibly
+   crawl next to the rows. Each period below is therefore chosen to land its rail in a
+   narrow band, which is the owner's "different speed, but not so different" read: measured
+   across 1440 down to 375 every rail sits between 12.2 and 16.7 px/s, a 1.37x spread.
+   h4 is 31s and not 36s for exactly this reason — 36 measured 10.6 px/s on a phone, where
+   the smaller type shortens the track, and it visibly lagged the other four rows. Re-run
+   _tmp-railspeed.mjs after any period change; it fails the band, it does not just print it.
+   No two rails share a period and none is an integer multiple of another, so the field
+   never re-synchronises. */
 @media (prefers-reduced-motion: no-preference) {
-  .ak-wordcross__rail--h1 .ak-wordcross__track { animation: ak-word-left  40s linear infinite; }
-  .ak-wordcross__rail--v1 .ak-wordcross__track { animation: ak-word-up    44s linear infinite; }
-  .ak-wordcross__rail--h2 .ak-wordcross__track { animation: ak-word-right 48s linear infinite; }
-  .ak-wordcross__rail--v2 .ak-wordcross__track { animation: ak-word-down  52s linear infinite; }
-  .ak-wordcross__rail--h3 .ak-wordcross__track { animation: ak-word-right 56s linear infinite; }
-  .ak-wordcross__rail--v3 .ak-wordcross__track { animation: ak-word-up    60s linear infinite; }
+  .ak-wordcross__rail--v3 .ak-wordcross__track { animation: ak-word-up    20s linear infinite; }
+  .ak-wordcross__rail--v1 .ak-wordcross__track { animation: ak-word-up    24s linear infinite; }
+  .ak-wordcross__rail--v2 .ak-wordcross__track { animation: ak-word-down  26s linear infinite; }
+  .ak-wordcross__rail--h1 .ak-wordcross__track { animation: ak-word-left  28s linear infinite; }
+  .ak-wordcross__rail--h5 .ak-wordcross__track { animation: ak-word-left  30s linear infinite; }
+  .ak-wordcross__rail--h2 .ak-wordcross__track { animation: ak-word-right 32s linear infinite; }
+  .ak-wordcross__rail--h3 .ak-wordcross__track { animation: ak-word-left  34s linear infinite; }
+  .ak-wordcross__rail--h4 .ak-wordcross__track { animation: ak-word-right 31s linear infinite; }
 }
-@keyframes ak-word-left  { from { transform: translateX(0); }    to { transform: translateX(-50%); } }
-@keyframes ak-word-right { from { transform: translateX(-50%); } to { transform: translateX(0); } }
-@keyframes ak-word-up    { from { transform: translateY(0); }    to { transform: translateY(-50%); } }
-@keyframes ak-word-down  { from { transform: translateY(-50%); } to { transform: translateY(0); } }
+/* -25%, not -50%: each track now carries FOUR copies of its word set, so one copy's worth
+   of travel is a quarter of the track. Change the copy count in the markup and this number
+   has to change with it (travel = 100/copies), or the loop will visibly jump. */
+@keyframes ak-word-left  { from { transform: translateX(0); }    to { transform: translateX(-25%); } }
+@keyframes ak-word-right { from { transform: translateX(-25%); } to { transform: translateX(0); } }
+@keyframes ak-word-up    { from { transform: translateY(0); }    to { transform: translateY(-25%); } }
+@keyframes ak-word-down  { from { transform: translateY(-25%); } to { transform: translateY(0); } }
 
 @media (max-width: 600px) {
   .ak-wordcross__track span { font-size: 11px; }
-  /* the phone plate is a short 104px band, so the vertical rails have no room to read
-     and are dropped rather than squeezed into three cramped glyphs. */
-  .ak-wordcross__rail--v { display: none; }
-  .ak-wordcross__rail--h1 { top: 22%; }
-  .ak-wordcross__rail--h2 { top: 52%; }
-  .ak-wordcross__rail--h3 { top: 82%; }
+  /* The vertical rails are BACK on the phone, and the per-rail top/left overrides that used
+     to live here are gone. Both were answers to a plate that no longer exists: the note
+     said "a short 104px band", which was true when this block was written, but the plate
+     carries min-height:420px since 08-19 and min-height beats the height:104px declared for
+     it in this same breakpoint. Measured at 375 the plate is 279x420, which at an 84px
+     pitch takes three columns at 55/139/223 and five rows at 42 through 378 — a real board,
+     not three cramped glyphs. Positions come from --ak-p like every other size now; hard
+     percentages here would put the phone back on a different lattice from the desktop. */
 }
 
 .ak-rail__col { overflow: hidden; min-width: 0; }
@@ -2277,6 +2340,14 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
   height: 100%;
   min-height: 420px;
   overflow: hidden;
+  /* SIZE CONTAINER, added 2026-08-19, so the word field can derive its lattice pitch from
+     the real size of this box instead of from a table of hardcoded per-breakpoint numbers.
+     It has to be declared HERE and not on .ak-wordcross: container query units resolve
+     against the nearest ANCESTOR container, so an element cannot query itself. Safe on this
+     element because it is sized entirely from the outside (height:100% off the stretched
+     grid row, plus min-height) and its only child is absolutely positioned, so size
+     containment removes nothing that was contributing to the height. */
+  container-type: size;
   /* container stripped 2026-08-18: the plate held a photograph and needed a ground and a
      dividing rule under it. It now holds drifting words, which read as part of the card
      rather than as a framed object, so the warm fill and the border-bottom are gone. */
@@ -2436,10 +2507,19 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
   /* was a 116px inset avatar square, sized for a portrait. Four rails of words inside
      116px is unreadable, so with the photo gone the plate spans the full card width as a
      short band instead and the name moves onto its own row beneath it. */
+  /* Same two corrections as the tablet band. height:104px had been dead for a while —
+     min-height:420px beat it — so the real phone plate was 279x420, not the 104px strip
+     the old comment described. It is stated outright now rather than left to min-height,
+     because the word field's pitch is derived from a container query and that needs a
+     DEFINITE height to resolve against; an indefinite one computes 0 and flattens the
+     whole lattice onto its centre line. The width cap keeps the box portrait at the top
+     of the range (at 600 the card is 504 wide against a 460 tall plate, which would push
+     the three columns into the middle third); below about 340 the min() just yields the
+     card width, so a 375 phone is unaffected. */
   .ak-hero__plate {
     grid-area: plate;
-    width: 100%; aspect-ratio: auto; height: 104px;
-    margin: 0 0 var(--ds-space-sm);
+    width: min(100%, 340px); aspect-ratio: auto; height: 460px;
+    margin: 0 auto var(--ds-space-sm);
     border: 0;
     border-radius: 0;
   }
@@ -2456,13 +2536,33 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
    -side the owner has already called out twice on other sections. Three parts
    across instead: portrait | name | address + phone, divided by a rule. */
 @media (min-width: 601px) and (max-width: 900px) {
-  .ak-hero__card { grid-template-columns: 200px minmax(0, 1fr); align-items: stretch; }
-  /* the strip is short here (~208px), so a full-height 200px column reads as a near
-     square and the photo can go back to full-bleed. Undoes the phone rule's inset
-     avatar, which would otherwise leave 84px of bare ground beside a 116px plate. */
+  /* ONE column, not "200px + the rest". The two-column split was correct while the card
+     held a portrait beside a meta block; both of those have since moved out and the card
+     has exactly one child left. The 200px track was therefore pinning the word field into a
+     200px-wide sliver and leaving the whole right-hand half of the card empty — the same
+     dead-right-side the owner has called out on other sections — and a 200px box cannot
+     carry a three-column lattice at any sane pitch. */
+  .ak-hero__card { grid-template-columns: minmax(0, 1fr); align-items: stretch; }
+  /* A DEFINITE height, and a portrait box. Two separate reasons, both measured.
+
+     height:100% was indefinite here, because at this width the hero grid is a single
+     column and the card's own height is content-driven. The plate still ENDED UP 420px
+     via min-height, so it looked fine — but a container query height unit resolves
+     against a DEFINITE height and silently computes 0 against an indefinite one. That
+     took min(32cqw, 20cqh) to 0 and stacked all eight rails on the centre line: rows
+     [210,210,210,210,210], gaps [0,0,0,0]. Nothing warned; the page just quietly stopped
+     being a lattice. If you ever swap this back to a percentage height, re-run
+     _tmp-railspeed.mjs and check the gaps are non-zero.
+
+     The width cap is the other half. With the card down to one child this plate went
+     full-bleed to 852px against a 420px height — a 2:1 landscape box, where three
+     columns at a square pitch cluster in the middle and leave ~340px dead on each side.
+     The lattice wants roughly a 0.6 portrait to fill evenly (desktop is 400x696), so the
+     plate is capped and centred instead of stretched. Centred leaves symmetric space,
+     which reads as a deliberate motif rather than as the dead right-hand side. */
   .ak-hero__plate {
-    width: auto; aspect-ratio: auto; height: 100%;
-    margin: 0; border: none; border-radius: 0;
+    width: min(100%, 340px); aspect-ratio: auto; height: 460px;
+    margin: 0 auto; border: none; border-radius: 0;
   }
   /* inside the meta, name and contact sit side by side so the strip's right half is
      not left empty — the same dead-right-side already called out on other sections. */
