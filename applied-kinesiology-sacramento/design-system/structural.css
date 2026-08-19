@@ -2337,15 +2337,15 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
 }
 .ak-hero__avatar img {
   display: block; width: 100%; height: 100%;
-  object-fit: cover; object-position: 58% 42%;
-  /* -12deg, taken further left than the -8deg the large plate used, because at 72px the
-     residual tilt still read. The scale is not free-chosen: covering a rotated square needs
-     cos|d|+sin|d|, which is 1.1860 at 12deg, PLUS twice the translateY budget (2 x 2.78%),
-     giving 1.2416. Set to 1.245 for a hair of margin. Under-scaling here would expose the
-     plate ground at the rim, and a gap in a CIRCULAR mask is far more obvious than in a
-     square one because the eye already knows the shape it is expecting. */
-  transform: translateY(2.78%) rotate(-12deg) scale(1.245);
-  transform-origin: 50% 50%;
+  object-fit: cover; object-position: 52% 40%;
+  /* NO transform, deliberately. The tilt used to be corrected here with
+     rotate(-12deg) scale(1.245), and that 24.5% zoom was throwing away real pixels from a
+     portrait that began life at 259px, purely to hide a tilt. The rotation is now baked
+     into the FILE (images_team_doctor_level.jpg: the 900px source rotated -12deg and cropped
+     to its largest inscribed square, 756px, no upscale at any point). Measured on the new
+     file with no CSS applied: dominant edge orientation 90deg and H+V energy 31.13%, against
+     127deg and 27.79% for the untouched source. Level in the pixels, so nothing has to be
+     scaled up to make it look level. */
 }
 
 .ak-hero__at {
