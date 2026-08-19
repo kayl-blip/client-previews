@@ -1540,12 +1540,18 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
 @media (max-width: 900px) {
   .bw-statpair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .bw-motif svg { max-width: 180px; }
-  /* Frame padding removed at this breakpoint on request. This IS the base class, so it
-     applies to all 29 .bw-frame instances across 11 pages at 900px and below: below the
-     tablet breakpoint the image runs to the frame's border and the surface reads as a
-     mat rather than a mount, which is the intended effect. The frame's background,
-     border, radius and shadow are all retained; only the inset is gone. */
-  .bw-frame { padding: 0; }
+  /* SCOPED to the bare frames, corrected 2026-08-19. The owner asked for "padding 0 at
+     max-width 900px" while we were working on the rail frame, and I applied it to the BASE
+     class. That was too wide: the base class carries chrome — background, border, radius,
+     shadow — and zeroing the inset on a frame that still paints a card puts the artwork and
+     the caption hard against a visible border. Measured at 375 it left 28 of 29 frames with
+     content 1px off an edge, across 11 pages, which is what the owner then reported on the
+     "Who ends up in this office" figure.
+
+     A bare frame has no chrome to sit against, so zero is right there and it keeps its own
+     padding:0. Everything else gets 24px rather than the desktop 40px: still a mount, but a
+     narrower one, which is what asking for less inset on a phone was after. */
+  .bw-frame:not(.bw-frame--bare) { padding: var(--ds-space-md); }
 }
 @media (max-width: 600px) {
   .bw-statpair { grid-template-columns: minmax(0, 1fr); }
