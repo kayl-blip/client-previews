@@ -203,12 +203,19 @@ main { counter-reset: bw-shead; }
     display: grid;
     grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     column-gap: var(--ds-space-xl);
-    align-items: end;
+    /* START, changed from end on 2026-08-19 on the owner's call. Bottom-aligning the pair
+       meant the SHORTER item got pushed down by the difference in their heights, and on
+       §02 that difference is large: the statement runs 307px against a 171px heading, so
+       the h2 began 136px below the statement it belongs to. The reader met the supporting
+       line first and the heading second, which inverts the hierarchy the type sizes are
+       working to establish. Aligned to the start, both columns begin on the same line and
+       the eye takes the heading first. */
+    align-items: start;
   }
   .bw-shead .bw-eyebrow { grid-column: 1 / -1; }
   .bw-shead h2 { grid-column: 1; }
   .bw-shead > .bw-lede,
-  .bw-shead > .bw-statement { grid-column: 2; margin: 0; max-width: none; align-self: end; }
+  .bw-shead > .bw-statement { grid-column: 2; margin: 0; max-width: none; align-self: start; }
   /* a header with no lede has nothing to put in the second column, so it takes the full measure
      back rather than leaving a dead half-row beside the heading */
   .bw-shead:not(:has(> .bw-lede, > .bw-statement)) { grid-template-columns: minmax(0, 1fr); }
@@ -681,9 +688,60 @@ main { counter-reset: bw-shead; }
 @media (min-width: 1200px) {
   .ak-rail--fit { height: 700px; }
 }
-/* .bw-frame is `display:grid; place-items:center`; overriding the block axis to `end` drops the
-   rail to the foot of the stretched column without touching the column itself. */
-.bw-frame:has(> .ak-rail--fit) { align-items: end; }
+/* RAISED TO THE EYEBROW, 2026-08-19, on the owner's call: "make this higher, aligned on the
+   text of 02 The difference, stated plainly". The rail now starts on the same line as the
+   section's eyebrow instead of hanging at the foot of the column.
+
+   The offset is the section header's own lead-in, expressed in the same terms .bw-shead uses
+   (its 1px border-top plus --ds-space-md of padding) rather than as a magic number, so the two
+   stay locked together if that padding is ever retuned. Aligning to the frame's raw top would
+   put the rail level with the HAIRLINE, about 25px above the eyebrow text, which is not what
+   was asked for.
+
+   WHY THIS NO LONGER TRIPS G-MQUAL, which is what forced the bottom-alignment in the first
+   place. The reading-order check was rewritten to test a media's BOTTOM against the heading's
+   TOP, not its top: a media whose vertical range OVERLAPS the heading reads as a side-by-side
+   column and is explicitly exempt, and only a true vertical stack you scroll past before the
+   title is a defect. A 560-700px rail beside a heading that starts within ~80px of the row top
+   clears that by a wide margin. The ORIGINAL note is kept below because its GEOMETRY is still
+   the reference for why the 1024 step-down to 560 exists.
+
+   ORIGINAL NOTE: "G-MQUAL blocked this band at 700px: the media rendered 156px ABOVE its
+   heading... Bottom-aligning the rail inside its own column instead puts a 700px rail at row
+   top + 225, which is 22px BELOW the heading, and the reading order is right." */
+.bw-frame:has(> .ak-rail--fit) {
+  align-items: start;
+  padding-top: calc(1px + var(--ds-space-md));
+}
+
+/* --- side-by-side: the rail runs the FULL height of the prose beside it ----------------------
+   Owner: "make the rail height aligned on the Inside the assessment link so there will be less
+   white space". A fixed 560/700px rail beside a taller prose column always leaves a dead band
+   under the pictures; matching the column removes it by construction at every width.
+
+   OUT OF FLOW, and that is the load-bearing part. The obvious version — height:100% or
+   align-items:stretch — is circular here. The columns are flex items that stretch to the line's
+   cross size, and that cross size is the MAX of the columns' own content heights. The rail's
+   content is two marquee tracks carrying every image at full size, so letting the rail size
+   itself would make the RAIL set the row height (thousands of px) instead of following the
+   prose, and a percentage height would fall back to that same intrinsic height. Absolute
+   positioning takes the rail out of the flow entirely: the media column then contributes
+   nothing, the row height is purely the prose column, and top/bottom pin the rail to it.
+
+   top is the section header's lead-in, the same expression the block above uses, so the rail
+   still starts level with the eyebrow. bottom:0 lands it on the foot of the prose column, which
+   is the "Inside the assessment" link. Note the containing block for an absolutely positioned
+   child is the PADDING box, so the frame's own padding-top is cleared here and the offset is
+   stated once, on the rail. */
+@media (min-width: 901px) {
+  .bw-frame:has(> .ak-rail--fit) { position: relative; padding-top: 0; }
+  .ak-rail--fit {
+    position: absolute;
+    top: calc(1px + var(--ds-space-md));
+    left: 0; right: 0; bottom: 0;
+    height: auto;
+  }
+}
 
 /* ===========================================================================
    .ak-wordcross — the hero plate, as two crossing rails of WORDS.
@@ -899,8 +957,20 @@ main { counter-reset: bw-shead; }
   .ak-rail__track      { animation: ak-rail-up 42s linear infinite; }
   .ak-rail__track--rev { animation: ak-rail-down 52s linear infinite; }
 }
-@keyframes ak-rail-up   { from { transform: translateY(0); }    to { transform: translateY(-50%); } }
-@keyframes ak-rail-down { from { transform: translateY(-50%); } to { transform: translateY(0); } }
+/* -33.333%, not -50%: each track now carries THREE copies of its six images, so one copy's
+   worth of travel is a third of the track. The travel DISTANCE in px is unchanged (a third of a
+   3-copy track equals half of the old 2-copy one), so every rail moves at exactly the speed it
+   did before and the 42s/52s pair is untouched.
+
+   What changed is the coverage margin. A marquee of N copies is gap-free only while
+   track x (N-1)/N >= rail, which at two copies demanded a track twice the rail height. Once the
+   rail started following the prose column instead of sitting at a fixed 700px it grew to 868px
+   at 901, and the TRAIL track — the narrower 1fr column, whose images are smaller and whose
+   track is therefore shorter — came up 2.0px SHORT of that. Three copies drop the requirement
+   from 2x to 1.5x the rail and leave about 1300px of margin at the tightest width. If you change
+   the copy count, this percentage is 100/copies. */
+@keyframes ak-rail-up   { from { transform: translateY(0); }        to { transform: translateY(-33.333%); } }
+@keyframes ak-rail-down { from { transform: translateY(-33.333%); } to { transform: translateY(0); } }
 
 /* PHONE: the same two rails, turned on their side and travelling left/right. */
 @media (max-width: 700px) {
@@ -911,15 +981,21 @@ main { counter-reset: bw-shead; }
     -webkit-mask-image: linear-gradient(90deg, transparent 0, black 8%, black 92%, transparent 100%);
     mask-image: linear-gradient(90deg, transparent 0, black 8%, black 92%, transparent 100%);
   }
-  .ak-rail__track { flex-direction: row; height: 100%; }
+  /* width:max-content is what makes the PHONE rail a marquee at all. Turned on its side the
+     track is still a block-level flex box inside .ak-rail__col, so it took the column's width
+     and squeezed all its images into it: measured on the LIVE site the track was 327px wide in
+     a 327px rail — exactly one screenful, with nothing to scroll and every image crushed. Sizing
+     it to its content lets it overflow the column (which clips) the way the vertical rails do.
+     This defect predates the height work; it was found while verifying it. */
+  .ak-rail__track { flex-direction: row; height: 100%; width: max-content; }
   .ak-rail__track img { width: auto; height: 100%; }
 }
 @media (max-width: 700px) and (prefers-reduced-motion: no-preference) {
   .ak-rail__track      { animation-name: ak-rail-left; }
   .ak-rail__track--rev { animation-name: ak-rail-right; }
 }
-@keyframes ak-rail-left  { from { transform: translateX(0); }    to { transform: translateX(-50%); } }
-@keyframes ak-rail-right { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+@keyframes ak-rail-left  { from { transform: translateX(0); }        to { transform: translateX(-33.333%); } }
+@keyframes ak-rail-right { from { transform: translateX(-33.333%); } to { transform: translateX(0); } }
 
 /* CARD ROWS: PIN THE TRAILING LINK TO THE BOTTOM.
    The grid was already giving every card in a row the same height. What read as ragged was the
@@ -1286,7 +1362,13 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
 /* §2 the big-type problem statement (SECTION-COMPONENTS #7) */
 .bw-statement {
   font-family: var(--ds-font-display);
-  font-size: clamp(21px, 1.9vw, 27px);
+  /* Stepped down from clamp(21px, 1.9vw, 27px) on 2026-08-19 on the owner's call. At 27px
+     against a 50px h2 the supporting line was reading as a second heading rather than as
+     support, and it was the taller of the two blocks (307px against 171px), so it also
+     dominated the header by sheer area. This tops out near 23px, which holds it clearly
+     above the 20px .bw-lede — the two must not converge, they do different jobs — while
+     leaving the h2 unambiguously first. */
+  font-size: clamp(19px, 1.55vw, 23px);
   line-height: 1.42;
   color: var(--ds-ink-heading);
   max-width: 44rem;
