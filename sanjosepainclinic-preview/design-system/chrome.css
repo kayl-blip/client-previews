@@ -75,7 +75,7 @@ body{margin:0;background:var(--ds-bg-surface);color:var(--ds-ink);font-family:va
 .precta{background-color:var(--ds-primary);background-image:var(--ds-glow-wash);color:var(--ds-on-accent);padding:var(--ds-section-py) 0}
 .precta__in{display:grid;grid-template-columns:1.2fr .8fr;gap:var(--ds-space-lg);align-items:center}
 .precta h2{font-family:var(--ds-font-display);font-size:var(--ds-fs-h2);line-height:var(--ds-lh-tight);letter-spacing:var(--ds-tracking-disp);margin:0;color:var(--ds-on-accent)}
-.precta p{margin:12px 0 0;color:rgba(255,255,255,.88);font-size:16px}
+.precta p{margin:12px 0 0;color:var(--ds-on-accent);font-size:16px}
 .precta__act{display:flex;gap:12px;flex-wrap:wrap;justify-self:end}
 .btn-onaccent{background:var(--ds-bg-surface-2);color:var(--ds-accent-deep);border-color:var(--ds-bg-surface-2)}
 .btn-ghost-onaccent{background:transparent;color:var(--ds-on-accent);border-color:rgba(255,255,255,.5)}
@@ -92,6 +92,10 @@ body{margin:0;background:var(--ds-bg-surface);color:var(--ds-ink);font-family:va
 .f-sub{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
 .f-sub input{flex:1 1 170px;min-width:0;font-family:var(--ds-font-body);font-size:14px;padding:10px 13px;border:1px solid var(--ds-line);border-radius:var(--ds-r-control);background:var(--ds-bg-surface);color:var(--ds-ink)}
 .f-bot{margin-top:var(--ds-space-xl);padding-top:var(--ds-space-md);border-top:1px solid var(--ds-line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--ds-ink-faint)}
+.f-legal{display:flex;flex-wrap:wrap;gap:var(--ds-space-sm);order:3}
+.f-legal a{color:var(--ds-ink-soft);text-decoration:underline;text-underline-offset:3px}
+.f-legal a:hover{color:var(--ds-accent-ink)}
+@media (max-width:860px){.f-legal{order:2;width:100%}}
 .f-flag{font-size:11px;letter-spacing:.05em;text-transform:uppercase;font-weight:600;color:var(--ds-primary-deep);background:var(--ds-accent-light);border-radius:var(--ds-r-control);padding:3px 8px}
 
 /* the seven-item bar intrinsically needs ~1120px, so it collapses at 1100, not 768 */

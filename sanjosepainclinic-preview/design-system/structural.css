@@ -5580,3 +5580,30 @@ p { color: var(--ds-ink-soft); }
   .hm-fig:hover img { transform: none; }
   .hm-desk__line:hover { transform: none; }
 }
+
+
+/* ============================================================================
+   CAPTION LEGIBILITY PLATE
+   Figure captions are positioned over photographs and depended on a gradient scrim. Measured on real
+   pixels the contrast ranged 9.93:1 down to 1.93:1 depending on the brightness of the image behind
+   the text; at 10.5px uppercase these need 4.5:1. A gradient over an unknown photo cannot guarantee
+   a ratio, so each caption gets its own solid backing plate and the ratio stops depending on the
+   picture. Token-only, so it flips correctly on a dark surface.
+   ============================================================================ */
+.stk-cap,
+.hm-fig__cap,
+.ip-frame__cap,
+.kit-figure__cap,
+.sc-fig__cap,
+.spn-fig__cap,
+.ct-cap,
+.pp-cap {
+  /* the captions set left AND right, which stretches an absolutely positioned box to the
+     full frame width and makes the plate read as a letterbox bar. Release the right edge so the
+     plate hugs its own text and reads as a caption chip. */
+  right: auto; width: max-content; max-width: calc(100% - var(--ds-space-md));
+  background: var(--ds-primary-deep);
+  color: var(--ds-ink-on-dark);
+  padding: 3px var(--ds-space-xs);
+  border-radius: var(--ds-r-control);
+}
