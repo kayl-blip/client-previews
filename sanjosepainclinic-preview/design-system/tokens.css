@@ -129,7 +129,7 @@
   --ds-accent-bright:  #22B8CF;   /* true brand hue: large display, borders, icons */
   --ds-on-accent:      #FFFFFF;   /* foreground that sits ON an accent fill */
   --ds-divider:        #D2E4E6;
-  --ds-ink-faint:      #5F767C;   /* labels and captions */
+  --ds-ink-faint:      #597076;   /* labels and captions */
 
   /* ---- FLUID TYPE SCALE (tuned to the Vitalflow reference measurement) ---- */
   --ds-fs-display:     clamp(40px, 5.4vw, 68px);
