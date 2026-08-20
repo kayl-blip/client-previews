@@ -1,0 +1,77 @@
+/* ============================================================================
+   STANDARD TIER — per-page signature stylesheet (the FLOOR)
+   ----------------------------------------------------------------------------
+   Loads ON TOP of <slug>-tokens.css + <slug>-structural.css. How the bulk of the
+   site feels: light marketing canvas + ONE dark punctuation (a .surface-dark stat
+   band), the shared component vocabulary at floor intensity (no cinematic
+   dioramas). TOKEN-PURE — every value references var(--*). Brand-agnostic; copies
+   verbatim per client.
+   ============================================================================ */
+
+.tier-flag { position: fixed; top: 0; left: 0; right: 0; z-index: 60; display: flex; justify-content: center; gap: 10px; align-items: center;
+  padding: 7px; font-family: var(--mono); font-size: 10.5px; letter-spacing: .26em; text-transform: uppercase; color: var(--ink);
+  background: var(--bg-warm); border-bottom: 1px solid var(--line); }
+.tier-flag b { color: var(--accent); }
+
+/* HERO (light, standard) */
+.std-hero { display: grid; grid-template-columns: 1.08fr .92fr; align-items: center; gap: 56px; padding-block: 7vh var(--pad); }
+.std-hero h1 { max-width: 15ch; margin-top: 16px; }
+.std-hero .lead { margin-top: 20px; }
+.std-hero .cta { margin-top: 30px; }
+
+/* clean light product mock (floor depth, not the cinematic canvas) */
+.ui-mock { border-radius: var(--r-lg); background: var(--card-bg); border: 1px solid var(--line); box-shadow: var(--shadow); overflow: hidden; }
+.ui-bar { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--bg-2); }
+.ui-bar .d { width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
+.ui-bar .t { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); margin-left: 6px; }
+.ui-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.ui-field { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+.ui-field.active { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.ui-field .lab { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); }
+.ui-field .val { height: 12px; width: 62%; border-radius: 4px; background: var(--line); margin-top: 8px; }
+.ui-row { display: flex; gap: 12px; }
+.ui-row .ui-field { flex: 1; }
+.ui-submit { align-self: flex-start; }
+
+/* trust strip */
+.logos { display: flex; flex-wrap: wrap; gap: 34px; align-items: center; justify-content: center; opacity: .7; }
+.logos .lg { font-family: var(--font); font-weight: 700; font-size: 18px; letter-spacing: -.02em; color: var(--ink-faint); }
+
+/* benefit pillars use .grid.g-3 + .card from structural; .ico defined there too */
+
+/* feature rows (alternating, light, floor weight) */
+.feat { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; padding: 46px 0; border-top: 1px solid var(--line); }
+.feat.flip .feat-copy { order: 2; }
+.feat-art { border-radius: var(--r-lg); border: 1px solid var(--line); background: var(--bg-2); box-shadow: var(--shadow-rest); min-height: 240px; display: grid; place-items: center; overflow: hidden; }
+.feat-art .tile-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; padding: 24px; width: 100%; }
+.feat-art .tile { height: 78px; border-radius: 10px; background: var(--card-bg); border: 1px solid var(--line); box-shadow: var(--shadow-rest); }
+.feat-art .tile.accent { background: var(--grad-accent); border: 0; box-shadow: var(--shadow-accent); }
+
+/* "replaces" chips */
+.replaces { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.rep-chip { font-family: var(--mono); font-size: 12px; padding: 7px 12px; border-radius: 8px; border: 1px solid var(--line); color: var(--ink-faint); text-decoration: line-through; text-decoration-color: var(--accent-tint-22); }
+
+/* FAQ (native accordion, standard) */
+.faq-list { max-width: 820px; }
+.faq-list details { border-top: 1px solid var(--line); padding: 4px 0; }
+.faq-list details:last-child { border-bottom: 1px solid var(--line); }
+.faq-list summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 20px 2px; font-family: var(--font); font-weight: 700; font-size: 17px; }
+.faq-list summary::-webkit-details-marker { display: none; }
+.faq-list summary .pm { font-family: var(--mono); color: var(--accent); font-size: 20px; transition: transform .2s var(--ease); }
+.faq-list details[open] summary .pm { transform: rotate(45deg); }
+.faq-list .ans { padding: 0 2px 22px; color: var(--ink-soft); max-width: 64ch; }
+
+/* dark stat punctuation reuses .stat + .surface-dark from structural */
+.stat-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; }
+.stat-row .s { padding: 0 26px; border-left: 1px solid var(--line-2); }
+.stat-row .s:first-child { border-left: 0; padding-left: 0; }
+.stat-row .cap { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); margin-top: 8px; }
+
+@media (max-width: 920px) {
+  .std-hero { grid-template-columns: 1fr; gap: 44px; }
+  .feat, .ui-row { grid-template-columns: 1fr; }
+  .feat.flip .feat-copy { order: 0; }
+  .stat-row { grid-template-columns: 1fr 1fr; gap: 24px 12px; }
+  .stat-row .s { border-left: 0; padding: 0; }
+}
+@media (max-width: 560px) { .stat-row { grid-template-columns: 1fr; } }

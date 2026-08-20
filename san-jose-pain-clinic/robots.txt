@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kayl-blip.github.io/client-previews/san-jose-pain-clinic/sitemap.xml

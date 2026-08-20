@@ -1,0 +1,113 @@
+/* ============================================================================
+   san-jose-pain-clinic - LOCKED CHROME SHEET
+   Source: the ② CHROME tournament winner, concept A "Reference-faithful", owner-picked 2026-08-20.
+   Extracted verbatim from _design/_tournament/chrome/concept-a/preview.html so the shipped chrome is
+   byte-faithful to the frame that was approved.
+
+   Built FROM the v4 unified design system:
+     nav    per NAV-PATTERNS.md #2   (classic full bar: wordmark left, links centred, one pill CTA right)
+     footer per FOOTER-STYLES.md #8  (split newsletter and brand)
+     library _MODERN-WOW-SPEC (glass, depth, motion) + _MODERN-DESIGN-PATTERN-LIBRARY (I8 sticky header)
+     sector  composition-medical-health (the appointment CTA is the spine, pinned in the bar)
+   DERIVED FROM C7 visual-direction.md section 3, the Vitalflow reference capture.
+
+   Token-pure: every colour, radius, shadow, space and duration is a --ds-* lookup. Zero literal hex.
+   The seven-item bar intrinsically needs ~1120px, so it collapses to the drawer at 1100px, not 768px.
+   Verified: zero horizontal overflow at 375/768/834/1024/1200/1440.
+   ============================================================================ */
+*{box-sizing:border-box}
+body{margin:0;background:var(--ds-bg-surface);color:var(--ds-ink);font-family:var(--ds-font-body);line-height:1.6;-webkit-font-smoothing:antialiased}
+.skip{position:fixed;top:-60px;left:12px;z-index:var(--ds-z-toast);background:var(--ds-primary);color:var(--ds-on-accent);padding:10px 16px;border-radius:var(--ds-r-control);text-decoration:none}
+.skip:focus{top:10px}
+.cwrap{max-width:var(--ds-container-max);margin-inline:auto;padding-inline:28px}
+
+/* ---- HEADER ---- */
+.site-header{position:sticky;top:0;z-index:var(--ds-z-sticky);background:var(--ds-glass-bg);-webkit-backdrop-filter:var(--ds-glass-blur);backdrop-filter:var(--ds-glass-blur);border-bottom:1px solid var(--ds-line)}
+.hb-inner{display:flex;align-items:center;gap:var(--ds-space-lg);height:74px;justify-content:space-between}
+.brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;flex:0 0 auto}
+.brand__m{width:34px;height:34px;border-radius:var(--ds-r-control);background:var(--ds-primary);display:grid;place-items:center}
+.brand__t{display:flex;flex-direction:column;line-height:1.1}
+.brand__n{font-family:var(--ds-font-display);font-weight:600;font-size:16px;letter-spacing:-.02em;color:var(--ds-ink-heading)}
+.brand__s{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ds-accent-ink);font-weight:600;margin-top:2px}
+.primary-nav{}
+.nav-list{display:flex;align-items:center;gap:var(--ds-space-md);list-style:none;margin:0;padding:0;}
+.nav-link{font-size:14.5px;font-weight:600;color:var(--ds-ink-soft);text-decoration:none;padding:6px 2px;border-radius:var(--ds-r-pill);transition:color var(--ds-dur-fast) var(--ds-ease),background-color var(--ds-dur-fast) var(--ds-ease);white-space:nowrap}
+.nav-link:hover{color:var(--ds-accent-ink)}
+.nav-link.is-active{color:var(--ds-accent-ink)}
+.hb-actions{display:flex;align-items:center;gap:12px;flex:0 0 auto}
+.phone-pill{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14.5px;color:var(--ds-accent-ink);text-decoration:none;padding:10px 16px;border:1px solid var(--ds-line);border-radius:var(--ds-r-pill);white-space:nowrap}
+.phone-pill:hover{border-color:var(--ds-accent);background:var(--ds-accent-soft)}
+.btn-book{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14.5px;padding:11px 20px;border-radius:var(--ds-r-pill);background:var(--ds-primary);color:var(--ds-on-accent);border:1px solid var(--ds-primary);background-clip:padding-box;text-decoration:none;white-space:nowrap;transition:transform var(--ds-dur-fast) var(--ds-ease),box-shadow var(--ds-dur-fast) var(--ds-ease)}
+.btn-book:hover{transform:translateY(-1px);box-shadow:var(--ds-shadow-lift)}
+.burger{display:none;width:42px;height:42px;border-radius:var(--ds-r-control);border:1px solid var(--ds-line);background:transparent;cursor:pointer;align-items:center;justify-content:center;flex:0 0 auto;margin-left:auto}
+.burger span{display:block;width:18px;height:2px;background:var(--ds-ink);position:relative}
+.burger span::before,.burger span::after{content:"";position:absolute;left:0;width:18px;height:2px;background:var(--ds-ink)}
+.burger span::before{top:-6px}.burger span::after{top:6px}
+
+/* ---- MEGA ---- */
+#mega{display:none;position:absolute;left:0;right:0;background:var(--ds-bg-surface-2);border-bottom:1px solid var(--ds-line);box-shadow:var(--ds-shadow-card);z-index:var(--ds-z-overlay)}
+#mega[data-open="true"]{display:block}
+.mega__inner{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:var(--ds-space-lg);padding:var(--ds-space-lg) 0}
+.mega__feature{background:var(--ds-accent-soft);border-radius:var(--ds-r-surface);padding:var(--ds-space-md)}
+.mega__feature h4{font-family:var(--ds-font-display);margin:0 0 8px;font-size:17px;color:var(--ds-ink-heading)}
+.mega__feature p{margin:0;font-size:14px;color:var(--ds-ink-soft)}
+.mega__col h5{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ds-ink-faint);margin:0 0 12px;font-weight:600}
+.mega__col ul{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.mega__col a{font-size:14.5px;color:var(--ds-ink);text-decoration:none}
+.mega__col a:hover{color:var(--ds-accent-ink)}
+
+/* ---- MOBILE DRAWER ---- */
+#mobile-drawer{position:fixed;inset:0 0 0 auto;width:min(400px,88vw);background:var(--ds-bg-surface-2);z-index:var(--ds-z-drawer);transform:translateX(100%);transition:transform var(--ds-dur) var(--ds-ease);display:flex;flex-direction:column;box-shadow:var(--ds-shadow-lift)}
+#mobile-drawer[data-open="true"]{transform:none}
+.d-top{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--ds-line);flex:0 0 auto}
+.d-close{width:38px;height:38px;border-radius:var(--ds-r-control);border:1px solid var(--ds-line);background:transparent;cursor:pointer;font-size:19px;line-height:1;color:var(--ds-ink)}
+.drawer-nav{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 22px}
+.drawer-nav ul{list-style:none;margin:0;padding:0}
+.d-item{border-bottom:1px solid var(--ds-line)}
+.d-link{display:block;padding:16px 0;font-size:17px;font-weight:600;color:var(--ds-ink);text-decoration:none}
+.d-foot{flex:0 0 auto;padding:20px 22px;border-top:1px solid var(--ds-line);background:var(--ds-bg-surface);display:grid;gap:11px}
+.d-nap{font-size:13px;color:var(--ds-ink-soft);line-height:1.5}
+.scrim{position:fixed;inset:0;background:var(--ds-scrim);z-index:var(--ds-z-overlay);opacity:0;pointer-events:none;transition:opacity var(--ds-dur) var(--ds-ease)}
+.scrim[data-open="true"]{opacity:1;pointer-events:auto}
+
+
+/* ---- PRECTA (the single site-wide closing band) ---- */
+.precta{background-color:var(--ds-primary);background-image:var(--ds-glow-wash);color:var(--ds-on-accent);padding:var(--ds-section-py) 0}
+.precta__in{display:grid;grid-template-columns:1.2fr .8fr;gap:var(--ds-space-lg);align-items:center}
+.precta h2{font-family:var(--ds-font-display);font-size:var(--ds-fs-h2);line-height:var(--ds-lh-tight);letter-spacing:var(--ds-tracking-disp);margin:0;color:var(--ds-on-accent)}
+.precta p{margin:12px 0 0;color:rgba(255,255,255,.88);font-size:16px}
+.precta__act{display:flex;gap:12px;flex-wrap:wrap;justify-self:end}
+.btn-onaccent{background:var(--ds-bg-surface-2);color:var(--ds-accent-deep);border-color:var(--ds-bg-surface-2)}
+.btn-ghost-onaccent{background:transparent;color:var(--ds-on-accent);border-color:rgba(255,255,255,.5)}
+
+/* ---- FOOTER ---- */
+.site-footer{background:var(--ds-bg-surface-2);color:var(--ds-ink);border-top:1px solid var(--ds-line);padding:var(--ds-space-2xl) 0 var(--ds-space-lg)}
+.f-top{display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr;gap:var(--ds-space-lg)}
+.f-brand__n{font-family:var(--ds-font-display);font-weight:600;font-size:17px;color:var(--ds-ink-heading)}
+.f-brand p{font-size:14px;color:var(--ds-ink-soft);max-width:34ch}
+.f-col h5{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ds-ink-faint);margin:0 0 14px;font-weight:600}
+.f-col ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.f-col a{font-size:14.5px;color:var(--ds-ink-soft);text-decoration:none}
+.f-col a:hover{color:var(--ds-accent-ink)}
+.f-sub{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+.f-sub input{flex:1 1 170px;min-width:0;font-family:var(--ds-font-body);font-size:14px;padding:10px 13px;border:1px solid var(--ds-line);border-radius:var(--ds-r-control);background:var(--ds-bg-surface);color:var(--ds-ink)}
+.f-bot{margin-top:var(--ds-space-xl);padding-top:var(--ds-space-md);border-top:1px solid var(--ds-line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--ds-ink-faint)}
+.f-flag{font-size:11px;letter-spacing:.05em;text-transform:uppercase;font-weight:600;color:var(--ds-primary-deep);background:var(--ds-accent-light);border-radius:var(--ds-r-control);padding:3px 8px}
+
+/* the seven-item bar intrinsically needs ~1120px, so it collapses at 1100, not 768 */
+@media (max-width:1100px){
+  .primary-nav{display:none}
+  .hb-actions .btn-book,.hb-actions .phone-pill{display:none}
+  .burger{display:flex}
+  .hb-inner{justify-content:space-between}
+}
+@media (min-width:1101px) and (max-width:1199px){
+  .hb-inner{gap:var(--ds-space-md)}
+  .nav-list{gap:var(--ds-space-sm)}
+}
+@media (max-width:860px){
+  .precta__in,.f-top{grid-template-columns:1fr}
+  .precta__act{justify-self:start}
+  .mega__inner{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}

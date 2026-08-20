@@ -1,0 +1,255 @@
+/* ============================================================================
+   san-jose-pain-clinic - LOCKED BRAND TOKENS
+   Source: (1) BRAND-CARD tournament concept B "Diagnostic Teal", owner-picked 2026-08-20.
+   Built FROM the v4 unified design system:
+     _MODERN-DESIGN-PATTERN-LIBRARY  (:root master token vocabulary; D-series depth; E-series type)
+     _MODERN-WOW-SPEC                (the globals overlay: glass / glow / grain / grid / divider)
+     composition-medical-health      (glass + calming tint washes are on-register for this vertical)
+     COLOR-THEORY-PRESETS.md #1      (tuned from the clinic's own existing hexes recorded in C6)
+     TYPOGRAPHY-PAIRINGS.md #1       (Outfit display / Source Sans 3 body)
+     SURFACE-PATTERNS.md #1          (radius + card-chrome roles)
+     MOTION-PATTERNS.md #1           (settle curve + durations)
+   DERIVED FROM C7 visual-direction.md: primary_surface light (BRAND-SIGNATURE surface_dominance
+   "light", dark_ratio 0, energy "bold"). theme_polarity: light, so --ds-ink-heading = --ds-primary-deep.
+
+   CONTRAST: every pair below was computed, not estimated. ink-on-dark on primary-deep = 17.2:1.
+   The SYSTEM families (z-index / opacity / motion-extension) are added by graft-system-tokens.mjs.
+   ============================================================================ */
+
+:root {
+  /* ---- COLOR: brand ---- */
+  --ds-primary:        #0E7C86;   /* CTA + primary brand surfaces (the diagnostic teal) */
+  --ds-primary-deep:   #08171C;   /* THE DARK GROUND - dark bands, footer, heading ink */
+  --ds-primary-soft:   #DDF1F2;   /* tinted bands, eyebrow surfaces */
+
+  /* ---- COLOR: accent ---- */
+  --ds-accent:         #22B8CF;   /* large display, borders, icons, on-dark text */
+  --ds-accent-ink:     #0B6B78;   /* darkened - small text on light (AA) */
+  --ds-accent-soft:    #E2F6F9;   /* tinted accent backgrounds, pills */
+  --ds-accent-deep:    #0A5F6B;   /* dark-band CTA surface */
+  --ds-accent-light:   #6FDCE8;   /* accent foreground on dark grounds */
+
+  /* ---- COLOR: surface ---- */
+  --ds-bg-surface:     #F5FAFA;   /* page background */
+  --ds-bg-surface-2:   #FFFFFF;   /* cards + elevated surfaces */
+  --ds-bg-warm:        #EAF4F4;   /* alternate tinted section band */
+
+  /* ---- COLOR: ink ---- */
+  --ds-ink:            #0E1A1D;   /* default body text */
+  --ds-ink-heading:    #08171C;   /* THEME-POLAR: light brand, so = primary-deep */
+  --ds-ink-soft:       #4A5C60;   /* secondary text */
+  --ds-ink-on-dark:    #EFFAFB;   /* text on dark + accent surfaces */
+
+  /* ---- COLOR: line + scrim + signature ---- */
+  --ds-line:           #D2E4E6;
+  --ds-scrim:          rgba(8,23,28,.58);
+  --ds-signature:      #E8833A;   /* used once, for confirmation states */
+  --ds-success:        #1E9E6A;
+  --ds-success-soft:   #E3F6EE;
+  --ds-warning:        #C2410C;
+  --ds-warning-soft:   #FDEBE0;
+
+  /* ---- TYPOGRAPHY ---- */
+  --ds-font-display: 'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ds-font-body:    'Source Sans 3', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ds-font-mono:    ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* ---- RADIUS (constrained roles) ---- */
+  --ds-r-control: 8px;
+  --ds-r-surface: 20px;
+  --ds-r-pill:    999px;
+
+  /* ---- SHADOW ---- */
+  --ds-shadow-card: 0 1px 2px rgba(8,23,28,.05), 0 10px 28px rgba(8,23,28,.07);
+  --ds-shadow-lift: 0 2px 8px rgba(8,23,28,.09), 0 22px 52px rgba(8,23,28,.14);
+  --ds-shadow-rest: 0 1px 2px rgba(8,23,28,.05);
+
+  /* ---- SPACING + LAYOUT ---- */
+  --ds-space-2xs: 4px;
+  --ds-space-xs:  8px;
+  --ds-space-sm:  14px;
+  --ds-space-md:  24px;
+  --ds-space-lg:  40px;
+  --ds-space-xl:  64px;
+  --ds-space-2xl: 96px;
+  --ds-section-py:    clamp(64px, 8vw, 112px);
+  --ds-container-max: 1160px;
+
+  /* ---- MOTION (base) ---- */
+  --ds-ease: cubic-bezier(.4, 0, .2, 1);
+  --ds-dur:  220ms;
+
+  /* ---- GRADIENT ---- */
+  --ds-accent-2:      #6FDCE8;
+  --ds-grad-brand:    linear-gradient(135deg, #0E7C86, #22B8CF);
+  --ds-grad-text:     linear-gradient(100deg, #22B8CF, #6FDCE8);
+  --ds-grad-hero:     linear-gradient(150deg, #08171C 0%, #0C2A31 55%, #0A5F6B 100%);
+  --ds-fade-to-paper: linear-gradient(180deg, rgba(245,250,250,0) 0%, #F5FAFA 68%);
+
+  /* ---- GLOBALS OVERLAY (modern-wow) ---- */
+  --ds-glass-bg:     rgba(255,255,255,.72);
+  --ds-glass-blur:   blur(16px) saturate(170%);
+  --ds-glass-border: rgba(255,255,255,.62);
+  --ds-hairline:     rgba(14,26,29,.10);
+  --ds-inset-hi:     inset 0 1px 0 rgba(255,255,255,.10);
+  --ds-glow:         0 0 48px rgba(34,184,207,.34);
+  --ds-glow-wash:    radial-gradient(62% 88% at 18% 0%, rgba(34,184,207,.20) 0%, transparent 70%);
+  --ds-grain:        radial-gradient(circle at 1px 1px, rgba(14,26,29,.05) 1px, transparent 0);
+  --ds-grid:         linear-gradient(rgba(34,184,207,.10) 1px, transparent 1px), linear-gradient(90deg, rgba(34,184,207,.10) 1px, transparent 1px);
+  --ds-grid-size:    44px 44px;
+  --ds-divider-h:    80px;
+  --ds-icon-tint:    brightness(0) saturate(100%) invert(62%) sepia(64%) saturate(478%) hue-rotate(139deg) brightness(93%) contrast(90%);
+
+  /* z-index (system, grafted) — grafted by graft-system-tokens.mjs (FIX #3) */
+  --ds-z-below: -1;
+  --ds-z-base: 0;
+  --ds-z-raised: 1;
+  --ds-z-sticky: 1000;
+  --ds-z-overlay: 1040;
+  --ds-z-drawer: 1050;
+  --ds-z-modal: 1060;
+  --ds-z-toast: 1080;
+
+  /* opacity (system, grafted) — grafted by graft-system-tokens.mjs (FIX #3) */
+  --ds-opacity-muted: .72;
+  --ds-opacity-disabled: .45;
+  --ds-opacity-faint: .12;
+  --ds-opacity-scrim: .55;
+  --ds-opacity-texture: .40;
+  --ds-opacity-veil: .85;
+
+  /* motion (system, grafted) — grafted by graft-system-tokens.mjs (FIX #3) */
+  --ds-dur-fast: .2s;
+  --ds-dur-slow: .6s;
+  --ds-ease-out: cubic-bezier(.16,1,.3,1);
+  --ds-dur-data: 1.4s;
+
+  /* ---- ROLES READ BY THE SHARED STRUCTURAL SHEET ---- */
+  --ds-accent-strong:  #0A5F6B;   /* pressed state, heavier rule on light */
+  --ds-accent-bright:  #22B8CF;   /* true brand hue: large display, borders, icons */
+  --ds-on-accent:      #FFFFFF;   /* foreground that sits ON an accent fill */
+  --ds-divider:        #D2E4E6;
+  --ds-ink-faint:      #5F767C;   /* labels and captions */
+
+  /* ---- FLUID TYPE SCALE (tuned to the Vitalflow reference measurement) ---- */
+  --ds-fs-display:     clamp(40px, 5.4vw, 68px);
+  --ds-fs-h1:          clamp(38px, 4.9vw, 62px);
+  --ds-fs-h2:          clamp(30px, 3.7vw, 50px);
+  --ds-fs-h3:          clamp(19px, 1.6vw, 24px);
+  --ds-fs-body:        17px;
+  --ds-fs-caption:     12px;
+  --ds-tracking-disp:  -0.032em;
+  --ds-tracking-label: 0.1em;
+  --ds-lh-tight:       1.08;
+  --ds-lh-body:        1.6;
+
+
+  /* ---- LEGACY-NAME ALIAS LAYER -------------------------------------------
+     The two brand-card TIER sheets are authored against the pre---ds- bare token
+     names. Rather than rewrite those shared sheets, every bare name is aliased
+     here to its --ds-* role. CSS custom properties substitute LAZILY, so an alias
+     declared once in :root still resolves to the DARK value inside .surface-dark
+     (it re-reads --ds-* in the current context). One mapping, no duplication. */
+  --accent:            var(--ds-accent);
+  --accent-hot:        var(--ds-accent-bright);
+  --accent-soft:       var(--ds-accent-soft);
+  --accent-tint-14:    rgba(34,184,207,.14);
+  --accent-tint-22:    rgba(34,184,207,.22);
+  --on-accent:         var(--ds-on-accent);
+  --bg:                var(--ds-bg-surface);
+  --bg-2:              var(--ds-bg-surface-2);
+  --bg-warm:           var(--ds-bg-warm);
+  --card-bg:           var(--ds-bg-surface-2);
+  --card-border:       var(--ds-line);
+  --ink:               var(--ds-ink);
+  --ink-soft:          var(--ds-ink-soft);
+  --ink-faint:         var(--ds-ink-faint);
+  --line:              var(--ds-line);
+  --line-2:            var(--ds-divider);
+  --font:              var(--ds-font-body);
+  --mono:              var(--ds-font-mono);
+  --ease:              var(--ds-ease);
+  --pad:               var(--ds-section-py);
+  --r-lg:              var(--ds-r-surface);
+  --grad-accent:       var(--ds-grad-brand);
+  --glass-inset:       var(--ds-inset-hi);
+  --shadow:            var(--ds-shadow-card);
+  --shadow-rest:       var(--ds-shadow-rest);
+  --shadow-accent:     var(--ds-glow);
+  --shadow-cinematic:  var(--ds-shadow-lift);
+
+}
+
+/* ============================================================================
+   .surface-dark - the SAME token CATEGORIES re-declared for the dark ground.
+   Dropping class="surface-dark" re-skins every component with no missing property.
+   Surface-invariant families (radius / spacing / z-index / opacity / motion / type)
+   live in :root ONLY and are never redeclared here.
+   ============================================================================ */
+[data-surface="dark"],
+.surface-dark {
+  /* brand */
+  --ds-primary:        #22B8CF;
+  --ds-primary-deep:   #041014;
+  --ds-primary-soft:   #10333B;
+
+  /* accent */
+  --ds-accent:         #6FDCE8;
+  --ds-accent-ink:     #6FDCE8;
+  --ds-accent-soft:    #10333B;
+  --ds-accent-deep:    #0A5F6B;
+  --ds-accent-light:   #6FDCE8;
+
+  /* surface */
+  --ds-bg-surface:     #08171C;
+  --ds-bg-surface-2:   #0F262D;
+  --ds-bg-warm:        #0C1F25;
+
+  /* ink */
+  --ds-ink:            #EFFAFB;
+  --ds-ink-heading:    #EFFAFB;
+  --ds-ink-soft:       #A7C2C7;
+  --ds-ink-on-dark:    #EFFAFB;
+
+  /* line + scrim + signature */
+  --ds-line:           #1E3A42;
+  --ds-scrim:          rgba(4,16,20,.66);
+  --ds-signature:      #E8833A;
+  --ds-success:        #4ADE9B;
+  --ds-success-soft:   #10332A;
+  --ds-warning:        #F59E6B;
+  --ds-warning-soft:   #35201A;
+
+  /* shadow - deeper on a dark ground */
+  --ds-shadow-card: 0 1px 2px rgba(0,0,0,.34), 0 12px 32px rgba(0,0,0,.40);
+  --ds-shadow-lift: 0 2px 8px rgba(0,0,0,.42), 0 26px 60px rgba(0,0,0,.52);
+  --ds-shadow-rest: 0 1px 2px rgba(0,0,0,.32);
+
+  /* gradient */
+  --ds-accent-2:      #22B8CF;
+  --ds-grad-brand:    linear-gradient(135deg, #22B8CF, #6FDCE8);
+  --ds-grad-text:     linear-gradient(100deg, #6FDCE8, #B9F1F7);
+  --ds-grad-hero:     linear-gradient(150deg, #041014 0%, #0C2A31 60%, #0A5F6B 100%);
+  --ds-fade-to-paper: linear-gradient(180deg, rgba(8,23,28,0) 0%, #08171C 68%);
+
+  /* globals overlay */
+  --ds-glass-bg:     rgba(12,34,40,.66);
+  --ds-glass-blur:   blur(16px) saturate(170%);
+  --ds-glass-border: rgba(255,255,255,.14);
+  --ds-hairline:     rgba(255,255,255,.12);
+  --ds-inset-hi:     inset 0 1px 0 rgba(255,255,255,.08);
+  --ds-glow:         0 0 56px rgba(34,184,207,.30);
+  --ds-glow-wash:    radial-gradient(62% 88% at 18% 0%, rgba(34,184,207,.22) 0%, transparent 70%);
+  --ds-grain:        radial-gradient(circle at 1px 1px, rgba(255,255,255,.05) 1px, transparent 0);
+  --ds-grid:         linear-gradient(rgba(111,220,232,.09) 1px, transparent 1px), linear-gradient(90deg, rgba(111,220,232,.09) 1px, transparent 1px);
+  --ds-divider-h:    80px;
+  --ds-icon-tint:    brightness(0) saturate(100%) invert(88%) sepia(24%) saturate(720%) hue-rotate(140deg) brightness(102%) contrast(92%);
+
+  /* roles read by the shared structural sheet */
+  --ds-accent-strong:  #22B8CF;
+  --ds-accent-bright:  #6FDCE8;
+  --ds-on-accent:      #04141A;
+  --ds-divider:        rgba(111,220,232,.40);
+  --ds-ink-faint:      #7FA0A7;
+
+}
