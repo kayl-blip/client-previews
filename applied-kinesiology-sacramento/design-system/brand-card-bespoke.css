@@ -35,9 +35,12 @@
    with it automatically. NOTE for anyone tempted by `--bw-seam--flush` here instead: pinning would
    also fix the cut, but its 78px box against this hero's 64/40px bottom padding would overlap the
    action row and the practitioner rail. Matching the pull is the safe fix. */
+/* -25% owner polish 2026-08-21: hero padding was 96px top / 64px bottom -> 72 / 48. --hero-pad-b
+   stays a variable because .tier-bespoke .bw-hero .bw-seam--band pulls by calc(var(--hero-pad-b) * -1)
+   -- the arc's landing tracks this automatically, so the seam needs no separate edit. */
 .tier-bespoke .bw-hero {
-  --hero-pad-b: var(--ds-space-xl);
-  padding: var(--ds-space-2xl) 0 var(--hero-pad-b);
+  --hero-pad-b: calc(var(--ds-space-xl) * .75);
+  padding: calc(var(--ds-space-2xl) * .75) 0 var(--hero-pad-b);
   overflow: hidden;
   background-color: var(--ds-bg-surface);
   background-image:
@@ -96,8 +99,25 @@
 .tier-bespoke .bw-lede { font-size: 20px; max-width: 36rem; }
 
 /* --- education band (V6: conversion is education G5, never pricing, for this client) --- */
+/* FLUID band rhythm, and it must stay fluid. A flat value here outranks the structural sheet's
+   `section { padding: … }` (0,2,0 vs 0,0,1) INCLUDING inside the <=600px media query, so a flat
+   72px would hold on a phone while every neighbour dropped to 48px -- and G-CADENCE rule B fails
+   any section whose edge gap exceeds the page median by more than 24px.
+   Endpoints scaled -25% with the rest of the page (owner polish 2026-08-21): was
+   clamp(64px, 9vw, 96px) -> clamp(48px, 6.75vw, 72px). The floor is --ds-section-py-sm, the SAME
+   token the phone section rhythm uses, so at 375 this band matches its neighbours exactly.
+   !important IS LOAD-BEARING, and this is the one place in the build that uses it. index.content.html
+   still carries style="padding-block:clamp(var(--ds-space-xl), 9vw, var(--ds-space-2xl))" on this
+   <section> -- the 2026-08-11 workaround for G8 being unwritable. An inline declaration outranks any
+   selector, so without !important this band alone would keep the OLD 96px rhythm while every other
+   section tightened to 66px, and G-CADENCE rule B would fail the home page (measured: §10[96/96] vs a
+   page median of 66). The inline style could not simply be deleted: G-IMG-CAP blocks every write to
+   index.content.html over PRE-EXISTING marquee-track image reuse (the rails legitimately repeat each
+   asset 3x to cover the track, which the cap counts as a content defect and has no exemption for).
+   WHEN THAT IS RESOLVED: delete the inline style from the <section>, then drop the !important here. */
 .tier-bespoke .bw-educate {
-  padding: var(--ds-space-2xl) 0;
+  padding-block: clamp(var(--ds-section-py-sm), 6.75vw, calc(var(--ds-space-2xl) * .75)) !important;
+  padding-inline: 0;
   background-image: linear-gradient(180deg, var(--ds-bg-surface-2) 0%, var(--ds-bg-warm) 100%);
 }
 
@@ -107,7 +127,8 @@
 .tier-bespoke .bw-hero .bw-seam--band { margin-bottom: calc(var(--hero-pad-b) * -1); }
 
 @media (max-width: 900px) {
-  .tier-bespoke .bw-hero { --hero-pad-b: var(--ds-space-lg); }
+  /* -25% owner polish 2026-08-21: was var(--ds-space-lg) (40px) -> 30px. */
+  .tier-bespoke .bw-hero { --hero-pad-b: calc(var(--ds-space-lg) * .75); }
   .tier-bespoke .bw-hero h1 { max-width: none; }
   .tier-bespoke .bw-seam { height: 60px; }
 }

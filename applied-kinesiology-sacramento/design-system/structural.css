@@ -32,6 +32,13 @@ body {
   line-height: 1.68;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Long unbreakable tokens (bare domains, IDs) must fold rather than widen the page.
+     Owner mobile pass 2026-08-21: "appliedkinesiologysacramento.com" in the /sitemap lede
+     is 32 chars with no break opportunity, and at 320px it pushed the DOCUMENT to 335px —
+     the only horizontal overflow measured across 48 pages x 7 widths. break-word only acts
+     on a word that would otherwise overflow, so text that already fits is untouched; this
+     is a floor against the next bare URL someone writes, not a restyle. */
+  overflow-wrap: break-word;
 }
 
 img, svg, video { max-width: 100%; height: auto; display: block; }
@@ -1194,14 +1201,26 @@ main { counter-reset: bw-shead; }
   padding: 0; margin: -1px; overflow: hidden;
   clip-path: inset(50%); white-space: nowrap; border: 0;
 }
+/* CLIP-hidden, not pushed to left:-9999px (owner mobile pass 2026-08-21). The old
+   off-screen-left parking was the ONLY horizontal-overflow source measured anywhere on the
+   site: /sitemap at 320px reported the document 15px wider than the viewport. A 187px box
+   parked at -9999px still participates in the scrollable overflow region, and on the one
+   page narrow enough for the layout to stop absorbing it, it surfaced as a real sideways
+   scroll. The width/height:1px + clip-path pattern removes the box from the overflow
+   calculation entirely while keeping the link in the a11y tree and focusable. */
 .kit-skip-link {
-  position: absolute; left: -9999px; top: 0;
+  position: absolute; left: 0; top: 0;
+  width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
   z-index: var(--ds-z-toast);
   padding: 12px 18px;
   background: var(--ds-accent-deep); color: var(--ds-ink-on-dark);
   border-radius: var(--ds-r-control);
 }
-.kit-skip-link:focus { left: var(--ds-space-md); top: var(--ds-space-md); }
+.kit-skip-link:focus {
+  width: auto; height: auto; overflow: visible; clip-path: none;
+  left: var(--ds-space-md); top: var(--ds-space-md);
+}
 
 :where(a, button, input, select, textarea, summary):focus-visible {
   outline: 3px solid var(--ds-accent-deep);
@@ -1223,7 +1242,9 @@ main { counter-reset: bw-shead; }
 
 @media (max-width: 600px) {
   body { font-size: 16px; }
-  section { padding: var(--ds-space-xl) 0; }
+  /* -25% owner polish 2026-08-21: was var(--ds-space-xl) (64px) -> --ds-section-py-sm (48px).
+     Paired with the .bw-seam--band pull below, which MUST resolve to the same value. */
+  section { padding: var(--ds-section-py-sm) 0; }
   .bw-btn { width: 100%; justify-content: center; }
 }
 
@@ -1537,7 +1558,16 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
 /* the six treatment tools, as links */
 .bw-chiplist { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--ds-space-xs); }
 .bw-chiplist li { margin: 0; }
-.bw-chiplist a { text-decoration: none; }
+/* inline-flex, not the default inline (owner mobile pass 2026-08-21). .bw-chip is itself
+   inline-flex with 7px/14px padding, so the CHIP looked correct while the <a> WRAPPING it
+   stayed an inline box and measured just 20px tall — the tap target was half the size of
+   the thing the eye sees. Making the anchor inline-flex fits it to the chip it contains. */
+.bw-chiplist a { text-decoration: none; display: inline-flex; }
+/* On a finger, take the whole chip to the 44px target (desktop keeps the compact chip). */
+@media (pointer: coarse), (max-width: 768px) {
+  .bw-chiplist a { min-height: 44px; align-items: center; }
+  .bw-chiplist .bw-chip { min-height: 44px; }
+}
 .bw-chiplist .bw-chip { transition: border-color var(--ds-dur) var(--ds-ease), color var(--ds-dur) var(--ds-ease); }
 .bw-chiplist a:hover .bw-chip { border-color: var(--ds-accent); color: var(--ds-accent-deep); }
 
@@ -1943,7 +1973,11 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
    ONE rhythm value drives every rung so the ladder's cadence is literally uniform:
    leading == trailing == --ak-c-rhythm in each band, which is what the section-rhythm
    gate measures and what makes a numbered read feel like even steps rather than drift. */
-:root { --ak-c-rhythm: clamp(52px, 5.6vw, 80px); }
+/* -25% owner polish 2026-08-21: was clamp(52px, 5.6vw, 80px). Every term scaled by .75 so the
+   ladder keeps its shape (min/preferred/max all move together). This band system is a SECOND,
+   independent section rhythm -- reducing --ds-section-py alone would have left the who-its-for
+   rungs at the old 80px while every other page tightened to 66px. */
+:root { --ak-c-rhythm: clamp(39px, 4.2vw, 60px); }
 .ak-c-rung { padding-block: var(--ak-c-rhythm); }
 /* The rung numeral carries NO opacity token. --ds-opacity-muted (.72) over accent ink
    on the warm band measured 2.88:1 against the 3.0 large-text floor: an opacity applied
@@ -2050,7 +2084,11 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
 /* ------------------------------------------------------------------
    T-COMPANY — concept-a (owner pick)
    ------------------------------------------------------------------ */
-@media (max-width: 600px) { .bw-seam--band { margin-bottom: calc(var(--ds-space-xl) * -1); } }
+/* Pinned to the SAME token as the <=600px section padding above (--ds-section-py-sm). It was
+   calc(var(--ds-space-xl) * -1); when section rhythm was retuned -25% on 2026-08-21 a literal
+   space-xl here would have left the pull 16px deeper than the padding it cancels and stranded
+   the page ground under the arc. Both sides now read one token, so they cannot drift. */
+@media (max-width: 600px) { .bw-seam--band { margin-bottom: calc(var(--ds-section-py-sm) * -1); } }
 
 /* ============================================================================
    CONCEPT A - "The signed letter".  Token-pure: every colour resolves through a

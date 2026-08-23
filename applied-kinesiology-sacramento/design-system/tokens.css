@@ -100,7 +100,16 @@
   --ds-space-xl: 64px;
   --ds-space-2xl: 96px;
   --ds-container-max: 1160px;
-  --ds-section-py: 88px;
+  /* Section vertical rhythm. Owner UI-polish pass 2026-08-21: tightened -25%
+     (88px -> 66px desktop; 64px -> 48px at <=600px). The phone value is a TOKEN, not a
+     literal inside the media block, because the <=600px section padding and the
+     .bw-seam--band pull that CANCELS it must resolve to the SAME number -- when those two
+     drift the arc strands a band of page ground under itself. One token, they cannot drift.
+     NB: the phone value is deliberately NOT --ds-space-xl (64px). It was, and space-xl is
+     also a generic gap token (.row--loose, .bw-figures, column-gap); scaling section rhythm
+     through it would have silently retuned every one of those too. */
+  --ds-section-py: 66px;
+  --ds-section-py-sm: 48px;
 
   /* ---- Motion: the 2 required workhorses ---- */
   --ds-dur:  .28s;

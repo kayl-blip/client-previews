@@ -13,10 +13,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../design-system/tokens.css?v=5214a254">
-  <link rel="stylesheet" href="../design-system/chrome.css?v=702c6183">
-  <link rel="stylesheet" href="../design-system/structural.css?v=998c5ddc">
-  <link rel="stylesheet" href="../design-system/brand-card-standard.css?v=6010adaa">
+<link rel="stylesheet" href="../design-system/tokens.css?v=95c07185">
+  <link rel="stylesheet" href="../design-system/chrome.css?v=236f7eff">
+  <link rel="stylesheet" href="../design-system/structural.css?v=829aa29f">
+  <link rel="stylesheet" href="../design-system/brand-card-standard.css?v=8b2c6e39">
 
 <link rel="canonical" href="https://kayl-blip.github.io/client-previews/applied-kinesiology-sacramento/accessibility/">
 <meta property="og:type" content="website">
@@ -777,11 +777,30 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', measure);
 
-  /* ================= THE ONE MEGA: click only, focus trapped ================= */
-  /* No mouseenter / mouseover handler exists anywhere in this file on purpose:
-     a panel this tall opening on a mouse crossing the row is the failure the
-     four hover dropdowns were replaced to avoid. */
+  /* ============ THE ONE MEGA: HOVER-opens on desktop, click still toggles ============ */
+  /* CHANGED 2026-08-21 (owner: "opens on hover only instead of requiring a click").
+     This block previously carried the OPPOSITE instruction: hover was deliberately absent,
+     because a panel this tall opening on a mouse merely crossing the row is the failure the
+     four original hover dropdowns were replaced to avoid. That concern is real, so hover is
+     FENCED rather than naive:
+       · HOVER_OK gates on (hover:hover) and (pointer:fine) as well as the 1280px desktop
+         edge. A touch device reports a coarse pointer and never hover-opens — on touch,
+         emulated hover fires on first tap and would swallow the tap meant for the link.
+       · OPEN_MS intent delay: the pointer must REST on the trigger, so a mouse travelling
+         across the row to the Book pill cannot strobe the panel open behind it.
+       · CLOSE_MS grace: travelling from the trigger down to the panel crosses the bar's own
+         padding, and an immediate close on mouseleave would make the panel unreachable.
+     CLICK IS KEPT, not replaced. The caret is a <button>, so Enter/Space dispatches this same
+     click handler — it IS the keyboard path. Removing it to make hover the only opener would
+     leave keyboard users no way to open the menu at all. The owner asked not to be REQUIRED
+     to click, and they are not.
+     openedBy is load-bearing for accessibility — see megaTrap below. */
   var openBtn = null;
+  var openedBy = null;          /* 'hover' | 'click' — how the panel now open was opened */
+  var hoverTimer = null;        /* pending open  (intent delay) */
+  var closeTimer = null;        /* pending close (grace delay)  */
+  var OPEN_MS = 90, CLOSE_MS = 220;
+  var HOVER_OK = window.matchMedia('(min-width: 1280px) and (hover: hover) and (pointer: fine)');
 
   function visible(el) {
     var s = window.getComputedStyle(el);
@@ -802,11 +821,12 @@
     mega.classList.toggle('is-open', !!openBtn);
     mega.setAttribute('aria-hidden', openBtn ? 'false' : 'true');
   }
-  function openMega(btn) { openBtn = btn; paintMega(); }
+  function openMega(btn, how) { openBtn = btn; openedBy = how || 'click'; paintMega(); }
   function closeMega(returnFocus) {
     if (!openBtn) return;
     var was = openBtn;
     openBtn = null;
+    openedBy = null;
     paintMega();
     if (returnFocus && was.focus) was.focus();
   }
@@ -814,7 +834,46 @@
   megaBtns.forEach(function (btn) {
     btn.addEventListener('click', function (e) {
       e.preventDefault();
-      if (openBtn === btn) closeMega(true); else openMega(btn);
+      cancelHoverTimers();                     /* a click is decisive — drop any pending hover intent */
+      if (openBtn === btn) closeMega(true); else openMega(btn, 'click');
+    });
+  });
+
+  /* ---------------- hover open (desktop, fine pointer only) ---------------- */
+  function cancelHoverTimers() {
+    if (hoverTimer) { window.clearTimeout(hoverTimer); hoverTimer = null; }
+    if (closeTimer) { window.clearTimeout(closeTimer); closeTimer = null; }
+  }
+  function hoverOpen(btn) {
+    if (!HOVER_OK.matches) return;
+    cancelHoverTimers();
+    if (openBtn === btn) return;                       /* already showing this one */
+    hoverTimer = window.setTimeout(function () { openMega(btn, 'hover'); }, OPEN_MS);
+  }
+  /* Only a HOVER-opened panel closes on mouse-out. A panel the user deliberately CLICKED open
+     stays open until they click away or press Escape — otherwise the pointer drifting off the
+     header would yank away a panel they explicitly asked for. */
+  function hoverClose() {
+    if (!HOVER_OK.matches) return;
+    cancelHoverTimers();
+    if (openedBy !== 'hover') return;
+    closeTimer = window.setTimeout(function () { closeMega(false); }, CLOSE_MS);
+  }
+  megaBtns.forEach(function (btn) {
+    var li = btn.parentNode;                            /* the .ck-item carries label + caret */
+    if (!li || !li.addEventListener) return;
+    li.addEventListener('mouseenter', function () { hoverOpen(btn); });
+    li.addEventListener('mouseleave', hoverClose);
+  });
+  /* the panel itself keeps it alive while the pointer is inside it */
+  mega.addEventListener('mouseenter', function () { if (HOVER_OK.matches) cancelHoverTimers(); });
+  mega.addEventListener('mouseleave', hoverClose);
+  /* hovering a nav item that has NO panel dismisses an open one — otherwise the mega hangs
+     over the row while the pointer is clearly somewhere else. */
+  Array.prototype.slice.call(document.querySelectorAll('.ck-item')).forEach(function (li) {
+    if (li.querySelector('[data-mega-trigger]')) return;
+    li.addEventListener('mouseenter', function () {
+      if (HOVER_OK.matches && openedBy === 'hover') { cancelHoverTimers(); closeMega(false); }
     });
   });
 
@@ -828,6 +887,13 @@
      next .ck-top on the second Tab. Driving the index closes it in both directions. */
   function megaTrap(e) {
     if (!openBtn || e.key !== 'Tab') return;
+    /* NEVER trap a HOVER-opened panel (added with hover, 2026-08-21). The trap is correct for a
+       panel the user deliberately opened, but a hover-opened panel can be showing simply because
+       the pointer is resting on the nav while the user works the KEYBOARD elsewhere. Trapping
+       then would capture Tab into a menu they never asked for and could not see the cause of —
+       a keyboard user held hostage by mouse position. Instead the panel yields: it closes and
+       the Tab proceeds normally, un-prevented. */
+    if (openedBy === 'hover') { cancelHoverTimers(); closeMega(false); return; }
     var ring = [openBtn].concat(focusablesIn(mega));
     if (ring.length < 2) return;
     var at = ring.indexOf(document.activeElement);
@@ -905,7 +971,10 @@
   });
 
   /* ---------- keep the two modes from ever being open at once ---------- */
-  function onBreak(e) { if (e.matches) closeDrawer(); else closeMega(false); }
+  /* cancelHoverTimers on every break: a pending open scheduled at desktop width must not fire
+     after a resize has already collapsed the row into the drawer, which would leave .ck-item
+     marked data-open="true" behind a nav that is no longer displayed. */
+  function onBreak(e) { cancelHoverTimers(); if (e.matches) closeDrawer(); else closeMega(false); }
   if (DESKTOP.addEventListener) DESKTOP.addEventListener('change', onBreak);
   else if (DESKTOP.addListener) DESKTOP.addListener(onBreak);
 })();

@@ -107,8 +107,13 @@ summary:focus-visible,
   font-size:clamp(13.5px,1vw,15.5px); line-height:1.12;
   letter-spacing:-.008em; color:var(--ds-ink-heading); white-space:nowrap;
 }
+/* 10px -> 11px (owner mobile pass 2026-08-21). This is real reading content ("Kinesiology
+   Clinic"), not ornament, and 10px uppercase at .19em tracking measured as the smallest
+   text anywhere on the site. The 11.5px eyebrow labels (.ck-flab, .bw-qcard__tag) are left
+   alone deliberately — those are a letter-spaced micro-label register the owner approved,
+   and this one only fell below them because it had drifted, not by design. */
 .ck-lock__desc{
-  display:block; margin-top:4px; font-size:10px; font-weight:700;
+  display:block; margin-top:4px; font-size:11px; font-weight:700;
   letter-spacing:.19em; text-transform:uppercase; color:var(--ds-accent-ink);
 }
 .ck-lock:hover .ck-lock__name{color:var(--ds-accent-deep)}
@@ -589,8 +594,35 @@ body.ck-open .sticky-cta{display:none}
 @media (max-width:430px){
   .ck-lock img{height:38px}
   .ck-lock__name{white-space:normal; font-size:13px; max-width:186px}
-  .ck-lock__desc{font-size:9.2px; letter-spacing:.16em}
+  /* 9.2px -> 10.5px (owner mobile pass 2026-08-21): 9.2px was the smallest rendered text
+     on the site, on the NARROWEST screens, where legibility matters most. Tracking is
+     eased to .13em so the slightly larger face still fits the 186px lock column. */
+  .ck-lock__desc{font-size:10.5px; letter-spacing:.13em}
 }
+/* ============================================================================
+   MOBILE TOUCH TARGETS — owner mobile-optimization pass, 2026-08-21.
+   MEASURED, not assumed: rendered at 320/360/375/390/414 across all 48 pages, the
+   footer's STANDALONE navigation links came out 19px tall (.ck-fg a — font-size with
+   no box) and the legal row 23px (.ck-legal a). Both fail even WCAG 2.5.8 AA's 24x24
+   floor, well short of the 44x44 the CVV tap-target check and Apple/Material both use.
+   The links were never *visually* broken, which is why no gate caught it: .ck-fg a set
+   only a font-size, so the anchor collapsed to its line box while the eye read the 9px
+   list gap as the spacing.
+   SCOPED to coarse pointers / phone-and-tablet widths so the desktop footer keeps its
+   tight 19px+9px rhythm — this buys touch accuracy exactly where a finger is used.
+   ul gap goes to 0 because the 44px min-height now IS the separation; leaving the 9px
+   would add 72px of dead air per group on top of it.
+   NOT touched: links inside running prose. WCAG 2.5.8 exempts inline links in a
+   sentence, and padding them would wreck the paragraph leading. Verified by DOM-context
+   probe — 45 standalone vs 15 inline-prose targets on the home page alone. */
+@media (pointer: coarse), (max-width: 768px){
+  .ck-fg ul{gap:0}
+  .ck-fg a{display:flex; align-items:center; min-height:44px}
+  .ck-legal{gap:0 18px}
+  .ck-legal a{display:inline-flex; align-items:center; min-height:44px}
+  .ck-fphone{min-height:44px; display:inline-flex; align-items:center}
+}
+
 @media (prefers-reduced-motion: reduce){
   .ck-dk{opacity:1 !important; transform:none !important; transition-delay:0s !important}
   .ck-mega__panel{opacity:1; transform:none}

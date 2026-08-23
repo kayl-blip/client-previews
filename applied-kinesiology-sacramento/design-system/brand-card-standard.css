@@ -11,8 +11,11 @@
    ============================================================================ */
 
 /* --- page title banner (V6: inner pages always open on a B2 page-title band) --- */
+/* -25% owner polish 2026-08-21: was var(--ds-space-xl) 0 var(--ds-space-lg) (64/40). Scaled via
+   calc rather than swapped to a smaller token so the ratio between the band's top and bottom is
+   preserved exactly, and it stays token-derived (this sheet carries no literals). */
 .tier-standard .bw-pagehead {
-  padding: var(--ds-space-xl) 0 var(--ds-space-lg);
+  padding: calc(var(--ds-space-xl) * .75) 0 calc(var(--ds-space-lg) * .75);
   background-image: linear-gradient(180deg, var(--ds-bg-warm) 0%, var(--ds-bg-surface) 100%);
   border-bottom: 1px solid var(--ds-line);
 }
@@ -32,7 +35,7 @@
 
 /* --- the repeated appointment CTA — the vertical's spine --- */
 .tier-standard .bw-ctaband {
-  padding: var(--ds-space-xl) 0;
+  padding: calc(var(--ds-space-xl) * .75) 0;   /* -25% owner polish 2026-08-21 (was 64px) */
   background-image:
     radial-gradient(70% 140% at 15% 0%, var(--ds-accent-soft) 0%, transparent 55%),
     linear-gradient(180deg, var(--ds-primary-deep) 0%, var(--ds-primary-deep) 100%);
@@ -57,5 +60,6 @@
 .tier-standard .bw-card:hover { transform: translateY(-3px); }
 
 @media (max-width: 600px) {
-  .tier-standard .bw-pagehead { padding: var(--ds-space-lg) 0 var(--ds-space-md); }
+  /* -25% owner polish 2026-08-21: was var(--ds-space-lg) 0 var(--ds-space-md) (40/24). */
+  .tier-standard .bw-pagehead { padding: calc(var(--ds-space-lg) * .75) 0 calc(var(--ds-space-md) * .75); }
 }
