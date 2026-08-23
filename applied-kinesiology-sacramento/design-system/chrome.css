@@ -446,7 +446,12 @@ body.ck-open .ck-dk:nth-child(7){transition-delay:.14s}
 /* -------------------------------------------------- 7. PRE-FOOTER CTA BAND */
 .ck-band{
   background:var(--ds-bg-warm);
-  padding:clamp(56px,7vw,92px) 0;
+  /* Owner 2026-08-24: -20%. This band was MISSED by the 08-21 -25% rhythm pass -- it is the
+     only full-width section whose padding lives here in chrome.css rather than in the section
+     rhythm tokens, so none of the three rhythm systems reached it and it sat at 92px while
+     every neighbouring section had moved to 66px. Owner flagged the resulting gap on index
+     between S10 (.bw-educate) and this band. clamp(56,7vw,92) * .8 -> clamp(45,5.6vw,74). */
+  padding:clamp(45px,5.6vw,74px) 0;
   text-align:center;
 }
 .ck-band__in{max-width:760px; margin-inline:auto; padding-inline:var(--ds-space-md)}

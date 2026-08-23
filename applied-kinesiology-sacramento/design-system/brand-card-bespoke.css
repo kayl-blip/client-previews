@@ -116,7 +116,10 @@
    asset 3x to cover the track, which the cap counts as a content defect and has no exemption for).
    WHEN THAT IS RESOLVED: delete the inline style from the <section>, then drop the !important here. */
 .tier-bespoke .bw-educate {
-  padding-block: clamp(var(--ds-section-py-sm), 6.75vw, calc(var(--ds-space-2xl) * .75)) !important;
+  /* Owner 2026-08-24: a further -20% on top of the 08-21 -25%, paired with the matching -20%
+     on .ck-band in chrome.css -- these two are adjacent on index and the combined 164px of dead
+     whitespace between them read as a break in the page. 48/6.75vw/72 * .8 -> 38.4/5.4vw/57.6. */
+  padding-block: clamp(calc(var(--ds-section-py-sm) * .8), 5.4vw, calc(var(--ds-space-2xl) * .6)) !important;
   padding-inline: 0;
   background-image: linear-gradient(180deg, var(--ds-bg-surface-2) 0%, var(--ds-bg-warm) 100%);
 }
