@@ -320,6 +320,21 @@ main { counter-reset: bw-shead; }
 /* with equal heights the trailing action would float wherever the copy ended; pinning it to the
    bottom aligns every "Read more" across the row, which is what makes the row read as a set */
 .bw-card > .bw-btn, .bw-card > .bw-ghostlink { margin-top: auto; align-self: flex-start; }
+
+/* Card TITLE links are the card's navigation target - the card itself is a <div>/
+   <article>, not an anchor, and there is no card-level click handler, so the title
+   IS the target. Measured 36 of them under 44px across 13 pages (h3 titles 180x27,
+   body links 204x20).
+   Hit band rather than padding, for the same reason as .bw-ghostlink: these are
+   inline anchors inside an h3/p, so padding them would move the card's type.
+   Verified safe before applying: the nearest horizontally-overlapping anchor to any
+   of these is 48px away (tightest: /auto-accident-injury title -> its Book button),
+   and a 44px band on a 27px box reaches only 8.5px, so it cannot cover a neighbour. */
+@media (pointer: coarse){
+  .bw-card h3 > a, .bw-card > p > a{position:relative}
+  .bw-card h3 > a::after, .bw-card > p > a::after{content:""; position:absolute;
+    left:0; right:0; top:50%; transform:translateY(-50%); height:44px}
+}
 /* a .bw-stat used as a card's headline figure carries no bottom margin of its own, so the text
    under it sat at a measured 0px. Give the figure its own breathing room. */
 .bw-card > .bw-stat { margin-bottom: var(--ds-space-sm); }
@@ -533,6 +548,14 @@ main { counter-reset: bw-shead; }
               background-color var(--ds-dur-fast) var(--ds-ease);
 }
 .bw-toc__link:hover { color: var(--ds-accent-deep); background: var(--ds-accent-soft); }
+/* 14.5px/1.4 + 9px padding = a 38px row, measured on the 6 pages that carry a
+   .bw-toc. These are standalone navigation rows, not prose, so WCAG 2.5.8's
+   inline exemption does not apply. 12px padding takes the row to 44px. Coarse
+   pointer only - 38px is comfortable with a cursor and the desktop rail keeps
+   its density. */
+@media (pointer: coarse){
+  .bw-toc__link{padding-block:12px}
+}
 
 /* ============================================================
    4c. INDEX / BROWSE OBJECTS (.bw-filters / .bw-grid / .bw-linklist)
@@ -1602,6 +1625,20 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
 .bw-ghostlink { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; text-decoration: underline; }
 .bw-ghostlink svg { width: 15px; height: 15px; transition: transform var(--ds-dur) var(--ds-ease); }
 .bw-ghostlink:hover svg { transform: translateX(3px); }
+/* Standalone ghostlinks measured 27px tall (4 on the home page). The box cannot
+   simply be padded: .bw-ghostlink is also used INLINE inside running prose (one
+   instance, on /applied-kinesiology), where it is an inline-flex atomic box whose
+   margin box sets the line height - padding it would open that paragraph's
+   leading. CSS cannot tell the two apart either: :only-child and :first-child
+   both count ELEMENTS, not text nodes, so the in-prose instance matches them too.
+   So the HIT AREA is expanded instead of the box - zero layout change in either
+   context. Verified safe before applying: every ghostlink on this site is the only
+   anchor inside its paragraph, so the 44px band cannot steal a neighbour's tap. */
+@media (pointer: coarse){
+  .bw-ghostlink{position:relative}
+  .bw-ghostlink::after{content:""; position:absolute; left:0; right:0;
+    top:50%; transform:translateY(-50%); height:44px}
+}
 
 /* FAQ-ACCORDION #1 - classic expand-rows with a + indicator */
 .bw-faq { border-top: 1px solid var(--ds-line); max-width: 46rem; }
@@ -2288,6 +2325,29 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
 /* Concept B object skins: token-pure. */
 .bw-phone{font-family:var(--ds-font-display);font-size:clamp(26px,2.6vw,34px);line-height:1.08;
   display:inline-block;text-decoration:none;margin:0 0 var(--ds-space-xs)}
+/* The tel: link is the primary conversion action on a local-service site and it
+   rendered a 277x28 tap target on a phone (line-height 1.08 on a 26px face gives
+   a 28px box). Coarse-pointer only, so the desktop lockup keeps its tight optical
+   fit under the hours block. Matches the .ck-fphone treatment from 2026-08-21. */
+@media (pointer: coarse){
+  .bw-phone{display:inline-flex; align-items:center; min-height:44px}
+}
+
+/* The other two STANDALONE tap-to-call links, found by re-auditing what the first
+   pass left behind: /dr-van-wagenen ul.bw-team__contact (110x25) and /conditions
+   .tix-rail__acts (117x27). Both are bare <a href="tel:"> with no class, which is
+   why the .bw-phone rule above did not reach them.
+   DELIBERATELY NOT a blanket `a[href^="tel:"]` rule. Measured first: of 19 in-prose
+   tel: links on this site, 11 sit in a paragraph that ALSO contains another anchor
+   ("Call the office on <tel> to arrange a time", plus a Book link). Making those
+   inline-flex would open the paragraph leading, and giving them a 44px hit band
+   would let that band steal taps from the neighbouring link - trading a small
+   target for a wrong destination. In-prose tel: links are WCAG 2.5.8 exempt and
+   are left exactly as they are. */
+@media (pointer: coarse){
+  .bw-team__contact a[href^="tel:"],
+  .tix-rail__acts a[href^="tel:"]{display:inline-flex; align-items:center; min-height:44px}
+}
 .bw-hours{display:grid;grid-template-columns:minmax(92px,120px) 1fr;gap:6px var(--ds-space-md);max-width:440px;margin:0 0 var(--ds-space-md)}
 .bw-hours dt{font-weight:600;color:var(--ds-ink)}
 .bw-hours dd{margin:0;color:var(--ds-ink-soft)}

@@ -628,6 +628,37 @@ body.ck-open .sticky-cta{display:none}
   .ck-fphone{min-height:44px; display:inline-flex; align-items:center}
 }
 
+/* ============================================================================
+   TOUCH TABLETS AT DESKTOP WIDTHS - all-device pass, 2026-08-24.
+   The 2026-08-21 pass fixed the FOOTER for coarse pointers, but the HEADER was
+   only ever measured on phones, where the burger drawer replaces it entirely.
+   The drawer/mega switch is `@media (min-width:1280px)` - a WIDTH test, and
+   there is no hover/pointer query anywhere in this file - so every touch device
+   1280px and wider is served the mouse-designed header: iPad Pro 12.9" landscape
+   (1366), Surface Pro (1368), Galaxy Tab S9 Ultra (1280).
+   MEASURED on those three with hasTouch+isMobile emulation (pointer:coarse=true,
+   hover:none=true): 10 of 12 header controls came out under 44px on a finger -
+   .ck-caret 17x27 (and that is the control that OPENS the navigation), .ck-top
+   39px x7, .ck-lock 42px, .ck-mega__foot a 22px, .ck-mega__link min 29px.
+   No existing gate could see this: verify.mjs renders every width in a DESKTOP
+   context (newPage({viewport}) only, so pointer:coarse never matches) and its
+   tap-target check only runs at <=768px.
+   SCOPED to `pointer: coarse` so the mouse header keeps its exact current
+   density - 39px rows are comfortable with a cursor.
+   VERTICAL growth only, deliberately: the block comment above measures this
+   bar's natural width at 1265.5px against its own 1280px collapse point, i.e.
+   ~14px of total slack. Widening the two carets to a 44px square would add 54px
+   and overflow the bar at exactly 1280. min-width is held to 24px (WCAG 2.5.8
+   AA's floor, +7px each, inside the slack) and the finger gets its 44px on the
+   vertical axis, where the bar has room. Re-swept at 1280/1281 for overflow. */
+@media (pointer: coarse){
+  .ck-top{padding-block:12px}
+  .ck-caret{min-width:24px; min-height:44px}
+  .ck-lock{min-height:44px}
+  .ck-mega__link{min-height:44px; display:flex; flex-direction:column; justify-content:center}
+  .ck-mega__foot a{display:inline-flex; align-items:center; min-height:44px}
+}
+
 @media (prefers-reduced-motion: reduce){
   .ck-dk{opacity:1 !important; transform:none !important; transition-delay:0s !important}
   .ck-mega__panel{opacity:1; transform:none}
