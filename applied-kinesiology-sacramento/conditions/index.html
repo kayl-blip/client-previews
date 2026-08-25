@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../design-system/tokens.css?v=95c07185">
   <link rel="stylesheet" href="../design-system/chrome.css?v=b72fbd62">
-  <link rel="stylesheet" href="../design-system/structural.css?v=2d056abf">
+  <link rel="stylesheet" href="../design-system/structural.css?v=61f6a0c2">
   <link rel="stylesheet" href="../design-system/brand-card-standard.css?v=8b2c6e39">
 
 <link rel="canonical" href="https://kayl-blip.github.io/client-previews/applied-kinesiology-sacramento/conditions/">
@@ -207,7 +207,7 @@
       <ul>
         <li class="ck-item" data-open="false">
           <a class="ck-top" href="../applied-kinesiology/">Applied Kinesiology</a>
-          <button class="ck-caret" type="button" data-mega-trigger aria-expanded="false" aria-controls="ck-mega" aria-label="Open the conditions and answers menu">
+          <button class="ck-caret" type="button" data-mega-trigger aria-expanded="false" aria-controls="ck-mega-ak" aria-label="Open the applied kinesiology menu">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
           </button>
         </li>
@@ -216,7 +216,7 @@
 
         <li class="ck-item" data-open="false">
           <a class="ck-top" href="../conditions/">Conditions</a>
-          <button class="ck-caret" type="button" data-mega-trigger aria-expanded="false" aria-controls="ck-mega" aria-label="Open the conditions and answers menu">
+          <button class="ck-caret" type="button" data-mega-trigger aria-expanded="false" aria-controls="ck-mega" aria-label="Open the conditions menu">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
           </button>
         </li>
@@ -248,7 +248,7 @@
   </div>
 
   
-  <div class="ck-mega" id="ck-mega" role="group" aria-label="Conditions and straight answers" aria-hidden="true">
+  <div class="ck-mega" id="ck-mega" role="group" aria-label="Conditions" aria-hidden="true">
     <div class="ck-mega__in">
       <div class="ck-mega__panel">
         <p class="ck-mega__eyebrow">Conditions seen in this office</p>
@@ -301,6 +301,33 @@
             </ul>
           </div>
 
+          <div class="ck-mega__foot">
+            <span>Every condition page explains the assessment before it explains the care.</span>
+            <a href="../conditions/">See all conditions</a>
+            <a href="tel:+19167714151">Call (916) 771-4151</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="ck-mega" id="ck-mega-ak" role="group" aria-label="Applied kinesiology" aria-hidden="true">
+    <div class="ck-mega__in">
+      <div class="ck-mega__panel">
+        <p class="ck-mega__eyebrow">The method</p>
+        <h2 class="ck-mega__title">What the assessment is, and whether it fits your case</h2>
+        <p class="ck-mega__lede">Applied kinesiology is how this practice decides what to treat, not a treatment in itself. These pages state the method, the evidence question and the boundary before you book anything.</p>
+        <div class="ck-mega__rule"></div>
+
+        <div class="ck-mega__grid">
+          <div class="ck-mega__col">
+            <h3 class="ck-mega__hd">The method</h3>
+            <ul class="ck-mega__list">
+              <li><a class="ck-mega__link" href="../applied-kinesiology/"><b>Applied Kinesiology</b><span>How the assessment works, step by step</span></a></li>
+            </ul>
+          </div>
+
           <div class="ck-mega__col ck-mega__col--answers">
             <h3 class="ck-mega__hd">Straight answers</h3>
             <ul class="ck-mega__list">
@@ -311,8 +338,8 @@
           </div>
 
           <div class="ck-mega__foot">
-            <span>Every condition page explains the assessment before it explains the care.</span>
-            <a href="../conditions/">See all conditions</a>
+            <span>The assessment is explained before any care is recommended.</span>
+            <a href="../applied-kinesiology/">Read the method</a>
             <a href="tel:+19167714151">Call (916) 771-4151</a>
           </div>
         </div>
@@ -769,7 +796,13 @@
   var hero    = document.querySelector('.ck-hero, .section--hero');
   var realCta = document.querySelector('.precta, .cta-band');
   var siteFoot= document.querySelector('.site-footer');
-  var mega    = document.getElementById('ck-mega');
+  /* Owner revision 2026-08-25 (#1): there are now TWO mega panels (#ck-mega for Conditions,
+     #ck-mega-ak for Applied Kinesiology), so a single `mega` reference no longer works. Each
+     trigger names its own panel through aria-controls, which the markup already had to carry
+     for accessibility, so that attribute is the lookup key rather than a new data- attribute. */
+  function megaPanelFor(btn) {
+    return btn ? document.getElementById(btn.getAttribute('aria-controls')) : null;
+  }
   var megaBtns= Array.prototype.slice.call(document.querySelectorAll('[data-mega-trigger]'));
   var DESKTOP = window.matchMedia('(min-width: 1280px)');   /* MUST track the CSS collapse edge above */
   var lastFocus = null;
@@ -863,8 +896,14 @@
       var li = btn.parentNode;
       if (li && li.setAttribute) li.setAttribute('data-open', on ? 'true' : 'false');
     });
-    mega.classList.toggle('is-open', !!openBtn);
-    mega.setAttribute('aria-hidden', openBtn ? 'false' : 'true');
+    var live = megaPanelFor(openBtn);
+    megaBtns.forEach(function (b) {
+      var p = megaPanelFor(b);
+      if (!p) return;
+      var on = (p === live);
+      p.classList.toggle('is-open', on);
+      p.setAttribute('aria-hidden', on ? 'false' : 'true');
+    });
   }
   function openMega(btn, how) { openBtn = btn; openedBy = how || 'click'; paintMega(); }
   function closeMega(returnFocus) {
@@ -910,9 +949,18 @@
     li.addEventListener('mouseenter', function () { hoverOpen(btn); });
     li.addEventListener('mouseleave', hoverClose);
   });
-  /* the panel itself keeps it alive while the pointer is inside it */
-  mega.addEventListener('mouseenter', function () { if (HOVER_OK.matches) cancelHoverTimers(); });
-  mega.addEventListener('mouseleave', hoverClose);
+  /* the panel itself keeps it alive while the pointer is inside it.
+     Owner revision 2026-08-25 (#1): bound per PANEL now that there are two. */
+  (function () {
+    var bound = [];
+    megaBtns.forEach(function (b) {
+      var p = megaPanelFor(b);
+      if (!p || bound.indexOf(p) !== -1) return;
+      bound.push(p);
+      p.addEventListener('mouseenter', function () { if (HOVER_OK.matches) cancelHoverTimers(); });
+      p.addEventListener('mouseleave', hoverClose);
+    });
+  })();
   /* hovering a nav item that has NO panel dismisses an open one — otherwise the mega hangs
      over the row while the pointer is clearly somewhere else. */
   Array.prototype.slice.call(document.querySelectorAll('.ck-item')).forEach(function (li) {
@@ -939,7 +987,8 @@
        a keyboard user held hostage by mouse position. Instead the panel yields: it closes and
        the Tab proceeds normally, un-prevented. */
     if (openedBy === 'hover') { cancelHoverTimers(); closeMega(false); return; }
-    var ring = [openBtn].concat(focusablesIn(mega));
+    var live = megaPanelFor(openBtn);
+    var ring = [openBtn].concat(live ? focusablesIn(live) : []);
     if (ring.length < 2) return;
     var at = ring.indexOf(document.activeElement);
     e.preventDefault();
@@ -950,7 +999,7 @@
 
   document.addEventListener('click', function (e) {
     if (!openBtn || !e.target) return;
-    if (mega.contains(e.target)) return;
+    if (megaBtns.some(function (b) { var p = megaPanelFor(b); return p && p.contains(e.target); })) return;
     if (e.target.closest && e.target.closest('[data-mega-trigger]')) return;
     closeMega(false);
   });

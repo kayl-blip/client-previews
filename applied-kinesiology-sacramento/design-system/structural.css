@@ -255,6 +255,13 @@ main { counter-reset: bw-shead; }
     linear-gradient(180deg, var(--ds-primary-deep) 0%, var(--ds-primary-deep) 100%);
 }
 
+/* 78px is LOAD-BEARING for .bw-seam--band and must not be reduced: those seams sit IN FLOW
+   and carry margin-bottom: calc(var(--ds-section-py) * -1) to cancel the owning section's
+   bottom padding, and a negative bottom margin can only collapse a box as far as its own
+   height. Dropping this to 36px on 2026-08-25 left ~14px of that pull unrealised and the
+   section-rhythm gate failed at 375px (leading 48 vs trailing 62). The mobile-slope fix the
+   owner asked for lives on the --flush variants below, which are absolutely positioned and
+   therefore cannot affect flow rhythm. */
 .bw-seam { display: block; width: 100%; height: 78px; margin-bottom: -1px; }
 .bw-seam--flip { transform: rotate(180deg); margin: -1px 0 0; }
 
@@ -581,7 +588,13 @@ main { counter-reset: bw-shead; }
   font-size: 13.5px; font-weight: 600; color: var(--ds-accent-deep);
   cursor: pointer;
 }
-.active-filters .chip::after { content: "\00d7"; font-size: 15px; line-height: 1; }
+/* Owner revision 2026-08-25 (#5 /conditions, #15 /sitemap): the chip rendered TWO close
+   glyphs. The browse engine already emits one INSIDE the chip markup itself -
+   <span class="chip" data-chip=".."> Label <b>&times;</b> </span> - and this rule added a
+   second one via ::after. Removed HERE rather than in the engine: browse-engine.js is a SHARED
+   skill script that build.mjs inlines into every site, so editing it would change other builds.
+   The engine glyph is retained and stays the visible affordance; the whole chip remains the
+   click target, which is what the engine actually binds. */
 
 .bw-filters {
   display: flex; flex-wrap: wrap; align-items: center; gap: var(--ds-space-sm);
@@ -1263,6 +1276,30 @@ main { counter-reset: bw-shead; }
   .bw-portrait { margin-inline: auto; max-width: 290px; }
 }
 
+/* Owner revision 2026-08-25 — trailing rhythm where a card RAIL ends the section.
+   Under 760px .row--cards becomes .is-rail, which carries padding-bottom: var(--ds-space-sm)
+   (14px) so its scroll-progress track has room. verify-section-rhythm measures to the last
+   LAYOUT OBJECT — the card — so trailing read 14 + 48 = 62px against a 48px leading and the
+   gate blocked /about and /patient-info.
+   This asymmetry is NOT new. Until this revision a .bw-mark motif sat below the rail as the
+   section's last object, exactly at the section padding, so the gate measured 48 and never saw
+   it. Removing the motif (owner request #8/#9/#11) exposed the real geometry rather than
+   creating it — confirmed by rebuilding /about with the motif restored, which passes 48/48.
+   The rail's own track padding now counts toward the section's trailing space, so the section
+   subtracts it: card -> 14px track -> 34px padding = 48px, matching the leading exactly, and
+   the scrollbar keeps its room. Scoped to the widths where .is-rail actually exists. */
+@media (max-width: 760px) {
+  section:has(.row--cards.is-rail:last-child) {
+    padding-bottom: calc(var(--ds-section-py) - var(--ds-space-sm));
+  }
+}
+
+@media (max-width: 600px) {
+  section:has(.row--cards.is-rail:last-child) {
+    padding-bottom: calc(var(--ds-section-py-sm) - var(--ds-space-sm));
+  }
+}
+
 @media (max-width: 600px) {
   body { font-size: 16px; }
   /* -25% owner polish 2026-08-21: was var(--ds-space-xl) (64px) -> --ds-section-py-sm (48px).
@@ -1339,11 +1376,43 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
    before this, 17px with the pull alone). Pinning to the section's bottom edge is exact at every
    width — the section is position:relative, so this needs no other change. */
 .bw-seam--flush {
-  position: absolute; left: 0; right: 0; bottom: -1px;
+  position: absolute; left: 0; right: 0;
+  /* Owner revision 2026-08-25 (#3 /applied-kinesiology, #6 /contact, #10 /services).
+     The seam is absolutely positioned over the section bottom padding, so CLEAR SPACE between
+     the last content and the curve = section padding MINUS seam height. At bottom:-1px with a
+     78px seam that was 66 - 78 = -12px at desktop: the curve OVERLAPPED the last content by
+     12px, which is what the owner marked on all three pages. Shrinking the seam far enough to
+     fix it would flatten the curve to ~38:1 across 1440px.
+     Instead the seam BLEEDS below the section boundary by ~38% of its own height, so it keeps
+     its proportions and hands the clear space back: at 1440 the box top sits 40px above the
+     section end, leaving ~26px clear. The bleed lands inside the NEXT section top padding
+     (66px), so nothing below is covered. */
+  bottom: calc(-0.38 * clamp(20px, 5.42vw, 64px));
   width: 100%; margin: 0;
-  max-height: 78px;
 }
-.bw-seam--fluid { height: clamp(40px, 5vw, 78px); }
+
+/* Owner revision 2026-08-25 (#2 section break on mobile, #4 /applied-kinesiology,
+   #7 /contact): the seam is viewBox="0 0 1440 78" with preserveAspectRatio="none", so a
+   FIXED 78px box squashed the 1440-unit curve into 440px on a phone - the identical curve
+   rendered about 3.3x steeper than on a desktop, which is what read as a lopsided hump.
+   Height now tracks width at the viewBox's own ratio (78/1440 = 5.42vw), so the slope is
+   the same at every viewport, with a 36px floor so it never disappears.
+   SCOPED to the flush variants deliberately: they are position:absolute and so cannot
+   affect section rhythm, whereas the in-flow --band seams need their full 78px for the
+   negative-margin arithmetic documented above. Every seam reported by the owner
+   (/applied-kinesiology x2, /contact, /services) is a flush variant.
+   FLOOR 36px -> 20px (owner revision #3/#6/#10, same pass): 5.42vw is 20.3px at 375, so a 36px
+   floor was ABOVE the proportional value and served no purpose except to eat clear space. The
+   seam is position:absolute over the section bottom padding, so its height is subtracted from
+   the visible gap between the last content and the curve: at 375 a 36px seam left only 12-13px
+   of the 48px padding clear, which is what the owner marked. At the true proportional 20px the
+   clear space becomes ~28px AND the slope matches desktop exactly. */
+.bw-seam--flush, .bw-seam--flush-top { height: clamp(20px, 5.42vw, 64px); }
+/* Owner revision 2026-08-25 (#10 /services): --fluid carried its own clamp(40px,5vw,78px),
+   which OVERRODE the flush proportional height and left /services with a 40px seam and only
+   10px of clear space at 375. Aligned to the same viewBox ratio so every flush seam behaves
+   identically. */
+.bw-seam--fluid { height: clamp(20px, 5.42vw, 64px); }
 
 /* --- .bw-seam--flush-top — the EXIT seam, pinned to the top of the section BELOW ---------------
    A seam leaving a dark band cannot live inside that band. `.bw-seam { color: var(--ds-bg-surface) }`
@@ -1903,11 +1972,15 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
   text-decoration: none;
   color: var(--ds-ink);
   border-radius: var(--ds-r-control);
-  transition: background-color var(--ds-dur) var(--ds-ease),
-              padding-left var(--ds-dur) var(--ds-ease);
+  transition: background-color var(--ds-dur) var(--ds-ease);
 }
-.tix-row:hover { background: var(--ds-accent-soft); padding-left: var(--ds-space-sm); }
-@media (prefers-reduced-motion: reduce) { .tix-row:hover { padding-left: var(--ds-space-xs); } }
+/* Owner revision 2026-08-25 (#13): hover animated padding-left from --ds-space-xs to
+   --ds-space-sm, sliding the row text sideways under the cursor. With the tinted background
+   arriving at the same moment, it read as the row growing rather than highlighting. The tint
+   alone is now the affordance and the row no longer moves. The padding-left transition is
+   dropped from the base rule below too, and the prefers-reduced-motion override that existed
+   only to damp that slide goes with it. */
+.tix-row:hover { background: var(--ds-accent-soft); }
 .tix-row b {
   display: block;
   font-family: var(--ds-font-display);
