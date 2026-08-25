@@ -1346,6 +1346,14 @@ main { counter-reset: bw-shead; }
 .bw-seam { color: var(--ds-bg-surface); }
 .bw-seam--deep, .bw-seam--to-dark { color: var(--ds-primary-deep); }
 .bw-seam--to-warm { color: var(--ds-bg-warm); }
+/* An EXIT seam continues the dark band's BOTTOM edge, and that edge is the gradient's END
+   (#263440), not --ds-primary-deep (#1E2A33). Painting the start colour drew a hard horizontal
+   band across the join — reported by the owner on /applied-kinesiology 2026-08-25 and confirmed
+   by reading the live computed background: linear-gradient(rgb(30,42,51), rgb(38,52,64)) against
+   a seam fill of rgb(30,42,51). Scoped to --flush-top because that is precisely the exit case:
+   a seam pinned to the top of the section BELOW a dark band. The entry seam (--flush, pinned to
+   a dark band's top) keeps --ds-primary-deep, which correctly matches the gradient's start. */
+.bw-seam--flush-top.bw-seam--deep { color: var(--ds-primary-deep-2); }
 /* A DEFAULT seam (no --to-* / --deep modifier) hands onto the LIGHT band below it, so it must paint
    paper. `--ds-bg-surface` above expresses that correctly on a light ground and WRONGLY inside a
    dark one, where .surface-dark re-points it to #1E2A33: the arc then paints dark-on-dark, vanishes,
@@ -1424,8 +1432,15 @@ section.surface-dark:has(+ section:not(.surface-dark):not(.section--dark))
    flush-top is the mirror of --flush: same absolute pin, opposite edge, so it clears the light
    section's own top padding exactly as --flush clears the bottom padding. */
 .bw-seam--flush-top {
-  position: absolute; left: 0; right: 0; top: -1px;
-  width: 100%; margin: 0; max-height: 78px;
+  position: absolute; left: 0; right: 0;
+  /* Mirror of the --flush bleed. At top:-1px this seam sat wholly inside the next section's
+     66px top padding — measured y 4029..4093 against content starting at 4096, a 3px gap, which
+     is the "header almost hits the wavy part" the owner reported. It now bleeds ABOVE the
+     boundary by the same 38% of its height that --flush bleeds below, so both edges of a dark
+     band leave the same clear space. The part that rides up over the band is invisible because
+     --flush-top now paints the band's own bottom colour (see --ds-primary-deep-2 above). */
+  top: calc(-0.38 * clamp(20px, 5.42vw, 64px));
+  width: 100%; margin: 0;
 }
 
 /* ------------------------------------------------------------------

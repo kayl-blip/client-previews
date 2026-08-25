@@ -71,6 +71,16 @@
      dr-van-wagenen: fill #1e2a33 against a band of #fffdfa, delta 225). Added 2026-08-17.
      Do not re-declare this in the dark block — being surface-INVARIANT is the entire point. */
   --ds-bg-paper:       #FFFDFA;
+  /* The dark band's gradient END. brand-card-standard.css repaints every even <main> section
+     with linear-gradient(--ds-bg-surface, --ds-bg-surface-2); inside .surface-dark that resolves
+     to #1E2A33 -> #263440, so a dark band is DARKER at the top and lighter at the bottom. An exit
+     seam continues that band's BOTTOM edge, so it must paint this value, not --ds-primary-deep
+     (the gradient's start) — painting the start colour puts a visible horizontal band across the
+     join, which is what the owner reported on /applied-kinesiology 2026-08-25.
+     Surface-INVARIANT for the same reason as --ds-bg-paper above: the seam element lives inside
+     the following LIGHT section, where --ds-bg-surface-2 resolves to #F7F3EC. Do NOT re-declare
+     this in the .surface-dark block. */
+  --ds-primary-deep-2: #263440;
   --ds-bg-surface-2:   #F7F3EC;  /* card / elevated surface */
   --ds-bg-warm:        #F2EADF;  /* warm alternate section band */
   --ds-ink:            #232B31;  /* default body text */
