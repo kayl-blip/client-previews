@@ -5720,87 +5720,89 @@ p { color: var(--ds-ink-soft); }
 
 /* ============================================================================
    LIVE INSTRUMENT TRACES - index.html section 02 "What we can measure here"
-   REVISED 2026-08-25 after an independent 3-agent review returned DO-NOT-SHIP on
-   the first cut. Every change below is a measured finding, not a preference.
+   REVISED 2026-08-25 (v3) on owner instruction: all five instruments sweep, and
+   the sweep is faster so the motion actually reads.
 
-   WHAT MOVES, AND WHY ONLY THREE. Only the three ACCENT instruments sweep. The
-   two .hm-strip__i--plain cards (ultrasound, X-ray) are drawn at full strength
-   and stay still. That is the page's own argument - the copy says the first
-   three are the ones worth naming and that the last two are ordinary and "we
-   will not dress them up" - and it fixes two measured defects at once:
-     - THE FAN WAS BROKEN. Card 04's d carries FIVE subpaths (a radiating fan),
-       and SVG restarts the dash pattern at every subpath. So instead of one
-       travelling segment it painted three disjoint chunks at once and then went
-       dark for 57% of the cycle, while being the LOUDEST thing in the row
-       (357 diff-px against 83-139 on the accent cards). It read as a rendering
-       fault, on the exact card whose copy says it will not be dressed up.
-     - THE MUTED PAIR READ AS DISABLED. Dimming them inverted the intended
-       hierarchy: at rest they looked unfinished, and during the flash card 04
-       shouted louder than the instruments that matter.
+   WHY 04 AND 05 WERE DARK IN v2, AND WHAT CHANGED. They were excluded because
+   card 04's fan is FIVE SUBPATHS ("M100 2 L40 28 M100 2 L66 28 ...") and SVG
+   restarts the dash pattern at every subpath. A dash sized to the whole path
+   therefore painted three disjoint chunks at once and then went dark for 57% of
+   the cycle - measured as the loudest thing in the row at 357 diff-px against
+   83-139 on the accent cards. That is a rendering fault, not an instrument, so
+   it was pulled rather than shipped.
+   It is now FIXED rather than avoided: the fan gets its own dash sized to ONE
+   RAY. With pathLength=100 across five rays each ray is ~20 units, so a 6-unit
+   dash travelling 6 -> -20 lights every ray together, sweeping outward from the
+   apex. That is what an ultrasound pulse actually does, so the fan now reads as
+   the instrument it depicts instead of as a flicker.
+   Card 05 (X-ray step profile) is a single subpath and needed no special case -
+   it was only ever excluded for being one of the two "plain" cards.
 
-   RESTING OPACITY .8, NOT .55. The first cut dimmed the base line to .55 to make
-   the sweep pop. Measured, that cost was paid 100% of the time for motion that
-   was visible on only ~2 of 5 cards at any instant: accent traces fell 2.38:1 ->
-   1.62:1 and the plain pair 5.24:1 -> 2.22:1, i.e. UNDER the 3:1 non-text
-   contrast floor. The plain pair is no longer dimmed at all, and .8 keeps the
-   accent traces close to their original weight.
+   FASTER, AND LESS DEAD TIME. v2 ran 4.2-5.6s with the segment parked off-path
+   for 20% of every cycle, and staggered delays up to 1.6s. Measured then, only
+   ~2 of 5 cards showed a readable sweep at any instant and 38% of sampled
+   moments had one card or none moving. v3 runs 2.4-3.0s, travels for 85% of the
+   cycle, uses a wider 18-unit segment and tighter delays, so several instruments
+   are visibly sweeping at any given moment. The loop was already infinite; what
+   made it look stopped was the dead time and the stagger, not the iteration count.
 
-   NO MOTION ON PHONES. Gated at min-width:461px, which is where .hm-strip stops
-   being a single column. Below that, three to five looping traces sat directly
-   in the reading path under the paragraph being read. Motion belongs in the
-   periphery, not in the middle of the sentence someone is reading.
-
-   NO HOVER SPEED-UP. The first cut changed animation-duration on hover. Because
-   currentTime is preserved while progress is re-derived, the segment TELEPORTED
-   to a new position on every pointer crossing - and a desktop pointer crosses
-   this strip constantly while scrolling. Removed rather than reworked.
-
-   ACCESSIBILITY. The five SVGs are now aria-hidden="true" in the markup with
-   role="img"/aria-label removed. That is deliberate and it is what makes this
-   block conform: WCAG 2.2.2 (Pause/Stop/Hide) applies to moving INFORMATION that
-   auto-starts, runs over five seconds and sits beside other content - all three
-   were true, and the old markup asserted the graphics carried information by
-   exposing them to the accessibility tree as named nodes. They do not: each
-   label literally began "Representation of", and the adjacent h3 + paragraph
-   carry the entire meaning. Marking them decorative removes the information
-   predicate, and takes these graphics out of scope for 1.4.11 as well.
-
-   PERFORMANCE, STATED HONESTLY. Chrome does NOT stop this animation off-screen;
-   it skips the raster but keeps ~91% of the main-thread cost. Cutting five
-   animating traces to three and excluding phones removes most of that. A further
-   measured mitigation exists - content-visibility:auto with contain-intrinsic-
-   size on the cards, worth about -73% main-thread - and it is deliberately NOT
-   taken here: these cards are grid items whose height sets the row height, so
-   size-estimating them off-screen risks layout shift that was never measured.
-   That trade needs its own CLS verification before it ships.
+   WHAT IS DELIBERATELY UNCHANGED FROM v2, because each was a measured fix:
+   - resting opacity .8 (v1's .55 was a permanent contrast regression - the plain
+     pair fell to 2.22:1, under the 3:1 non-text floor)
+   - no motion below 461px, where .hm-strip is a single column and looping traces
+     would sit directly in the reading path under the paragraph being read
+   - no hover speed-up: changing animation-duration mid-flight re-derives progress
+     from a preserved currentTime, so the segment TELEPORTED on every pointer pass
+   - the SVGs stay aria-hidden with role/aria-label removed. That is what keeps
+     auto-starting, indefinitely looping motion out of WCAG 2.2.2 scope: the
+     criterion applies to moving INFORMATION, and these are decorative - each
+     label literally began "Representation of", while the adjacent h3 and
+     paragraph carry the entire meaning. Speeding the motion up does not change
+     that, precisely because they are no longer exposed as informational.
    ============================================================================ */
 @media (prefers-reduced-motion: no-preference) and (min-width: 461px) {
 
   /* the resting line steps back just enough for the travelling segment to read
-     as the live one. Accent instruments only - the plain pair keeps full weight. */
-  .hm-strip__i:not(.hm-strip__i--plain) .hm-strip__trace > path:not(.hm-strip__spark) { opacity: .8; }
+     as the live one. Kept at .8 - see the contrast note above. */
+  .hm-strip__trace > path:not(.hm-strip__spark) { opacity: .8; }
 
-  .hm-strip__i:not(.hm-strip__i--plain) .hm-strip__spark {
-    /* 14 lit, 100 dark: at most ONE segment is ever on the path */
-    stroke-dasharray: 14 100;
-    stroke-dashoffset: 14;              /* parked BEFORE the start = invisible */
+  .hm-strip__spark {
+    /* 18 lit, 100 dark: at most ONE segment is ever on a single-subpath trace */
+    stroke-dasharray: 18 100;
+    stroke-dashoffset: 18;             /* parked BEFORE the start = invisible */
     stroke-width: 2.4;
-    animation: hm-spark 4.6s var(--ds-ease, cubic-bezier(.4,0,.2,1)) infinite;
+    animation: hm-spark 2.6s var(--ds-ease, cubic-bezier(.4,0,.2,1)) infinite;
   }
 
-  /* Travel occupies the middle of the cycle; head and tail hold the segment off
-     the ends of the path, which is the pause between sweeps. Nothing animates
-     opacity - the segment is simply outside 0-100 and so is not painted. */
+  /* Travel occupies 85% of the cycle; the short tail is the beat between sweeps.
+     Nothing animates opacity - the segment is simply outside 0-100 and so is
+     not painted. */
   @keyframes hm-spark {
-    0%,   4%   { stroke-dashoffset:  14; }
-    80%, 100%  { stroke-dashoffset: -100; }
+    0%        { stroke-dashoffset:  18; }
+    85%, 100% { stroke-dashoffset: -100; }
   }
 
-  /* Three instruments, three cadences, so they read as independent machines
-     rather than one synchronised decorative element. */
-  .hm-strip__i:nth-child(1) .hm-strip__spark { animation-duration: 4.2s; animation-delay: 0s;    }
-  .hm-strip__i:nth-child(2) .hm-strip__spark { animation-duration: 5.1s; animation-delay: .55s;  }
-  .hm-strip__i:nth-child(3) .hm-strip__spark { animation-duration: 4.7s; animation-delay: 1.15s; }
+  /* THE FAN (card 04). Five subpaths, ~20 normalised units per ray, and SVG
+     restarts the dash at each subpath - so the dash must be sized to ONE RAY or
+     it fragments. 6 lit against a 20-unit gap keeps a single pulse per ray, and
+     all five travel together: a pulse fanning out from the apex. */
+  .hm-strip__i:nth-child(4) .hm-strip__spark {
+    stroke-dasharray: 6 20;
+    stroke-dashoffset: 6;
+    animation-name: hm-spark-fan;
+  }
+  @keyframes hm-spark-fan {
+    0%        { stroke-dashoffset:  6; }
+    85%, 100% { stroke-dashoffset: -20; }
+  }
+
+  /* Five instruments, five cadences, tight stagger so several are lit at once
+     rather than the row taking turns. */
+  .hm-strip__i:nth-child(1) .hm-strip__spark { animation-duration: 2.4s; animation-delay: 0s;   }
+  .hm-strip__i:nth-child(2) .hm-strip__spark { animation-duration: 2.9s; animation-delay: .30s; }
+  .hm-strip__i:nth-child(3) .hm-strip__spark { animation-duration: 2.6s; animation-delay: .60s; }
+  .hm-strip__i:nth-child(4) .hm-strip__spark { animation-duration: 2.7s; animation-delay: .45s; }
+  .hm-strip__i:nth-child(5) .hm-strip__spark { animation-duration: 3.0s; animation-delay: .80s; }
 }
 
 @media (prefers-reduced-motion: reduce) {
