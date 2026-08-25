@@ -1283,13 +1283,13 @@ p { color: var(--ds-ink-soft); }
   font-family:var(--ds-font-display); font-weight:600; text-transform:uppercase;
   letter-spacing:var(--ds-tracking-disp); line-height:1.12; font-size:clamp(22px,2.6vw,30px);
   color:var(--ds-ink); margin:clamp(40px,5vw,64px) 0 var(--ds-space-md);
-  scroll-margin-top:clamp(90px,12vh,120px);            /* anchored TOC jumps clear the fixed header */
+  /* scroll-margin-top removed 2026-08-25: html{scroll-padding-top} in the appended block now owns the anchor offset for EVERY target. Keeping both DOUBLE-offset the jump (scroll-padding on the scrollport and scroll-margin on the target ADD). */
 }
 .bw-legal h3{
   font-family:var(--ds-font-display); font-weight:600; text-transform:uppercase;
   letter-spacing:.01em; line-height:1.16; font-size:clamp(17px,1.8vw,21px);
   color:var(--ds-ink); margin:clamp(28px,3.4vw,40px) 0 var(--ds-space-sm);
-  scroll-margin-top:clamp(90px,12vh,120px);
+  /* scroll-margin-top removed 2026-08-25: html{scroll-padding-top} in the appended block now owns the anchor offset for EVERY target. Keeping both DOUBLE-offset the jump (scroll-padding on the scrollport and scroll-margin on the target ADD). */
 }
 .bw-legal ul, .bw-legal ol{ margin:0 0 var(--ds-space-lg); padding-left:1.5em; color:var(--ds-ink-soft); }
 .bw-legal li{ font-family:var(--ds-font-body); font-size:16px; line-height:1.72; margin:0 0 var(--ds-space-sm); max-width:663px; }  /* 663px = 66ch in the Poppins body font; A3 gate flags ch on body-font text */
@@ -2406,7 +2406,7 @@ p { color: var(--ds-ink-soft); }
 /* the band owns BLOCK rhythm only; the measure is the spine's .col--measure,
    so the horizontal gutter is never double-counted (uniform cadence law). */
 .mr-sec { padding-block: var(--ds-section-py); padding-inline: 0; }
-.mr-sec[id] { scroll-margin-top: clamp(88px, 12vh, 122px); }
+/* .mr-sec[id] scroll-margin-top removed 2026-08-25 - see html{scroll-padding-top} in the appended block; keeping both double-offset the jump. */
 
 /* ---- APPLIED GLOBALS (_MODERN-WOW-SPEC): atmosphere on the dark bands ----
    depth + material + texture are APPLIED here, not cited: the dark bands carry
@@ -2574,7 +2574,7 @@ p { color: var(--ds-ink-soft); }
    CTA and this never competes with it. */
 .mr-cta {
   padding: clamp(calc(var(--ds-space-md) - calc(var(--ds-space-2xs) + 2px)), 2vw, calc(var(--ds-space-md) + 2px));
-  scroll-margin-top: clamp(88px, 12vh, 122px);
+  /* scroll-margin-top removed 2026-08-25: html{scroll-padding-top} in the appended block now owns the anchor offset for EVERY target. Keeping both DOUBLE-offset the jump (scroll-padding on the scrollport and scroll-margin on the target ADD). */
 }
 .mr-cta__h {
   margin: var(--ds-space-sm) 0 0; font-family: var(--ds-font-display); font-weight: 700;
@@ -4240,7 +4240,7 @@ p { color: var(--ds-ink-soft); }
   padding: clamp(calc(var(--ds-space-sm) - 1px), 1.5vw, calc(var(--ds-space-sm) + 3px)) clamp(calc(var(--ds-space-xs) + 1px), 1.1vw, calc(var(--ds-space-sm) - 1px));
   border-bottom: 1px solid var(--ds-divider);
   border-radius: var(--ds-r-control);
-  scroll-margin-top: clamp(90px, 12vh, 120px);
+  /* scroll-margin-top removed 2026-08-25: html{scroll-padding-top} in the appended block now owns the anchor offset for EVERY target. Keeping both DOUBLE-offset the jump (scroll-padding on the scrollport and scroll-margin on the target ADD). */
 }
 /* APPLIED MOTION, tempered for a document: the shared .bw-cap lift is real but
    dialled down to a single pixel plus an accent margin bar, because a legal
@@ -4271,7 +4271,7 @@ p { color: var(--ds-ink-soft); }
   font-size: clamp(15px, 1.15vw, 16.5px); line-height: 1.34;
   letter-spacing: 0; text-transform: none;
   color: var(--ds-ink-heading);
-  scroll-margin-top: clamp(90px, 12vh, 120px);
+  /* scroll-margin-top removed 2026-08-25: html{scroll-padding-top} in the appended block now owns the anchor offset for EVERY target. Keeping both DOUBLE-offset the jump (scroll-padding on the scrollport and scroll-margin on the target ADD). */
 }
 .ix-clause__n {
   flex: 0 0 auto;
@@ -4426,7 +4426,7 @@ p { color: var(--ds-ink-soft); }
 /* the band owns BLOCK rhythm only; the measure is the spine .col--measure, so
    the horizontal gutter is never double-counted. */
 .sc-sec { padding-block: var(--ds-section-py); padding-inline: 0; position: relative; }
-.sc-sec[id] { scroll-margin-top: clamp(88px, 12vh, 122px); }
+/* .sc-sec[id] scroll-margin-top removed 2026-08-25 - see html{scroll-padding-top} in the appended block; keeping both double-offset the jump. */
 
 /* eyebrow re-pin: the shared skin paints .eyebrow on --ds-accent, which computes
    about 2.1:1 on this light paper. --ds-accent-ink is the reserved small-accent-
@@ -5563,11 +5563,17 @@ p { color: var(--ds-ink-soft); }
   .hm-fig--wide, .hm-fig--sq {
     aspect-ratio: 16 / 10; max-height: clamp(210px, 32vh, 310px); height: auto;
   }
-  /* the PORTRAIT source keeps a portrait frame once the split stacks: flattening a
-     3:4 photograph into a 16:10 band would crop it about three times off its own
-     aspect. Width is capped instead, so the plate stays a plate. */
+  /* OWNER DECISION 2026-08-25: this frame fills the column once the split stacks.
+     It previously carried max-width:min(100%,340px) to protect the 3:4 portrait source
+     from being cropped into a band. Measured, that cap left the image NARROWER THAN ITS
+     OWN CAPTION TEXT at every stacked width - a 67px gutter at 424, and 397px at 768 /
+     527px at 899, where the frame covered under half the text measure and read broken.
+     Full width is the call; the aspect-ratio and the max-height clamp below still stop
+     it running away vertically, so the trade is a wider crop of the portrait rather than
+     an undersized plate. Used in exactly ONE place (index.html section 04), so this
+     affects nothing else. */
   .hm-fig--tall {
-    aspect-ratio: 3 / 4; width: 100%; max-width: min(100%, 340px);
+    aspect-ratio: 3 / 4; width: 100%; max-width: none;
     max-height: clamp(300px, 52vh, 460px); height: auto;
   }
   .hm-nap { grid-template-columns: 1fr; }
@@ -5606,4 +5612,217 @@ p { color: var(--ds-ink-soft); }
   color: var(--ds-ink-on-dark);
   padding: 3px var(--ds-space-xs);
   border-radius: var(--ds-r-control);
+}
+
+/* ============================================================================
+   ALL-DEVICE / TOUCH PASS - 2026-08-25  (content components)
+   Companion to the block at the end of the chrome sheet. Same discipline:
+   every rule below measured on real touch device profiles, and every one of
+   these four was REFUTED in its first-draft form and corrected.
+   ============================================================================ */
+
+/* --- F11: standalone arrow CTAs (.hm-go / .spn-go / .mr-more) --------------
+   104 sub-44 observations, 23-30px tall. These carry a border-bottom underline,
+   which is why the hit area is expanded with a BAND rather than padding -
+   padding-bottom would push the underline off the text and change the design.
+   REFUTED AND CORRECTED on two counts:
+   (1) position:relative is MANDATORY. All three compute position:static today,
+       so a bare ::after anchors to a distant positioned ancestor - measured as
+       an ARTICLE card - producing links with a 0px hit area AND stealing taps
+       to the wrong anchor. It does not change the box (0 of 228 rects moved).
+   (2) The first draft's inset:-9px 0 arithmetic was wrong: inset resolves
+       against the PADDING box, so the border-bottom is excluded, and .mr-more
+       is 23.39px tall, not the 26px assumed. That yielded 41.25-43.75px bands
+       on 57.6% of instances. A fixed height:44px centred on the box is
+       border-width- and box-height-independent, so it lands on exactly 44.00px
+       for all three classes and also caps the .hm-line overreach (was 56.8px).
+   Kept coarse-scoped: unlike the form-field fix, an invisible band DOES cost a
+   mouse user - it intercepts hover and text selection over blank space.
+   Verified: every instance sits in a DIV/ARTICLE/LI, never in a <p>, so the
+   band cannot open prose leading or steal a tap from a neighbouring anchor. */
+@media (pointer: coarse){
+  .hm-go,.spn-go,.mr-more{position:relative}
+  .hm-go::after,.spn-go::after,.mr-more::after{
+    content:"";position:absolute;left:0;right:0;
+    top:50%;transform:translateY(-50%);height:44px;
+  }
+}
+
+/* --- F9: .bw-toc__link (table-of-contents links, 3 pages) ------------------
+   REFUTED AND CORRECTED: a flat padding-block does not work here, because the
+   class has variants with different content-box heights - .mr-index overrides
+   font-size to 13.5px (structural.css:2570), so the sibling site's 12px value
+   lands at 42.9px, under the floor. min-height is also wrong: the rule is
+   align-items:baseline, so a min-height box leaves the text pinned near the
+   top. An em-based padding adapts to whichever font-size the variant sets.
+   The 46px target (not 44) is deliberate: the line box is 1.3993em, not 1.4em,
+   so a calc aimed at 44px lands at 43.98px - the extra 2px survives sub-pixel
+   rounding. Verified 0/590 touch observations under 44px afterwards.
+   KNOWN AND ACCEPTED: this declaration does NOT reach the 4 .ix-doc legal pages -
+   `.ix-doc .bw-toc__link{padding:...}` at :4217 is (0,2,0) and wins over this (0,1,0)
+   regardless of source order. No action taken because those links already measure
+   46.19-86.78px on touch, i.e. above the floor. Do not "fix" it without re-measuring. */
+@media (pointer: coarse), (max-width: 768px){
+  .bw-toc__link{padding-block:max(7px, calc((46px - 1.4em) / 2))}
+}
+
+/* --- F10: .spn-idx__l (numbered index rows, 2 pages) -----------------------
+   REFUTED AND CORRECTED: the first draft used padding-block, which is the
+   wrong lever - this rule's padding is ALREADY a responsive clamp that clears
+   44px on its own at >=1024px, so a flat value would overwrite the ramp,
+   shrink the mouse desktop and break a currently-passing 1024 target while
+   still missing 44px on touch. min-height leaves the clamp intact.
+   Using padding-block (not the padding shorthand) also matters here: the
+   shorthand would kill the .spn-idx__l:hover padding-left at structural.css:2951.
+   Verified: 36/37px -> 44.00 at 320-390 touch, 1024/1280/1440 mouse rows
+   byte-identical, and the hover transition survives. */
+@media (pointer: coarse){
+  .spn-idx__l{min-height:44px}
+}
+
+/* --- F12: .btn on phone widths --------------------------------------------
+   6 .mr-cta__act buttons measured 309x40 at phone width. Unscoped is safe and
+   is a strict desktop no-op: of 51 .btn across the 28 pages, the minimum height
+   at 1440 is already 47px, so this rule changes nothing there.
+   CORRECTION TO MY OWN AUDIT NOTE: I recorded the 8px neighbour gap as
+   HORIZONTAL and justified the fix on that basis. That was wrong - the buttons
+   wrap onto separate lines at phone width, so the 8px gap is a VERTICAL
+   row-gap, and this fix consumes it. The fix is still safe, but for a
+   different reason than I gave: a column/wrapped flex gap pushes the items
+   apart rather than letting them collide. FURTHER CORRECTION: the fix does not
+   "consume" that 8px gap either - a wrapped flex line simply reflows and the 8px
+   row-gap is preserved. The buttons grow; the gap between them does not shrink. */
+.btn-primary,.btn-secondary{min-height:44px}
+
+/* --- M3 (continued): iOS focus-zoom on the REAL booking + contact forms -----
+   The chrome sheet raises the footer newsletter input, but the 14 controls that
+   actually matter - book.html's 8 and contact.html's 6 - are styled here, and
+   a first attempt written in the chrome sheet as `.bw-field input` DID NOT TAKE:
+   the post-fix sweep still measured all 14 at 15px. Cause is specificity, not
+   load order - the shared list at structural.css:1202 uses
+   `.bw-form input[type="text"]` etc. at (0,2,1), and the date controls have
+   their own `.sc-form input[type="date"]` at :4516, also (0,2,1). A (0,1,1)
+   selector loses to both no matter which sheet it sits in.
+   This override repeats BOTH selector lists at matching specificity and sits at
+   the end of the same sheet, so source order decides.
+   Any control under 16px makes iOS Safari zoom the page on focus, and these two
+   pages are the site's only real conversion paths. No pointer gate: iPadOS
+   reports pointer:fine as soon as a trackpad is attached while Safari still
+   zooms on a finger tap, and 16px costs a mouse user nothing. */
+.bw-form .bw-input,
+.bw-form input[type="text"],
+.bw-form input[type="email"],
+.bw-form input[type="tel"],
+.bw-form input:not([type]),
+.bw-form select,
+.bw-form textarea,
+.sc-form input[type="date"]{ font-size:16px; }
+
+/* ============================================================================
+   LIVE INSTRUMENT TRACES - index.html section 02 "What we can measure here"
+   REVISED 2026-08-25 after an independent 3-agent review returned DO-NOT-SHIP on
+   the first cut. Every change below is a measured finding, not a preference.
+
+   WHAT MOVES, AND WHY ONLY THREE. Only the three ACCENT instruments sweep. The
+   two .hm-strip__i--plain cards (ultrasound, X-ray) are drawn at full strength
+   and stay still. That is the page's own argument - the copy says the first
+   three are the ones worth naming and that the last two are ordinary and "we
+   will not dress them up" - and it fixes two measured defects at once:
+     - THE FAN WAS BROKEN. Card 04's d carries FIVE subpaths (a radiating fan),
+       and SVG restarts the dash pattern at every subpath. So instead of one
+       travelling segment it painted three disjoint chunks at once and then went
+       dark for 57% of the cycle, while being the LOUDEST thing in the row
+       (357 diff-px against 83-139 on the accent cards). It read as a rendering
+       fault, on the exact card whose copy says it will not be dressed up.
+     - THE MUTED PAIR READ AS DISABLED. Dimming them inverted the intended
+       hierarchy: at rest they looked unfinished, and during the flash card 04
+       shouted louder than the instruments that matter.
+
+   RESTING OPACITY .8, NOT .55. The first cut dimmed the base line to .55 to make
+   the sweep pop. Measured, that cost was paid 100% of the time for motion that
+   was visible on only ~2 of 5 cards at any instant: accent traces fell 2.38:1 ->
+   1.62:1 and the plain pair 5.24:1 -> 2.22:1, i.e. UNDER the 3:1 non-text
+   contrast floor. The plain pair is no longer dimmed at all, and .8 keeps the
+   accent traces close to their original weight.
+
+   NO MOTION ON PHONES. Gated at min-width:461px, which is where .hm-strip stops
+   being a single column. Below that, three to five looping traces sat directly
+   in the reading path under the paragraph being read. Motion belongs in the
+   periphery, not in the middle of the sentence someone is reading.
+
+   NO HOVER SPEED-UP. The first cut changed animation-duration on hover. Because
+   currentTime is preserved while progress is re-derived, the segment TELEPORTED
+   to a new position on every pointer crossing - and a desktop pointer crosses
+   this strip constantly while scrolling. Removed rather than reworked.
+
+   ACCESSIBILITY. The five SVGs are now aria-hidden="true" in the markup with
+   role="img"/aria-label removed. That is deliberate and it is what makes this
+   block conform: WCAG 2.2.2 (Pause/Stop/Hide) applies to moving INFORMATION that
+   auto-starts, runs over five seconds and sits beside other content - all three
+   were true, and the old markup asserted the graphics carried information by
+   exposing them to the accessibility tree as named nodes. They do not: each
+   label literally began "Representation of", and the adjacent h3 + paragraph
+   carry the entire meaning. Marking them decorative removes the information
+   predicate, and takes these graphics out of scope for 1.4.11 as well.
+
+   PERFORMANCE, STATED HONESTLY. Chrome does NOT stop this animation off-screen;
+   it skips the raster but keeps ~91% of the main-thread cost. Cutting five
+   animating traces to three and excluding phones removes most of that. A further
+   measured mitigation exists - content-visibility:auto with contain-intrinsic-
+   size on the cards, worth about -73% main-thread - and it is deliberately NOT
+   taken here: these cards are grid items whose height sets the row height, so
+   size-estimating them off-screen risks layout shift that was never measured.
+   That trade needs its own CLS verification before it ships.
+   ============================================================================ */
+@media (prefers-reduced-motion: no-preference) and (min-width: 461px) {
+
+  /* the resting line steps back just enough for the travelling segment to read
+     as the live one. Accent instruments only - the plain pair keeps full weight. */
+  .hm-strip__i:not(.hm-strip__i--plain) .hm-strip__trace > path:not(.hm-strip__spark) { opacity: .8; }
+
+  .hm-strip__i:not(.hm-strip__i--plain) .hm-strip__spark {
+    /* 14 lit, 100 dark: at most ONE segment is ever on the path */
+    stroke-dasharray: 14 100;
+    stroke-dashoffset: 14;              /* parked BEFORE the start = invisible */
+    stroke-width: 2.4;
+    animation: hm-spark 4.6s var(--ds-ease, cubic-bezier(.4,0,.2,1)) infinite;
+  }
+
+  /* Travel occupies the middle of the cycle; head and tail hold the segment off
+     the ends of the path, which is the pause between sweeps. Nothing animates
+     opacity - the segment is simply outside 0-100 and so is not painted. */
+  @keyframes hm-spark {
+    0%,   4%   { stroke-dashoffset:  14; }
+    80%, 100%  { stroke-dashoffset: -100; }
+  }
+
+  /* Three instruments, three cadences, so they read as independent machines
+     rather than one synchronised decorative element. */
+  .hm-strip__i:nth-child(1) .hm-strip__spark { animation-duration: 4.2s; animation-delay: 0s;    }
+  .hm-strip__i:nth-child(2) .hm-strip__spark { animation-duration: 5.1s; animation-delay: .55s;  }
+  .hm-strip__i:nth-child(3) .hm-strip__spark { animation-duration: 4.7s; animation-delay: 1.15s; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* the overlay only carries its dash pattern inside the no-preference query, so
+     without this it would paint as a SOLID duplicate of the base line. Hiding it
+     outright makes the reduced-motion render byte-identical to pre-feature. */
+  .hm-strip__spark { display: none; }
+}
+
+/* ----------------------------------------------------------------------------
+   SECTION 04 FIGURE - hold the subject in frame once the column is filled.
+   Filling the column (max-width:none above) was right - the capped frame was
+   narrower than its own body text at every stacked width, by 397px at 768 and
+   527px at 899. But cover-cropping a 3:4 portrait into a 1.54-1.82 band centred
+   the crop and cut the PEN out: measured, the pen occupies source rows 190-343
+   of 1024, and centre-cropping left 53% of it at 768 and 28% at 899, rendering
+   as featureless paper. That also broke the alt text, which describes "a pen
+   resting on top" - WCAG 1.1.1, since the alt no longer described the frame.
+   Biasing the crop upward keeps the nib, the gold bands and the barrel in shot
+   while keeping the full-width fill. Specificity (0,2,1) beats the base
+   .hm-fig img rule (0,1,1), so this wins wherever it applies.
+   ---------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .hm-fig--tall img { object-position: center 30%; }
 }

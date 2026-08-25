@@ -115,3 +115,157 @@ body{margin:0;background:var(--ds-bg-surface);color:var(--ds-ink);font-family:va
   .mega__inner{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none !important}}
+
+/* ============================================================================
+   ALL-DEVICE / TOUCH PASS - 2026-08-25
+   Audit: 28 pages x 18 real device profiles = 504 runs, then every proposed fix
+   adversarially refuted by 12 independent agents before a line was written.
+   7 of 13 first-draft fixes were REFUTED and ship here in corrected form.
+   Touch rules are scoped so the MOUSE DESKTOP keeps its density. MEASURED CAVEAT: a
+   140-combo mouse A/B against the pre-pass sheets found the PAINT identical, but four
+   UNSCOPED rules here do change boxes on a mouse: .brand and .burger min-height (hit box
+   only - every child stays pixel-identical), .d-close, and font-size:16px on form fields
+   (which adds 2px to the footer and reflows book/contact). Those were left unscoped
+   deliberately - see each rule - but "nothing changes on desktop" would be false.
+   the scoping pattern (pointer: coarse), (max-width: 768px) follows the
+   precedent already set on the sibling site's chrome sheet.
+   ============================================================================ */
+
+/* --- D1: every one of the 28 pages overflowed 15px at 320px -----------------
+   The header content was a HARD 334.77px floor - nothing shrinks, because
+   .brand and .burger are both flex:0 0 auto. Measured 320/330/340 -> 15/5/0px.
+   Of that floor, 80px was spent on gaps around a container holding nothing: at <=1100
+   .btn-book and .phone-pill are
+   display:none but their CONTAINER .hb-actions stayed a zero-width flex item,
+   so it still consumed a 40px gap on EACH side.
+   Verified before shipping: .hb-actions holds ONLY the btn-book anchor on all
+   28 pages, already display:none here, and .burger is a SIBLING of it, not a
+   child - so hiding the container removes nothing visible.
+   RECOVERY IS 40px, NOT 80: removing a zero-width flex item deletes only ONE of its two
+   gaps. Measured burger x 292.77 -> 252.77 = exactly 40.00px.
+   Measured after: scrollWidth 335 -> 320 at 320px; mouse contexts at
+   768/1024/1100 byte-identical pre vs post.
+   KNOWN RESIDUAL: a 280px Galaxy Fold cover screen still overflows ~17px.
+   That is below the 320px floor this pass targets and is left flagged. */
+@media (max-width:1100px){
+  .hb-actions{display:none}
+}
+
+/* --- Tap targets in the chrome (WCAG 2.5.8 / 44px) -------------------------
+   F2 burger: the ONLY nav access on touch, was 42x42. min-* clamps over the
+   base width/height:42px (box-sizing:border-box, so the 1px border is inside).
+   Safe ONLY because the rule above ships first - in isolation +2px would push
+   the 320px overflow 15 -> 17px. Nearest neighbour (.brand) is 40px away.
+   F7 brand: 34px tall. min-height grows only the invisible box - measured
+   width delta 0.00px at every width, and brand__m / brand__n / brand__s all
+   keep their exact y positions, so it cannot worsen D1. */
+.burger{min-width:44px;min-height:44px}
+.brand{min-height:44px}
+
+/* --- M2: the sticky header hid 45 of 106 in-page anchor targets -------------
+   Landing on a hash put the target exactly 75px under the sticky header on
+   28/28 pages - including main#main, which is the SKIP-LINK target, so the
+   accessibility affordance itself landed behind the header. The site already
+   knew this pattern (.ix-clause/.mr-sec/.sc-sec carry scroll-margin-top:101px)
+   but four other section classes never got it. One global rule fixes every
+   present and future anchor.
+   REGRESSION FOUND AND FIXED AFTER FIRST SHIP: scroll-padding on the scrollport and
+   scroll-margin on the target ADD. Seven pre-existing scroll-margin-top declarations
+   (.bw-legal h2/h3, .mr-cta, .mr-sec[id], .sc-sec[id] and two .ix-doc rules) therefore
+   DOUBLE-offset their anchors - 61 of 106 targets landed a full header-height too low,
+   with the previous section filling the top third of the viewport. My first check only
+   asserted "not occluded" and never bounded the OVERSHOOT, so it passed a real defect.
+   Those seven declarations are now removed in the structural sheet so this single rule
+   is the ONE mechanism. If this rule is ever deleted, every anchor loses its offset. */
+html{scroll-padding-top:clamp(88px,12vh,122px)}
+
+/* --- F4: nav links on TOUCH tablets at >=1101px -----------------------------
+   SJPC collapses to the drawer at 1100px, so every touch device 1101px and up
+   is served the DESKTOP bar, where .nav-link measured 42x33 on a finger.
+   REFUTED AND CORRECTED: the first draft was min-height:44px, which is a
+   measured NO-OP - .nav-link computes display:inline and inline boxes ignore
+   min-height (verified independently: display:inline, 72.88x33 at touch 1366).
+   inline-flex is MANDATORY. min-width closes the narrowest link (About,
+   41.52px) and costs 2.48px of nav width against 105-136px of measured slack,
+   so the "vertical growth only" constraint in this sheet's header comment does
+   NOT bite here. Mouse desktop is untouched: header strip pixel-diff = 0. */
+@media (pointer:coarse) and (min-width:1101px){
+  .nav-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px}
+}
+
+/* --- F5/F6: the footer, 896 sub-44 observations across 28 pages -------------
+   .f-col a and .f-legal a are inline with no box, so they measured 21px tall -
+   including the tap-to-call number and the address link.
+   REFUTED AND CORRECTED: the first draft omitted align-items:center. Without
+   it the 44px box grows entirely DOWNWARD, so the whitespace above a link
+   belongs to the link ABOVE it - a near-miss aimed at one link fires the
+   wrong destination, including launching the phone dialer. That is strictly
+   worse than a small target, so align-items:center is load-bearing, not
+   cosmetic. gap:0 claws back the row gaps, but it does NOT make this free: the
+   footer still grows ~135-146px per page on touch. That is the accepted price of
+   44px targets on 12 footer links; it is not a no-op.
+   NOTE the (max-width:768px) arm carries no pointer gate (it follows the sibling
+   site precedent), so a MOUSE window narrower than 768px also gets this footer. */
+@media (pointer: coarse), (max-width: 768px){
+  .f-col ul{gap:0}
+  .f-col a{display:flex;align-items:center;min-height:44px}
+  .f-legal{gap:0 var(--ds-space-sm)}
+  .f-legal a{display:inline-flex;align-items:center;min-height:44px}
+}
+
+/* --- F8 + M3: iOS focus-zoom on form fields --------------------------------
+   Any control under 16px makes iOS Safari ZOOM THE PAGE on focus.
+   REFUTED AND CORRECTED TWICE.
+   (1) SCOPE: the first draft named only .f-sub input (the footer newsletter
+       field) - which is a DEAD form (onsubmit returns false, its Subscribe
+       control is an anchor to #). Re-measured across all 28 pages: 42 controls
+       under 16px - the 28 footer inputs at 14px PLUS book.html's 8 and
+       contact.html's 6 at 15px. Those 14 are the real booking and contact
+       forms, i.e. the two highest-intent pages on the site. Fixing only the
+       footer would have left the actual defect in place.
+   (2) POINTER GATE REMOVED: this is an engine-level zoom bug, and iPadOS
+       reports pointer:fine the moment a trackpad is attached while Safari still
+       zooms a sub-16px field on a finger tap. 16px costs a mouse user nothing.
+   width:0 on the footer input stops the larger type re-proportioning the
+   4-column .f-top grid at 861-930px (flex-basis:170px still sets its width). */
+.f-sub input{font-size:16px;min-height:44px;width:0}
+/* The booking/contact controls are overridden at the END of the structural sheet
+   instead of here: their 15px comes from `.bw-form input[type="text"]` etc.
+   (structural.css:1203) at specificity (0,2,1), which outranks any (0,1,1)
+   selector written in this file no matter what the load order is. */
+
+/* --- M4: the closed drawer was never removed from the tab order ------------
+   #mobile-drawer was only translated off-screen, so its 9 controls stayed
+   focusable and in the accessibility tree at EVERY width - including desktop,
+   where .burger is display:none and the drawer can never be opened. Tabbing at
+   1440x900 landed focus on links at x=1462-1780 in a 1440px viewport, i.e.
+   entirely off-screen with no scroll possible (position:fixed). Every page also
+   announced a duplicate nav to a screen reader.
+   visibility:hidden still animates the slide, provided it is delayed until the
+   transform finishes on close and applied instantly on open. */
+#mobile-drawer{transition:transform var(--ds-dur) var(--ds-ease),visibility 0s linear var(--ds-dur)}
+#mobile-drawer:not([data-open="true"]){visibility:hidden}
+#mobile-drawer[data-open="true"]{visibility:visible;transition:transform var(--ds-dur) var(--ds-ease),visibility 0s linear 0s}
+
+/* --- F3 + M1: the drawer close button AND the landscape drawer -------------
+   These MUST ship together. F3 alone (.d-close 38 -> 44) is a net REGRESSION:
+   it grows .d-top by 6px, and on a landscape phone that 6px comes straight out
+   of an already-collapsed menu window.
+   M1 is the defect I originally dismissed as an artifact. I measured the
+   drawer CLOSED, saw "112% of viewport height", called it an off-canvas
+   counting artifact - and never OPENED it in landscape. Opened, .d-top (75px)
+   and .d-foot (235px) are both flex:0 0 auto inside a 100vh drawer, so
+   .drawer-nav absorbs the whole deficit: its scroll window measured 80px on an
+   iPhone 14, 102px on a Pixel 7, 65px on an iPhone SE and 50px on a Galaxy S8 -
+   against a 389px menu. That is 74-87% of the menu hidden, with 0 to 1 of the
+   6 primary nav links visible. Portrait and tablet were never affected.
+   Fix: make the DRAWER the single scroll container, pin its header, and drop
+   the NAP block (which is duplicated in the footer of every page). */
+.d-close{width:44px;height:44px}
+@media (max-height:520px) and (orientation:landscape){
+  #mobile-drawer{overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .d-top{position:sticky;top:0;z-index:2;background:var(--ds-bg-surface-2);padding:10px 22px}
+  .drawer-nav{flex:0 0 auto;overflow:visible;padding:6px 22px}
+  .d-foot{flex:0 0 auto}
+  .d-nap{display:none}
+}
