@@ -7931,3 +7931,90 @@ main > section.surface-dark:last-of-type {
   }
   .hm-cond__l .hm-cond__d { grid-column: 1 / -1; }
 }
+
+/* ============================================================================
+   REFERENCE SYSTEM — PASS 20. THE INNER-PAGE HERO (.kit-hero-sec) — spacing.
+   ----------------------------------------------------------------------------
+   Owner, on auto-accident-injury: the hero image sits flush against the navbar,
+   the last hero content sits flush against the next section, and the image is too
+   tall.
+
+   MEASURED — and this is a CLASS GAP, not a regression:
+     auto-accident-injury  section padding 0/0   top gap 0    image 525px, max-height none
+     whiplash              section padding 92/92 top gap 226  image 297px, capped
+   auto-accident-injury's hero is <section class="kit-hero-sec surface-dark"> — it
+   carries no .kit-sec and no .ip-sec, so it inherits NO section padding at all,
+   while its siblings get the 92.16px cadence from theirs. Its last content bottom
+   equals the section bottom exactly (1209 == 1209), which is why the pills below
+   the CTA touch the next band.
+
+   Only TWO pages use .kit-hero-sec: this one and index. Index was already handled,
+   because every hero padding pass in this build targeted .hm-hero-sec — which this
+   page does not carry. So it fell through all of them. The :not(.hm-hero-sec) scope
+   fixes the orphan without touching the homepage hero, which is separately tuned to
+   its own 100vh budget.
+
+   The figure gets a height cap for the first time. It was aspect-ratio 16/7 with
+   max-height:none, so at the 1200px measure it resolved to 525px — nearly double
+   whiplash's capped 297px. Capping in vh keeps it proportional to the screen
+   instead of the measure. Setting an explicit height is safe here specifically
+   because .kit-hero__bg is position:relative (PASS 3 unpinned it) and its <img> is
+   static with height:100% — an absolutely-positioned child would have collapsed the
+   frame, which is the failure mode that bit .ip-frame earlier in this build.
+
+   The hero is HERO_EXEMPT in verify-section-rhythm, so its padding is not
+   gate-constrained.
+   ============================================================================ */
+.kit-hero-sec:not(.hm-hero-sec) {
+  padding-block: var(--ds-section-py);
+}
+.kit-hero-sec:not(.hm-hero-sec) .kit-hero__bg {
+  height: clamp(220px, 38vh, 400px);
+}
+
+/* ============================================================================
+   REFERENCE SYSTEM — PASS 21. THE BAND-CORNER NOTCH, SITE-WIDE.
+   ----------------------------------------------------------------------------
+   Owner: the top of the green section has a radius that leaves a white gap
+   against the band above it.
+
+   MEASURED: 75 notching corners across 27 pages. Every one is a sage
+   .surface-dark band whose 30px corner meets a DIFFERENTLY coloured band —
+   sand #F4EBE2 (.sec--warm), mint #EAF4EB (.sec--soft) or white #FFFFFF
+   (.sec--alt). The corner reveals the page ground (#F9F9F7) behind the band, so
+   it reads as a white wedge between two solid colours.
+
+   PASS 7 fixed the sage-on-sage case (a band against .precta and the footer) but
+   only for the LAST section, and only for same-colour neighbours. This is the
+   general rule PASS 7 should have been:
+
+     a band rounds the edge that meets the PAGE GROUND, and never an edge it
+     shares with another coloured band.
+
+   The ground case is preserved deliberately: whiplash §5 is a plain .ip-sec with
+   no colour modifier, so a sage band adjacent to it still curves — that edge
+   really does meet the ground, which is the reference's own device.
+
+   Sibling selectors handle the top edge; :has() handles the bottom, since CSS has
+   no previous-sibling combinator. Both are (0,2,0) against the (0,1,0) that set
+   the radius, and they are appended last, so they win on both counts.
+   ============================================================================ */
+
+/* TOP edge butts a coloured band */
+.sec--warm + .surface-dark,
+.sec--soft + .surface-dark,
+.sec--alt  + .surface-dark,
+.surface-dark + .surface-dark {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+/* BOTTOM edge butts a coloured band */
+.surface-dark:has(+ .sec--warm),
+.surface-dark:has(+ .sec--soft),
+.surface-dark:has(+ .sec--alt),
+.surface-dark:has(+ .surface-dark),
+.surface-dark:has(+ .precta) {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
