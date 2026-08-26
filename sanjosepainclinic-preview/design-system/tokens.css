@@ -1,68 +1,125 @@
 /* ============================================================================
-   san-jose-pain-clinic - LOCKED BRAND TOKENS
-   Source: (1) BRAND-CARD tournament concept B "Diagnostic Teal", owner-picked 2026-08-20.
-   Built FROM the v4 unified design system:
-     _MODERN-DESIGN-PATTERN-LIBRARY  (:root master token vocabulary; D-series depth; E-series type)
-     _MODERN-WOW-SPEC                (the globals overlay: glass / glow / grain / grid / divider)
-     composition-medical-health      (glass + calming tint washes are on-register for this vertical)
-     COLOR-THEORY-PRESETS.md #1      (tuned from the clinic's own existing hexes recorded in C6)
-     TYPOGRAPHY-PAIRINGS.md #1       (Outfit display / Source Sans 3 body)
-     SURFACE-PATTERNS.md #1          (radius + card-chrome roles)
-     MOTION-PATTERNS.md #1           (settle curve + durations)
-   DERIVED FROM C7 visual-direction.md: primary_surface light (BRAND-SIGNATURE surface_dominance
-   "light", dark_ratio 0, energy "bold"). theme_polarity: light, so --ds-ink-heading = --ds-primary-deep.
+   san-jose-pain-clinic — BRAND TOKENS  (REBUILD 2026-08-26)
+   ----------------------------------------------------------------------------
+   SOURCE OF TRUTH FOR THIS REVISION: the owner-supplied design reference
+   https://dentart.framer.website/ , MEASURED — not eyeballed. Every value below
+   is either (a) a computed style read off the live reference at 1440 via
+   Playwright, (b) a hex mined from the reference's own stylesheets, or (c) a
+   value SOLVED here to clear a WCAG floor the reference itself does not clear.
+   Owner decision 2026-08-26: adopt the reference sage/cream palette wholesale,
+   replacing the previous owner-picked "Diagnostic Teal" (superseded, not lost —
+   the prior sheet is recoverable from git and from the tournament card).
 
-   CONTRAST: every pair below was computed, not estimated. ink-on-dark on primary-deep = 17.2:1.
-   The SYSTEM families (z-index / opacity / motion-extension) are added by graft-system-tokens.mjs.
+   WHAT THE REFERENCE ACTUALLY IS, measured:
+     ground        #f9f9f7   warm off-white   (body bg, computed)
+     card          #ffffff   (38 elements)
+     tint          #eaf4eb   mint             (8 elements)
+     brand         #47625d   sage             (54 rgb() + 27 hex occurrences)
+     brand @10%    rgba(71,98,93,.1)          (7 elements)
+     body ink      #545454   (94 occurrences — the dominant ink)
+     secondary     #666666
+     hairline      #e6e6e6
+     sand          #f4ebe2   (one warm band)
+     type          Outfit    (149 declarations — display AND body, one family)
+     section h2    48px / 600 / lh 48px (=1.0) / ls -0.48px (=-0.01em) in #545454
+     body          16px / 400
+     radius        24px dominant (91 elements) · 48px · 8px controls
+     shadow        FOUR instances on the entire page — the design is FLAT
+     motion        cubic-bezier(.44,0,.56,1) at .5s  (background/box-shadow/color)
+     container     1200px, 120px gutter @1440 · 1280px page = 80px gutter
+
+   THE THREE DELIBERATE DEPARTURES FROM THE REFERENCE (each is a fix, not a miss):
+
+   1. --ds-ink-faint is #727272, NOT the reference's #999999.
+      #999999 on #f9f9f7 computes to 2.70:1 — it FAILS WCAG 1.4.3 for small text.
+      #727272 is the LIGHTEST grey that clears 4.5:1 on BOTH the cream ground
+      (4.56:1) and a white card (4.81:1). Solved, not guessed.
+
+   2. --ds-control-border (#788B86) is a NEW token and it is NOT the hairline.
+      The reference paints input borders in #e6e6e6 = 1.18:1 against the ground.
+      A decorative rule may do that; a FORM CONTROL may not — WCAG 1.4.11 wants
+      3:1 for the boundary of a real UI component, and this clinic takes booking
+      and contact details through real forms. #788B86 is sage-tinted (so it reads
+      on-brand rather than grey) and clears 3:1 on all three grounds it can land
+      on: cream 3.41:1 · white 3.60:1 · mint 3.19:1.
+      --ds-line KEEPS the reference's #e6e6e6 for genuinely decorative rules.
+
+   3. --ds-lh-body is 1.55, NOT the reference's measured 1.2.
+      The reference carries 2–3 line paragraphs; this is a medical site with
+      long-form condition and treatment copy. 1.2 leading over a 700px measure of
+      clinical prose is a readability regression, and it is the one place where
+      copying the reference faithfully would make OUR content worse. The tight
+      leading is kept where it IS the signature — display and headings, at 1.0–1.2.
+
+   CONTRAST — every pair below was COMPUTED (see the rebuild receipt), not estimated:
+     #545454 on #f9f9f7  7.18:1 AAA      #ffffff on #47625d  6.62:1 AA
+     #545454 on #ffffff  7.57:1 AAA      #f9f9f7 on #47625d  6.28:1 AA
+     #545454 on #eaf4eb  6.72:1 AA       #eaf4eb on #47625d  5.87:1 AA
+     #666666 on #f9f9f7  5.45:1 AA       #d6e4de on #47625d  5.05:1 AA
+     #47625d on #f9f9f7  6.28:1 AA       #727272 on #f9f9f7  4.56:1 AA
    ============================================================================ */
 
 :root {
-  /* ---- COLOR: brand ---- */
-  --ds-primary:        #0E7C86;   /* CTA + primary brand surfaces (the diagnostic teal) */
-  --ds-primary-deep:   #08171C;   /* THE DARK GROUND - dark bands, footer, heading ink */
-  --ds-primary-soft:   #DDF1F2;   /* tinted bands, eyebrow surfaces */
+  /* ---- COLOR: brand (sage) ---- */
+  --ds-primary:        #47625D;   /* MEASURED. CTA fills, brand surfaces, the sage band */
+  --ds-primary-deep:   #3C534F;   /* deeper sage — gradient floor, pressed states */
+  --ds-primary-soft:   #EAF4EB;   /* MEASURED mint — tinted bands, eyebrow surfaces */
 
-  /* ---- COLOR: accent ---- */
-  --ds-accent:         #22B8CF;   /* large display, borders, icons, on-dark text */
-  --ds-accent-ink:     #0B6B78;   /* darkened - small text on light (AA) */
-  --ds-accent-soft:    #E2F6F9;   /* tinted accent backgrounds, pills */
-  --ds-accent-deep:    #0A5F6B;   /* dark-band CTA surface */
-  --ds-accent-light:   #6FDCE8;   /* accent foreground on dark grounds */
+  /* ---- COLOR: accent — the reference is MONOCHROMATIC. There is no second hue;
+     hierarchy is carried by surface + weight + space, never by a rival colour. ---- */
+  --ds-accent:         #47625D;
+  --ds-accent-ink:     #3C534F;   /* small text on light */
+  --ds-accent-soft:    #EAF4EB;   /* MEASURED mint tint */
+  --ds-accent-deep:    #33453F;
+  --ds-accent-light:   #A8BEB8;   /* sage foreground on a sage band */
 
   /* ---- COLOR: surface ---- */
-  --ds-bg-surface:     #F5FAFA;   /* page background */
-  --ds-bg-surface-2:   #FFFFFF;   /* cards + elevated surfaces */
-  --ds-bg-warm:        #EAF4F4;   /* alternate tinted section band */
+  --ds-bg-surface:     #F9F9F7;   /* MEASURED page ground — warm off-white */
+  --ds-bg-surface-2:   #FFFFFF;   /* MEASURED cards + elevated surfaces */
+  --ds-bg-warm:        #F4EBE2;   /* MEASURED sand — the alternate tinted band */
 
   /* ---- COLOR: ink ---- */
-  --ds-ink:            #0E1A1D;   /* default body text */
-  --ds-ink-heading:    #08171C;   /* THEME-POLAR: light brand, so = primary-deep */
-  --ds-ink-soft:       #4A5C60;   /* secondary text */
-  --ds-ink-on-dark:    #EFFAFB;   /* text on dark + accent surfaces */
+  --ds-ink:            #545454;   /* MEASURED — the dominant ink, 94 occurrences */
+  --ds-ink-heading:    #545454;   /* MEASURED — headings are warm grey, NOT sage */
+  --ds-ink-soft:       #666666;   /* MEASURED secondary */
+  --ds-ink-on-dark:    #FFFFFF;
 
-  /* ---- COLOR: line + scrim + signature ---- */
-  --ds-line:           #D2E4E6;
-  --ds-scrim:          rgba(8,23,28,.58);
-  --ds-signature:      #E8833A;   /* used once, for confirmation states */
-  --ds-success:        #1E9E6A;
-  --ds-success-soft:   #E3F6EE;
-  --ds-warning:        #C2410C;
-  --ds-warning-soft:   #FDEBE0;
+  /* ---- COLOR: line + control + scrim ---- */
+  --ds-line:           #E6E6E6;   /* MEASURED decorative hairline (1.18:1 — decor only) */
+  --ds-divider:        #E6E6E6;
+  --ds-control-border: #788B86;   /* SOLVED for WCAG 1.4.11 — see departure #2 */
+  --ds-scrim:          rgba(60,83,79,.58);
+  --ds-signature:      #965E33;   /* the single warm note, confirmation states only */
+  --ds-success:        #3D765B;   /* SOLVED for AA on its own soft ground (4.60:1) */
+  --ds-success-soft:   #E6F1EA;
+  --ds-warning:        #A6552B;
+  --ds-warning-soft:   #F7EBE2;
 
-  /* ---- TYPOGRAPHY ---- */
+  /* ---- TYPOGRAPHY — ONE FAMILY. The reference sets Outfit for display AND body
+     (149 declarations); the single-family discipline is a large part of why it
+     reads calm. Our previous pairing (Outfit + Source Sans 3) is retired. ---- */
   --ds-font-display: 'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ds-font-body:    'Source Sans 3', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ds-font-mono:    ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ds-font-body:    'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* NOT monospace. The reference carries zero mono; every --ds-font-mono usage in
+     the structural sheet is a decorative LABEL (eyebrows, roles, kickers), never
+     tabular data, so the whole typewriter register is retired by re-pointing the
+     one token rather than editing ~30 rules. */
+  --ds-font-mono:    'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  /* ---- RADIUS (constrained roles) ---- */
-  --ds-r-control: 8px;
-  --ds-r-surface: 20px;
+  /* ---- RADIUS — MEASURED. 24px is the signature (91 elements). ---- */
+  --ds-r-control: 8px;            /* MEASURED — inputs, chips */
+  --ds-r-surface: 24px;           /* MEASURED — the dominant radius */
+  --ds-r-band:    30px;           /* MEASURED — section-band corner rounding */
   --ds-r-pill:    999px;
 
-  /* ---- SHADOW ---- */
-  --ds-shadow-card: 0 1px 2px rgba(8,23,28,.05), 0 10px 28px rgba(8,23,28,.07);
-  --ds-shadow-lift: 0 2px 8px rgba(8,23,28,.09), 0 22px 52px rgba(8,23,28,.14);
-  --ds-shadow-rest: 0 1px 2px rgba(8,23,28,.05);
+  /* ---- SHADOW — the reference is FLAT: 4 shadow instances on a 10,276px page.
+     Separation is done by SURFACE COLOUR + RADIUS + WHITESPACE, never by a drop
+     shadow. Card/rest are none; a single restrained lift is kept for hover only,
+     because losing all hover feedback is a usability cost the reference doesn't
+     actually pay (it moves background instead). ---- */
+  --ds-shadow-rest: none;
+  --ds-shadow-card: none;
+  --ds-shadow-lift: 0 16px 36px rgba(60,83,79,.10);
 
   /* ---- SPACING + LAYOUT ---- */
   --ds-space-2xs: 4px;
@@ -72,35 +129,45 @@
   --ds-space-lg:  40px;
   --ds-space-xl:  64px;
   --ds-space-2xl: 96px;
-  --ds-section-py:    clamp(64px, 8vw, 112px);
-  --ds-container-max: 1160px;
+  /* CADENCE reduced 2026-08-26 on owner report ("too much spacing") — flagged twice.
+     Was clamp(72px, 8.5vw, 128px) = 122.4px per edge at 1440, so 245px between two
+     sections once both edges are counted. The section-rhythm gate enforces UNIFORMITY,
+     not an absolute value ("the SAME leading and trailing … the SAME across all
+     sections"), so lowering it site-wide is gate-safe where a per-section override was
+     not. One token, all 28 pages, trivially reversible. */
+  --ds-section-py:    clamp(56px, 6.4vw, 96px);
+  --ds-container-max: 1200px;     /* MEASURED — 1200 content, 120 gutter @1440 */
 
-  /* ---- MOTION (base) ---- */
-  --ds-ease: cubic-bezier(.4, 0, .2, 1);
-  --ds-dur:  220ms;
+  /* ---- MOTION — MEASURED signature curve + duration ---- */
+  --ds-ease: cubic-bezier(.44, 0, .56, 1);
+  --ds-dur:  .5s;
 
-  /* ---- GRADIENT ---- */
-  --ds-accent-2:      #6FDCE8;
-  --ds-grad-brand:    linear-gradient(135deg, #0E7C86, #22B8CF);
-  --ds-grad-text:     linear-gradient(100deg, #22B8CF, #6FDCE8);
-  --ds-grad-hero:     linear-gradient(150deg, #08171C 0%, #0C2A31 55%, #0A5F6B 100%);
-  --ds-fade-to-paper: linear-gradient(180deg, rgba(245,250,250,0) 0%, #F5FAFA 68%);
+  /* ---- GRADIENT — near-absent in the reference. Kept only where a token is
+     structurally required; each resolves to a low-contrast sage wash. ---- */
+  --ds-accent-2:      #5C7A74;
+  --ds-grad-brand:    linear-gradient(135deg, #47625D, #5C7A74);
+  --ds-grad-text:     linear-gradient(100deg, #47625D, #5C7A74);
+  --ds-grad-hero:     linear-gradient(150deg, #47625D 0%, #3C534F 100%);
+  --ds-fade-to-paper: linear-gradient(180deg, rgba(249,249,247,0) 0%, #F9F9F7 68%);
 
-  /* ---- GLOBALS OVERLAY (modern-wow) ---- */
-  --ds-glass-bg:     rgba(255,255,255,.72);
-  --ds-glass-blur:   blur(16px) saturate(170%);
-  --ds-glass-border: rgba(255,255,255,.62);
-  --ds-hairline:     rgba(14,26,29,.10);
-  --ds-inset-hi:     inset 0 1px 0 rgba(255,255,255,.10);
-  --ds-glow:         0 0 48px rgba(34,184,207,.34);
-  --ds-glow-wash:    radial-gradient(62% 88% at 18% 0%, rgba(34,184,207,.20) 0%, transparent 70%);
-  --ds-grain:        radial-gradient(circle at 1px 1px, rgba(14,26,29,.05) 1px, transparent 0);
-  --ds-grid:         linear-gradient(rgba(34,184,207,.10) 1px, transparent 1px), linear-gradient(90deg, rgba(34,184,207,.10) 1px, transparent 1px);
+  /* ---- GLOBALS OVERLAY — NEUTRALISED. Glow, grain and grid are exactly the
+     "atmosphere" the reference does without; leaving them live would read as a
+     different design family wearing sage. Glass is retained but de-frosted for
+     the sticky header only. ---- */
+  --ds-glass-bg:     rgba(249,249,247,.86);
+  --ds-glass-blur:   blur(14px) saturate(120%);
+  --ds-glass-border: #E6E6E6;
+  --ds-hairline:     rgba(71,98,93,.10);   /* MEASURED brand @10% */
+  --ds-inset-hi:     none;
+  --ds-glow:         none;
+  --ds-glow-wash:    none;
+  --ds-grain:        none;
+  --ds-grid:         none;
   --ds-grid-size:    44px 44px;
-  --ds-divider-h:    80px;
-  --ds-icon-tint:    brightness(0) saturate(100%) invert(62%) sepia(64%) saturate(478%) hue-rotate(139deg) brightness(93%) contrast(90%);
+  --ds-divider-h:    56px;
+  --ds-icon-tint:    brightness(0) saturate(100%) invert(37%) sepia(9%) saturate(1042%) hue-rotate(116deg) brightness(94%) contrast(88%);
 
-  /* z-index (system, grafted) — grafted by graft-system-tokens.mjs (FIX #3) */
+  /* z-index (system, grafted) */
   --ds-z-below: -1;
   --ds-z-base: 0;
   --ds-z-raised: 1;
@@ -110,7 +177,7 @@
   --ds-z-modal: 1060;
   --ds-z-toast: 1080;
 
-  /* opacity (system, grafted) — grafted by graft-system-tokens.mjs (FIX #3) */
+  /* opacity (system, grafted) */
   --ds-opacity-muted: .72;
   --ds-opacity-disabled: .45;
   --ds-opacity-faint: .12;
@@ -118,43 +185,37 @@
   --ds-opacity-texture: .40;
   --ds-opacity-veil: .85;
 
-  /* motion (system, grafted) — grafted by graft-system-tokens.mjs (FIX #3) */
-  --ds-dur-fast: .2s;
-  --ds-dur-slow: .6s;
+  /* motion (system, grafted) — retuned to the measured reference cadence */
+  --ds-dur-fast: .25s;
+  --ds-dur-slow: .8s;
   --ds-ease-out: cubic-bezier(.16,1,.3,1);
   --ds-dur-data: 1.4s;
 
   /* ---- ROLES READ BY THE SHARED STRUCTURAL SHEET ---- */
-  --ds-accent-strong:  #0A5F6B;   /* pressed state, heavier rule on light */
-  --ds-accent-bright:  #22B8CF;   /* true brand hue: large display, borders, icons */
-  --ds-on-accent:      #FFFFFF;   /* foreground that sits ON an accent fill */
-  --ds-divider:        #D2E4E6;
-  --ds-ink-faint:      #597076;   /* labels and captions */
+  --ds-accent-strong:  #3C534F;
+  --ds-accent-bright:  #47625D;
+  --ds-on-accent:      #FFFFFF;   /* white on sage = 6.62:1 */
+  --ds-ink-faint:      #727272;   /* SOLVED for AA — see departure #1 */
 
-  /* ---- FLUID TYPE SCALE (tuned to the Vitalflow reference measurement) ---- */
-  --ds-fs-display:     clamp(40px, 5.4vw, 68px);
-  --ds-fs-h1:          clamp(38px, 4.9vw, 62px);
-  --ds-fs-h2:          clamp(30px, 3.7vw, 50px);
-  --ds-fs-h3:          clamp(19px, 1.6vw, 24px);
-  --ds-fs-body:        17px;
-  --ds-fs-caption:     12px;
-  --ds-tracking-disp:  -0.032em;
-  --ds-tracking-label: 0.1em;
-  --ds-lh-tight:       1.08;
-  --ds-lh-body:        1.6;
+  /* ---- FLUID TYPE SCALE — anchored on the reference's measured desktop values.
+     Tight leading and the slight negative tracking ARE the signature. ---- */
+  --ds-fs-display:     clamp(38px, 5vw, 64px);
+  --ds-fs-h1:          clamp(36px, 4.6vw, 58px);
+  --ds-fs-h2:          clamp(30px, 3.4vw, 48px);   /* MEASURED 48px */
+  --ds-fs-h3:          clamp(19px, 1.5vw, 22px);   /* MEASURED 22px */
+  --ds-fs-body:        16px;                        /* MEASURED */
+  --ds-fs-caption:     12px;                        /* MEASURED */
+  --ds-tracking-disp:  -0.01em;                     /* MEASURED -0.48/48 */
+  --ds-tracking-label: 0.08em;
+  --ds-lh-tight:       1.0;                         /* MEASURED 48/48 */
+  --ds-lh-body:        1.55;                        /* DEPARTURE #3 — see above */
 
-
-  /* ---- LEGACY-NAME ALIAS LAYER -------------------------------------------
-     The two brand-card TIER sheets are authored against the pre---ds- bare token
-     names. Rather than rewrite those shared sheets, every bare name is aliased
-     here to its --ds-* role. CSS custom properties substitute LAZILY, so an alias
-     declared once in :root still resolves to the DARK value inside .surface-dark
-     (it re-reads --ds-* in the current context). One mapping, no duplication. */
+  /* ---- LEGACY-NAME ALIAS LAYER (unchanged mechanism, re-pointed values) ---- */
   --accent:            var(--ds-accent);
   --accent-hot:        var(--ds-accent-bright);
   --accent-soft:       var(--ds-accent-soft);
-  --accent-tint-14:    rgba(34,184,207,.14);
-  --accent-tint-22:    rgba(34,184,207,.22);
+  --accent-tint-14:    rgba(71,98,93,.14);
+  --accent-tint-22:    rgba(71,98,93,.22);
   --on-accent:         var(--ds-on-accent);
   --bg:                var(--ds-bg-surface);
   --bg-2:              var(--ds-bg-surface-2);
@@ -177,79 +238,112 @@
   --shadow-rest:       var(--ds-shadow-rest);
   --shadow-accent:     var(--ds-glow);
   --shadow-cinematic:  var(--ds-shadow-lift);
-
 }
 
 /* ============================================================================
-   .surface-dark - the SAME token CATEGORIES re-declared for the dark ground.
-   Dropping class="surface-dark" re-skins every component with no missing property.
-   Surface-invariant families (radius / spacing / z-index / opacity / motion / type)
-   live in :root ONLY and are never redeclared here.
+   .surface-dark — THE SAGE BAND.
+   ----------------------------------------------------------------------------
+   In the previous system this was a near-black teal ground. In the reference
+   there is no black anywhere: the "dark" treatment IS the sage panel — the
+   footer and the closing consult block are both solid #47625d carrying white
+   type. Re-pointing this layer converts every existing .surface-dark section
+   across all 28 pages into the reference's sage band with no markup change,
+   which is precisely why this rebuild is a token repoint rather than a rewrite.
+   Every ink value here was computed against #47625d (see header block).
    ============================================================================ */
 [data-surface="dark"],
+.site-footer,
 .surface-dark {
   /* brand */
-  --ds-primary:        #22B8CF;
-  --ds-primary-deep:   #041014;
-  --ds-primary-soft:   #10333B;
+  --ds-primary:        #EAF4EB;
+  --ds-primary-deep:   #33453F;
+  --ds-primary-soft:   rgba(255,255,255,.12);
 
   /* accent */
-  --ds-accent:         #6FDCE8;
-  --ds-accent-ink:     #6FDCE8;
-  --ds-accent-soft:    #10333B;
-  --ds-accent-deep:    #0A5F6B;
-  --ds-accent-light:   #6FDCE8;
+  --ds-accent:         #EAF4EB;
+  --ds-accent-ink:     #EAF4EB;
+  --ds-accent-soft:    rgba(255,255,255,.12);
+  --ds-accent-deep:    #33453F;
+  --ds-accent-light:   #EAF4EB;
 
-  /* surface */
-  --ds-bg-surface:     #08171C;
-  --ds-bg-surface-2:   #0F262D;
-  --ds-bg-warm:        #0C1F25;
+  /* surface — the band itself */
+  --ds-bg-surface:     #47625D;
+  --ds-bg-surface-2:   #4F6C67;
+  --ds-bg-warm:        #425C57;
 
-  /* ink */
-  --ds-ink:            #EFFAFB;
-  --ds-ink-heading:    #EFFAFB;
-  --ds-ink-soft:       #A7C2C7;
-  --ds-ink-on-dark:    #EFFAFB;
+  /* ink — all computed against #47625D */
+  --ds-ink:            #FFFFFF;   /* 6.62:1 */
+  --ds-ink-heading:    #FFFFFF;
+  --ds-ink-soft:       #D6E4DE;   /* 5.05:1 */
+  --ds-ink-on-dark:    #FFFFFF;
+  --ds-ink-faint:      #D6E4DE;   /* deliberately NOT lighter — 5.05:1 holds AA */
 
-  /* line + scrim + signature */
-  --ds-line:           #1E3A42;
-  --ds-scrim:          rgba(4,16,20,.66);
-  --ds-signature:      #E8833A;
-  --ds-success:        #4ADE9B;
-  --ds-success-soft:   #10332A;
-  --ds-warning:        #F59E6B;
-  --ds-warning-soft:   #35201A;
+  /* line + control + scrim */
+  --ds-line:           rgba(255,255,255,.20);
+  --ds-divider:        rgba(255,255,255,.20);
+  --ds-control-border: rgba(255,255,255,.55);
+  --ds-scrim:          rgba(38,53,50,.66);
+  --ds-signature:      #E2A97A;
+  --ds-success:        #9AD9BC;
+  --ds-success-soft:   rgba(255,255,255,.12);
+  --ds-warning:        #F0B48C;
+  --ds-warning-soft:   rgba(255,255,255,.12);
 
-  /* shadow - deeper on a dark ground */
-  --ds-shadow-card: 0 1px 2px rgba(0,0,0,.34), 0 12px 32px rgba(0,0,0,.40);
-  --ds-shadow-lift: 0 2px 8px rgba(0,0,0,.42), 0 26px 60px rgba(0,0,0,.52);
-  --ds-shadow-rest: 0 1px 2px rgba(0,0,0,.32);
+  /* shadow — flat on the band too */
+  --ds-shadow-card: none;
+  --ds-shadow-lift: none;
+  --ds-shadow-rest: none;
 
   /* gradient */
-  --ds-accent-2:      #22B8CF;
-  --ds-grad-brand:    linear-gradient(135deg, #22B8CF, #6FDCE8);
-  --ds-grad-text:     linear-gradient(100deg, #6FDCE8, #B9F1F7);
-  --ds-grad-hero:     linear-gradient(150deg, #041014 0%, #0C2A31 60%, #0A5F6B 100%);
-  --ds-fade-to-paper: linear-gradient(180deg, rgba(8,23,28,0) 0%, #08171C 68%);
+  --ds-accent-2:      #EAF4EB;
+  --ds-grad-brand:    linear-gradient(135deg, #EAF4EB, #FFFFFF);
+  --ds-grad-text:     linear-gradient(100deg, #FFFFFF, #EAF4EB);
+  --ds-grad-hero:     linear-gradient(150deg, #47625D 0%, #3C534F 100%);
+  --ds-fade-to-paper: linear-gradient(180deg, rgba(71,98,93,0) 0%, #47625D 68%);
 
-  /* globals overlay */
-  --ds-glass-bg:     rgba(12,34,40,.66);
-  --ds-glass-blur:   blur(16px) saturate(170%);
-  --ds-glass-border: rgba(255,255,255,.14);
-  --ds-hairline:     rgba(255,255,255,.12);
-  --ds-inset-hi:     inset 0 1px 0 rgba(255,255,255,.08);
-  --ds-glow:         0 0 56px rgba(34,184,207,.30);
-  --ds-glow-wash:    radial-gradient(62% 88% at 18% 0%, rgba(34,184,207,.22) 0%, transparent 70%);
-  --ds-grain:        radial-gradient(circle at 1px 1px, rgba(255,255,255,.05) 1px, transparent 0);
-  --ds-grid:         linear-gradient(rgba(111,220,232,.09) 1px, transparent 1px), linear-gradient(90deg, rgba(111,220,232,.09) 1px, transparent 1px);
-  --ds-divider-h:    80px;
-  --ds-icon-tint:    brightness(0) saturate(100%) invert(88%) sepia(24%) saturate(720%) hue-rotate(140deg) brightness(102%) contrast(92%);
+  /* globals overlay — neutralised on the band as well */
+  --ds-glass-bg:     rgba(71,98,93,.86);
+  --ds-glass-blur:   blur(14px) saturate(120%);
+  --ds-glass-border: rgba(255,255,255,.20);
+  --ds-hairline:     rgba(255,255,255,.16);
+  --ds-inset-hi:     none;
+  --ds-glow:         none;
+  --ds-glow-wash:    none;
+  --ds-grain:        none;
+  --ds-grid:         none;
+  --ds-divider-h:    56px;
+  --ds-icon-tint:    brightness(0) saturate(100%) invert(100%);
 
   /* roles read by the shared structural sheet */
-  --ds-accent-strong:  #22B8CF;
-  --ds-accent-bright:  #6FDCE8;
-  --ds-on-accent:      #04141A;
-  --ds-divider:        rgba(111,220,232,.40);
-  --ds-ink-faint:      #7FA0A7;
+  --ds-accent-strong:  #FFFFFF;
+  --ds-accent-bright:  #EAF4EB;
+  --ds-on-accent:      #47625D;   /* ink ON a mint fill = sage */
+}
 
+
+/* ============================================================================
+   HERO OPENER — token restore.
+   The reference has no dark hero: its opener is light, image-first, headline
+   below. Our hero sections carry .surface-dark in the markup (frozen content),
+   so the sage-band variables must be reverted to the light set FOR THE OPENER
+   ONLY. Written at (0,2,0) so it beats .surface-dark's (0,1,0) on the same
+   element. These values live HERE, not in the structural sheet, because that
+   sheet is token-pure by contract — keeping brand hex out of it is precisely
+   what let this whole rebuild be a token repoint rather than a rewrite.
+   ============================================================================ */
+.kit-hero-sec.surface-dark,
+.hm-hero-sec.surface-dark {
+  --ds-bg-surface:     #F9F9F7;
+  --ds-bg-surface-2:   #FFFFFF;
+  --ds-ink:            #545454;
+  --ds-ink-heading:    #545454;
+  --ds-ink-soft:       #666666;
+  --ds-ink-faint:      #727272;
+  --ds-accent:         #47625D;
+  --ds-accent-ink:     #3C534F;
+  --ds-accent-soft:    #EAF4EB;
+  --ds-line:           #E6E6E6;
+  --ds-primary:        #47625D;
+  --ds-on-accent:      #FFFFFF;
+  --ds-control-border: #788B86;
 }

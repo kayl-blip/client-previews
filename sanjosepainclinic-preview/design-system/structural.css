@@ -5828,3 +5828,2106 @@ p { color: var(--ds-ink-soft); }
 @media (max-width: 900px) {
   .hm-fig--tall img { object-position: center 30%; }
 }
+
+/* ============================================================================
+   ============  REFERENCE SYSTEM LAYER — dentart design family  ==============
+   Appended 2026-08-26. Owner instruction: rebuild the site's visual language to
+   match https://dentart.framer.website/ while keeping ALL existing copy, IA and
+   functionality. Palette + type + radius + motion are carried by the re-pointed
+   token sheet; THIS layer carries the things a token cannot express — the FORM
+   factors. Everything below is measured off the reference (see the tokens-sheet
+   header for the measurement table) or solved to clear a WCAG floor.
+
+   WHY THIS IS AN APPENDED LAYER AND NOT A REWRITE
+   The structural sheet is token-pure (zero brand hex — verified). Re-pointing
+   the tokens therefore re-skins all 28 pages at once, and this layer only has to
+   correct FORM. Rewriting 5,800 lines would have risked the content and the
+   accessibility work already banked in it, for no visual gain.
+   ============================================================================ */
+
+/* ---------------------------------------------------------------------------
+   1. FLATNESS — the single biggest departure from the previous design.
+   The reference carries FOUR box-shadows on a 10,276px page. Its separation is
+   done with surface colour, radius and whitespace. The token sheet already
+   zeroed the shadow/glow tokens, but three effects are painted from LITERALS
+   and would survive a token repoint, so they are killed explicitly here.
+   --------------------------------------------------------------------------- */
+.surface-dark.has-atmos::before,
+.surface-dark.has-atmos::after { content: none; }   /* glow wash + white scanlines */
+
+.bw-hero__media::after,
+.bw-figure--atmos::after { background-image: none; }  /* legacy cyan scanline overlay */
+
+/* Cards: hairline, never a drop shadow. */
+.card,
+.bw-card,
+.kit-note,
+.kit-sheet { box-shadow: none; border: 1px solid var(--ds-line); }
+.card:hover { transform: none; box-shadow: none; border-color: var(--ds-control-border); }
+.surface-dark .card,
+.surface-dark .bw-card { box-shadow: none; border-color: var(--ds-line); }
+.surface-dark .card:hover { box-shadow: none; border-color: var(--ds-control-border); }
+
+/* ---------------------------------------------------------------------------
+   2. TYPOGRAPHY — the measured signature.
+   Section headings: 48px / 600 / line-height 1.0 / tracking -0.01em. The near-
+   solid 1.0 leading on a two-line heading is most of why the reference reads
+   "designed" rather than "documented". Body stays at 1.55 (tokens departure #3).
+   --------------------------------------------------------------------------- */
+h1, h2, h3, h4,
+.h-hero, .kit-head__h, .bw-h2, .bw-h3 {
+  font-family: var(--ds-font-display);
+  font-weight: 600;
+  letter-spacing: var(--ds-tracking-disp);
+  color: var(--ds-ink-heading);
+}
+h1, .h-hero { line-height: 1.02; }
+h2, .bw-h2, .kit-head__h { line-height: 1.04; }
+h3, .bw-h3 { line-height: 1.2; font-weight: 500; }
+h4 { line-height: 1.25; font-weight: 500; }
+
+/* the lead paragraph under a heading — 18px/300, measured */
+.kit-hero__lead,
+.bw-lead,
+.kit-head__sub,
+.bw-sub { font-weight: 300; font-size: clamp(16px, 1.25vw, 18px); line-height: 1.45; color: var(--ds-ink-soft); }
+
+/* eyebrows: the reference uses sentence-case sage, not shouty tracked caps */
+.eyebrow,
+.kit-chip { letter-spacing: .02em; text-transform: none; font-weight: 500; color: var(--ds-accent-ink); }
+
+/* ---------------------------------------------------------------------------
+   3. GEOMETRY — 1200px measure, 24px radius everywhere it lands.
+   --------------------------------------------------------------------------- */
+.wrap, .col--measure { max-width: var(--ds-container-max); }
+
+.kit-figure,
+.bw-figure,
+.hm-fig,
+.bw-media,
+figure img,
+.card,
+.bw-card { border-radius: var(--ds-r-surface); overflow: hidden; }
+
+/* the reference rounds the TOP of a band that meets the page ground — this is
+   its section-transition device, and it replaces the old SVG seam visually
+   while the seam markup stays in place for the structure gates. */
+.kit-sec.surface-dark,
+section.surface-dark { border-radius: var(--ds-r-band); }
+.kit-seam { display: none; }
+
+/* ---------------------------------------------------------------------------
+   4. BUTTONS — 48px pill. Measured: the reference animates BACKGROUND over .5s
+   on the signature curve, and never lifts or glows.
+   --------------------------------------------------------------------------- */
+.btn, .btn-primary, .btn-secondary {
+  border-radius: var(--ds-r-pill);
+  min-height: 48px;
+  padding-inline: 26px;
+  font-family: var(--ds-font-display);
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0;
+  box-shadow: none;
+  transition: background var(--ds-dur) var(--ds-ease),
+              color var(--ds-dur) var(--ds-ease),
+              border-color var(--ds-dur) var(--ds-ease);
+}
+.btn-primary { background: var(--ds-primary); color: var(--ds-on-accent); border: 1px solid transparent; }
+.btn-primary:hover { background: var(--ds-accent-deep); filter: none; box-shadow: none; }
+.btn-secondary { background: transparent; color: var(--ds-ink); border: 1px solid var(--ds-control-border); }
+.btn-secondary:hover { background: var(--ds-accent-soft); border-color: var(--ds-control-border); color: var(--ds-accent-ink); }
+.btn:active { transform: none; }
+
+/* the reference's quiet text-link-with-arrow, used instead of a third button */
+.hm-go, .spn-go, .mr-more {
+  color: var(--ds-accent-ink); font-weight: 500;
+  transition: color var(--ds-dur) var(--ds-ease);
+}
+
+/* ---------------------------------------------------------------------------
+   5. FORM CONTROLS — WCAG 1.4.11.
+   The reference paints input borders in its #e6e6e6 hairline, which is 1.18:1
+   against the ground. A decorative rule may do that; the boundary of a control
+   the clinic collects patient details through may not. Re-declared here with
+   the EXACT selector list of the base rule so specificity matches and source
+   order decides — the same trap that silently swallowed a font-size fix on this
+   sheet on 2026-08-25.
+   --------------------------------------------------------------------------- */
+.bw-form .bw-input,
+.bw-form input[type="text"],
+.bw-form input[type="email"],
+.bw-form input[type="tel"],
+.bw-form input:not([type]),
+.bw-form select,
+.bw-form textarea {
+  border-color: var(--ds-control-border);
+  border-radius: var(--ds-r-control);
+  font-family: var(--ds-font-body);
+  transition: border-color var(--ds-dur-fast) var(--ds-ease), box-shadow var(--ds-dur-fast) var(--ds-ease);
+}
+.bw-form .bw-input:focus,
+.bw-form input:focus, .bw-form select:focus, .bw-form textarea:focus {
+  border-color: var(--ds-primary);
+  box-shadow: 0 0 0 3px var(--ds-accent-soft);
+}
+
+/* ---------------------------------------------------------------------------
+   6. SCROLL REVEAL — the reference's entrance motion, with NO JavaScript.
+   Measured intent: content rises a short distance and fades in as it enters the
+   viewport, once, never looping.
+
+   WHY CSS AND NOT AN OBSERVER. The first cut of this used an IntersectionObserver
+   in the page shell. That shell (_build/_template.html) is a DERIVED artifact —
+   build.mjs regenerates it from the locked chrome on every run specifically so a
+   hand-edit cannot silently drift from it — so the script was correctly wiped by
+   the next build. Scroll-driven CSS animation puts the behaviour in the sheet
+   that IS the source of truth, and removes a script from every page.
+
+   FAILURE MODE IS THE POINT. The whole block sits behind @supports, so a browser
+   without scroll-driven timelines never applies the opacity:0 start state and
+   simply renders the finished page. Content is never gated behind an animation —
+   the defect the observer version could produce (a stuck observer hiding copy)
+   is structurally impossible here.
+
+   Once per element: `both` holds the end state, and a view() timeline does not
+   re-run, so nothing loops — WCAG 2.2.2 is not engaged.
+   --------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .kit-head, .kit-figure, .kit-note, .kit-sheet,
+    .bw-card, .card, .bw-figure, .bw-media, .bw-stat,
+    .hm-fig, .hm-head, .hm-note, .hm-quiet, .hm-plaque,
+    .bw-media-grid > *, .kit-notes > * {
+      animation: ds-rise linear both;
+      animation-timeline: view();
+      /* start as the element's top edge enters, finish well before centre, so
+         copy is settled by the time it is actually being read */
+      animation-range: entry 0% entry 48%;
+    }
+    @keyframes ds-rise {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: none; }
+    }
+  }
+}
+
+/* image hover: the reference scales the IMAGE inside its fixed rounded frame */
+@media (prefers-reduced-motion: no-preference) and (pointer: fine) {
+  .kit-figure img, .hm-fig img, .bw-figure img {
+    transition: transform var(--ds-dur-slow) var(--ds-ease);
+  }
+  .kit-figure:hover img, .hm-fig:hover img, .bw-figure:hover img { transform: scale(1.03); }
+}
+
+/* ---------------------------------------------------------------------------
+   7. TINTED COPY PANEL — the reference's mint block that carries body copy
+   beside a photograph. Our .sec--soft / .kit-note already occupy this slot.
+   --------------------------------------------------------------------------- */
+.sec--soft { background: var(--ds-accent-soft); }
+.sec--warm { background: var(--ds-bg-warm); }
+.kit-note {
+  background: var(--ds-accent-soft);
+  border: 0;
+  border-radius: var(--ds-r-surface);
+  padding: clamp(24px, 3vw, 40px);
+}
+.kit-note--fence { border-left: 3px solid var(--ds-warning); }
+
+/* ---------------------------------------------------------------------------
+   8. STAT PAIR — measured 64px/600 sage numeral over a 14px muted label.
+   --------------------------------------------------------------------------- */
+.bw-stat__n {
+  font-family: var(--ds-font-display);
+  font-size: clamp(40px, 4.4vw, 64px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: var(--ds-tracking-disp);
+  color: var(--ds-primary);
+}
+.bw-stat__l { font-size: 14px; color: var(--ds-ink-soft); font-weight: 400; }
+
+/* ---------------------------------------------------------------------------
+   9. FOCUS — unchanged in intent, re-coloured to sage and kept clearly visible
+   against both the cream ground and the sage band (WCAG 2.4.7 / 2.4.11).
+   --------------------------------------------------------------------------- */
+:focus-visible {
+  outline: 3px solid var(--ds-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.surface-dark :focus-visible { outline-color: var(--ds-ink-on-dark); }
+
+/* ============================================================================
+   REFERENCE SYSTEM — PASS 2. Corrections from the first rendered aesthetic read.
+   Each item below is a divergence I could SEE against the reference once the
+   token repoint was on screen, not a speculative tidy-up.
+   ============================================================================ */
+
+/* ---------------------------------------------------------------------------
+   10. LABELS — retire the typewriter register.
+   --ds-font-mono now resolves to Outfit (see the tokens sheet), which removes the
+   typewriter face. This removes the other half of it: the 11px tracked-uppercase
+   treatment. The reference labels its sections in SENTENCE-CASE SAGE at a normal
+   size and leans on colour, not on tracking, to mark them as secondary.
+   .kit-unconf is deliberately EXEMPT — the [UNCONFIRMED] badge marks unverified
+   NAP data for the owner and must stay visually loud until those facts are
+   confirmed. Making it quiet would hide a correctness signal to serve a look.
+   --------------------------------------------------------------------------- */
+.eyebrow, .label, .kit-key,
+.bw-team__role, .bw-founder__sig-role, .bw-press__link,
+.f-col h5 {
+  font-family: var(--ds-font-display);
+  text-transform: none;
+  letter-spacing: .01em;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ds-accent-ink);
+}
+.surface-dark .eyebrow,
+.surface-dark .label,
+.surface-dark .kit-key { color: var(--ds-ink-soft); }
+
+/* the numbered section marker ("01 /") keeps its rule but loses the mono tick */
+.hm-head, .kit-head { border-top-width: 1px; border-top-color: var(--ds-line); }
+
+/* ---------------------------------------------------------------------------
+   11. HERO — the reference's opening is LIGHT and IMAGE-FIRST.
+   It places its photography at the top in a rounded frame and sets the headline
+   BELOW it on the page ground; there is no full-bleed dark photo with white text
+   over a scrim anywhere on the reference. Our hero markup already contains a
+   figure and a copy block, so the composition is reachable without touching the
+   content file: unpin the figure, put it first, and return the section to the
+   light ground.
+   Specificity note: .surface-dark sits on the SAME element as .kit-hero-sec, so
+   the token restore is written at (0,2,0) to beat .surface-dark's (0,1,0).
+   --------------------------------------------------------------------------- */
+.kit-hero-sec.surface-dark,
+.hm-hero-sec.surface-dark {
+  background: var(--ds-bg-surface);
+  border-radius: 0;
+}
+
+.hm-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 0;
+  overflow: visible;
+  gap: clamp(28px, 3.4vw, 48px);
+}
+/* the photograph: unpinned, rounded, and FIRST — the reference's signature move */
+.hm-hero__bg {
+  position: relative;
+  inset: auto;
+  order: -1;
+  width: 100%;
+  max-width: var(--ds-container-max);
+  margin-inline: auto;
+  aspect-ratio: 16 / 7;
+  border-radius: var(--ds-r-surface);
+  overflow: hidden;
+}
+.hm-hero__bg img { width: 100%; height: 100%; object-fit: cover; object-position: center 44%; }
+.hm-hero__bg::after { content: none; }        /* the scrim has no job on a light hero */
+
+.hm-hero__inner { padding-block: 0; }
+.hm-hero__copy { max-width: none; }
+.hm-hero__h {
+  color: var(--ds-primary);                    /* the reference sets its hero headline in the brand */
+  font-size: clamp(38px, 5vw, 64px);
+  line-height: 1.02;
+  max-width: 16em;
+}
+.hm-hero__lead { color: var(--ds-ink-soft); font-weight: 300; }
+.hm-hero__rail { color: var(--ds-primary); opacity: .5; }
+
+@media (max-width: 700px) {
+  .hm-hero__bg { aspect-ratio: 4 / 3; }
+}
+
+/* ---------------------------------------------------------------------------
+   12. CARD RULE CONSISTENCY.
+   The instrument row painted a heavy top rule on the first three cards and none
+   on the last two — an accent that was only ever meant for the "named" three.
+   Under a flat, hairline system that inconsistency reads as breakage rather than
+   emphasis, so the rule is normalised across the row and the distinction is
+   carried by the copy, which already states which three are the notable ones.
+   --------------------------------------------------------------------------- */
+.hm-strip__i,
+.hm-strip__i--plain { border-top: 1px solid var(--ds-line); }
+
+/* ---------------------------------------------------------------------------
+   13. FOOTER — the reference closes on a solid brand panel with a rounded top.
+   The token sheet now hands .site-footer the full sage-band variable set, so
+   every child (headings, links, the subscribe field) inverts with no per-rule
+   edit. This only has to set the panel itself.
+   --------------------------------------------------------------------------- */
+.site-footer {
+  background: var(--ds-bg-surface);            /* resolves to sage inside this scope */
+  color: var(--ds-ink);
+  border-top: 0;
+  border-radius: var(--ds-r-band) var(--ds-r-band) 0 0;
+  margin-top: clamp(40px, 6vw, 88px);
+}
+.site-footer .f-brand__n { color: var(--ds-ink); }
+.site-footer .f-col h5 { color: var(--ds-ink-soft); }
+.site-footer .f-col a,
+.site-footer .f-legal a { color: var(--ds-ink-soft); }
+.site-footer .f-col a:hover,
+.site-footer .f-legal a:hover { color: var(--ds-ink); }
+.site-footer .f-sub input {
+  background: rgba(255,255,255,.10);
+  border: 1px solid var(--ds-control-border);
+  color: var(--ds-ink);
+  border-radius: var(--ds-r-pill);
+  padding-inline: 18px;
+}
+.site-footer .f-sub input::placeholder { color: var(--ds-ink-soft); opacity: .9; }
+.site-footer .btn-primary {
+  background: var(--ds-ink);                   /* white pill on the sage panel */
+  color: var(--ds-primary-deep);
+  border-color: transparent;
+}
+.site-footer .btn-primary:hover { background: var(--ds-accent); color: var(--ds-primary-deep); }
+
+/* ============================================================================
+   REFERENCE SYSTEM — PASS 3. Twenty-three fixes from a five-way parallel audit
+   against the measured reference, each one ADVERSARIALLY VERIFIED before landing
+   (4 further proposals were refuted and are NOT here: one changed a single
+   element, one targeted a defect that did not exist, one was contradicted by
+   live measurement, one was a no-op). One fix was AMENDED after verification
+   because its border-color shorthand would have greyed out the emergency-care
+   notice rail on hover.
+   ============================================================================ */
+
+/* [HIGH] Glass frost survives the repoint: blur(14px) saturate(120%) still paints on the sticky header and six in-page panels
+   verified: CONFIRMED on all three tests. (1) Declarations exist verbatim: tokens.css:151-152 carries `--ds-glass-bg: rgba(249,249,247,.86)` and `--ds-glass-blur: blur(14px) saturate(120%)` directly beneath the comment claiming the layer is "de-frosted for the sticky header only" — the comment and the value gen */
+/* FLATNESS · glass de-frost. The token comment already committed to this; the
+   value never followed. Opaque surfaces, no blur, no saturation boost. */
+.site-header,
+.kit-chip,
+.ip-console__bar,
+.spn-idx,
+.sc-route,
+.sc-rail__bar,
+.stk-act {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.site-header { background: var(--ds-bg-surface); }
+.kit-chip,
+.ip-console__bar,
+.spn-idx,
+.sc-route,
+.sc-rail__bar,
+.stk-act { background: var(--ds-bg-surface-2); }
+
+/* [HIGH] Literal cyan scanline + near-black gradient overlay still paints over the console photo (.ip-console__scope::after) — legacy Diagnostic Teal residue the token repoint cannot reach
+   verified: SURVIVES REFUTATION — confirmed real and effective on rendered pixels, not just computed values.  (1) DECLARATION EXISTS: structural.css:2074-2079 matches the quote byte-for-byte, at top level (brace audit: enclosing blocks close at 2051/2057/2063/2069/2073 — no @media wrapper).  (2) NOT A NO-OP — p */
+/* FLATNESS · the console scope carried a hard-coded CRT overlay: a 62%-black
+   wash plus cyan scanlines from the retired teal palette. The figure holds an
+   <img> and nothing else, so the overlay serves no legibility purpose — it is
+   pure atmosphere, and the reference has none. */
+.ip-console__scope::after { content: none; }
+
+/* [HIGH] Sage attorney band: the record card is force-stretched to a neighbouring column and then centres its copy, leaving two hollow bands inside it (index.html, section 08)
+   verified: SURVIVES REFUTATION. (1) Quoted declarations exist verbatim at the exact line numbers: structural.css:5460 .hm-desk {grid-template-columns: minmax(0,1.32fr) minmax(0,.68fr); grid-template-rows: auto 1fr; align-items: stretch}, :5468 .hm-desk__rec {grid-column:1; grid-row:1/span 2}, :5484 .hm-desk__b */
+/* DEADSPACE 1 — the attorney-desk record card (index.html, sage band 08).
+   `.hm-desk__rec` spans both rows under align-items:stretch, so column 2 dictates
+   its height; `.hm-desk__body` then centres one paragraph in the surplus and
+   splits it into two hollow bands (measured 88px + 88px at 1440x900).
+   Let the record size to its own content; the band height is unchanged because
+   column 2 still sets it. Wrapped at min-width:901px so the <=900 stacked arm
+   at :5499 is provably untouched. */
+@media (min-width: 901px) {
+  .hm-desk { grid-template-rows: auto auto; align-items: start; }
+  .hm-desk > .hm-desk__rec { align-self: start; }
+  .hm-desk .hm-desk__body { justify-content: flex-start; flex: 0 1 auto; }
+}
+
+/* [HIGH] Sage Proof band: the attestation panel stretches to the ledger rows and centres an 80px claim, leaving 204px of empty gradient inside it (auto-accident-injury.html, section 13)
+   verified: NOT REFUTED. (1) Evidence is verbatim: structural.css:1814 `.kit-ledger{...align-items:stretch}`, :1818 the "never voids" comment, :1819 `.kit-ledger__fig{display:flex;flex-direction:column;justify-content:center;...}`; the max-width:900 block does open at :1845. auto-accident-injury.html:502 is mai */
+/* DEADSPACE 2 — the Proof-band attestation panel (auto-accident-injury.html,
+   sage band 13). align-items:stretch forces .kit-ledger__fig to the height of
+   the ledger rows; justify-content:center then splits the surplus into 102px of
+   empty gradient above and 102px below an 80px claim (measured 1440x900).
+   Size the panel to its own content; the band height is unchanged because the
+   rows column still sets it. Wrapped at min-width:901px so the <=900 single-
+   column arm at :1845 is provably untouched. */
+@media (min-width: 901px) {
+  .kit-ledger { align-items: start; }
+  .kit-ledger > .kit-ledger__fig { justify-content: flex-start; }
+}
+
+/* [HIGH] Section h2 headings render at font-weight 800, not the measured 600 — REFERENCE LAYER §2 is outranked on every inner page
+   verified: REAL, and NOT a no-op — verified by live render, not reasoning alone.  EVIDENCE CONFIRMED EXACTLY. All six cited line numbers are precise (they point at the font-weight declaration line, not the selector opening line): structural.css:2482 (.mr-h, opens 2481), :2985 (.spn-gate__h, opens 2983), :3097  */
+.mr-h, .stk-h, .spn-gate__h, .spn-close__h, .spn-tail__h, .h2 {
+  font-weight: 600;
+  letter-spacing: var(--ds-tracking-disp);
+}
+
+/* [HIGH] The 11px tracked-uppercase label register survives on ~50 rules; PASS 2 §10 retired it for only 7 selectors
+   verified: NOT REFUTED — the finding is real and the fix lands.  EVIDENCE VERIFIED VERBATIM. PASS 2 §10 (structural.css:6077) covers exactly the 7 claimed selectors and its comment does read "leans on colour, not on tracking". Every quoted survivor exists as stated: .kit-mark L1462, .bw-toc__title L1326, .kit- */
+.kit-mark, .kit-figure__cap, .kit-instr__tag, .kit-statement__stamp,
+.bw-toc__title, .bw-form__legend, .bw-field__label,
+.mr-stamp__l, .mr-more,
+.ip-frame__cap, .ip-spec__k, .ip-ledger__k, .ip-split__sub,
+.ix-rec__k, .sc-route, .sc-line__k, .sc-fact__k, .sc-fig__cap,
+.pp-cap, .pp-record__k, .pp-fact__k,
+.ct-cap, .ct-read__k, .ct-station__stamp, .ct-arc__lien,
+.spn-fig__cap, .spn-close__stamp,
+.stk-cap, .hm-key, .hm-mark, .hm-fig__cap {
+  font-family: var(--ds-font-display);
+  text-transform: none;
+  letter-spacing: .01em;
+  font-size: var(--ds-fs-caption);
+  font-weight: 500;
+}
+
+/* [HIGH] Hero lead resolves to 21px at weight 400 on all 28 pages; the measured lead is 18px/300
+   verified: CONFIRMED REAL, NOT A NO-OP — verified empirically, not by reading alone. (1) The quoted declaration exists verbatim at structural.css:178 and is the ONLY .lead font-size declaration in the entire project; grep for any selector containing 'lead' across all _design/*.css returns only L178, the refere */
+.lead {
+  font-size: clamp(16px, 1.25vw, 18px);
+  font-weight: 300;
+  line-height: 1.45;
+}
+
+/* [HIGH] Card-title / h3-level headings render at font-weight 700 with bespoke tracking instead of 500 / −0.01em
+   verified: REAL and NOT a no-op, but the selector list must be cut from five to three before shipping.  VERIFIED TRUE: All quoted declarations exist. structural.css L3039-3042 `.spn-entry__h { font-family: var(--ds-font-display); font-weight: 700; line-height: 1.1; letter-spacing: -.026em; }`; L4953-4956 `.stk */
+.spn-entry__h, .stk-rec__h, .mr-cta__h, .ix-close__h, .bw-founder__h {
+  font-weight: 500;
+  letter-spacing: var(--ds-tracking-disp);
+  line-height: 1.2;
+}
+
+/* [HIGH] The .kit-hero opener is still the OLD full-bleed dark-scrim photo hero — PASS 2 §11 restored its light tokens but rebuilt the composition only for .hm-hero
+   verified: CONFIRMED — survives adversarial audit on all three tests.  (1) EVIDENCE IS ACCURATE. Every quoted line verified byte-exact: :1503 `.kit-hero__bg{position:absolute;inset:0;margin:0;overflow:hidden;z-index:var(--ds-z-base)}`, :1510-1515 the triple-scrim `::after`, :1517/:1518/:1519/:1520, and :6105-6 */
+/* .kit-hero — the reference's image-first opener. Mirrors PASS 2 §11's .hm-hero
+   conversion exactly; copy, markup and IA unchanged. */
+.kit-hero {
+  display: flex; flex-direction: column; align-items: stretch;
+  min-height: 0; overflow: visible;
+  gap: clamp(28px, 3.4vw, 48px);
+}
+.kit-hero__bg {
+  position: relative; inset: auto; order: -1;
+  width: 100%; max-width: var(--ds-container-max); margin-inline: auto;
+  aspect-ratio: 16 / 7;
+  border-radius: var(--ds-r-surface); overflow: hidden;
+}
+.kit-hero__bg img { width: 100%; height: 100%; object-fit: cover; object-position: center 44%; }
+.kit-hero__bg::after { content: none; }
+.kit-hero__inner { padding-block: 0; }
+.kit-hero__copy { max-width: none; }
+.kit-hero .h-hero { color: var(--ds-primary); line-height: 1.02; max-width: 16em; }
+.kit-hero .kit-hero__lead { color: var(--ds-ink-soft); font-weight: 300; }
+.kit-hero__strip { border-top-color: var(--ds-line); }
+@media (max-width: 700px) { .kit-hero__bg { aspect-ratio: 4 / 3; } }
+
+/* [HIGH] .bw-cap grants a translateY(-5px) + 36px drop-shadow hover on 27 of 28 pages — the reference never lifts or glows
+   verified: NOT REFUTED — defect real, fix effective, but three corrections owed.  (1) DECLARATION EXISTS VERBATIM. structural.css:1925 `.bw-cap { transition: transform var(--ds-dur-fast) var(--ds-ease-out), box-shadow ...; will-change: transform; }` and :1926 `.bw-cap:hover { transform: translateY(-5px); box-s */
+/* the shared lift utility, retuned to the reference: colour moves, geometry does not */
+.bw-cap {
+  transition: background-color var(--ds-dur) var(--ds-ease),
+              border-color var(--ds-dur) var(--ds-ease);
+  will-change: auto;
+}
+.bw-cap:hover { transform: none; box-shadow: none; }
+.ix-clause.bw-cap:hover,
+.ix-close__row.bw-cap:hover { transform: none; }
+
+/* [HIGH] Every rounded media frame still paints a dark bottom scrim over the photograph, although the caption plate already removed the scrim's contrast duty
+   verified: CONFIRMED — survived adversarial checks. (1) EVIDENCE VERIFIED: all 15 cited declarations exist verbatim at the claimed lines in _design/san-jose-pain-clinic-structural.css, including exact gradient stops (42%, 44%, 34%/74%/100%, 86%, 88%, 46/48/50/52/58%). (2) NOT A NO-OP — proven live, not reasone */
+/* the reference's media frame is a clean photo in a 24px corner. The captions
+   carry their own opaque plate (see the CAPTION LEGIBILITY PLATE block), so the
+   scrim no longer serves contrast anywhere it is removed here.
+   .pp-chapter__bg::after is intentionally NOT in this list — it is the only frame
+   whose overlaid text (.pp-chapter__h) has no plate. */
+.kit-figure::after,
+.ip-frame::after,
+.spn-fig::after,
+.hm-fig::after,
+.sc-fig__frame::after,
+.stk-fig::after,
+.ct-frame::after,
+.ct-letterbox::after,
+.ct-read__frame::after,
+.ct-doc__frame::after,
+.ct-sign__frame::after,
+.pp-plate::after,
+.pp-assess__media::after { background: none; }
+.pp-dossier .bw-founder__portrait::after { background: none; }
+
+/* [MEDIUM] Infinite animated gradient sweep still runs across the contact readout bar (.sc-rail__bar::after)
+   verified: CONFIRMED, not refuted. (1) Evidence is accurate: structural.css:4750-4754 holds @keyframes sc-sweep and 4755-4760 holds .sc-rail__bar::after verbatim as quoted; tokens.css:143 and the .surface-dark override at tokens.css:294 are as claimed, and --ds-dur-data:1.4s x 2.5 = 3.5s infinite. (2) Not a no */
+/* FLATNESS · the readout bar ran an endless gradient sweep across itself.
+   The reference moves background/colour on interaction, never on a loop, and
+   never paints a travelling wash over a surface. */
+.sc-rail__bar::after { content: none; }
+
+/* [MEDIUM] Vertical white-to-cream wash still paints on nine panel surfaces that the reference renders as flat solids
+   verified: CONFIRMED by headless render (Chromium 1440px, scratchpad copy of _design+pages; real sheet untouched at 6205 lines).  (1) DECLARATIONS EXIST: all ten verified verbatim at the claimed lines — :481 .bw-compare, :815 .bw-demo__track, :1037 .bw-team__member, :1147 .bw-form, :1322 .bw-toc, :1822 .kit-le */
+/* FLATNESS · panel surfaces are SOLID in the reference. These ten carried a
+   directional white-to-cream wash (and its sage-band equivalent), which reads
+   as depth. Re-declared as the flat surface token they were fading between,
+   so each panel keeps its exact top-edge colour in both light and dark scope. */
+.bw-compare,
+.bw-demo__track,
+.bw-team__member,
+.bw-form,
+.bw-toc,
+.kit-ledger__fig,
+.ip-console,
+.ip-record,
+.pp-sweep { background: var(--ds-bg-surface-2); }
+.mr-fence { background: var(--ds-warning-soft); }
+
+/* [MEDIUM] Repeating tick-grid texture still paints on every section head rule (.stk-head__ruler)
+   verified: REAL, not a no-op, no constraint violated. (1) DECLARATION VERIFIED: structural.css:4827-4830 matches the quote byte-for-byte, inside the .stk-head block whose own comment (4818-4819) names the intent — "mono key and ruler ticks, so the five bands read as five consecutive entries in one long record. */
+/* FLATNESS · the section-head ruler was a 9px repeating tick grid. The
+   reference opens a section on one hairline. Same token, same position, no
+   texture — the head keeps its rule, loses its instrument register. */
+.stk-head__ruler {
+  background-image: none;
+  background-color: var(--ds-line);
+  height: 1px;
+}
+
+/* [MEDIUM] Portrait media frames in sage bands are capped by a viewport-HEIGHT clamp that fires below their own declared aspect ratio, shortening the media column by 43-99px more than the design intends
+   verified: SURVIVES REFUTATION. (1) Both quoted declarations exist verbatim: structural.css:2197 `.ip-frame--tall { aspect-ratio: 3 / 4; max-height: clamp(320px, 44vh, 460px); }` and :4689 `.sc-fig--tall .sc-fig__frame { aspect-ratio: 3 / 4; max-height: clamp(320px, 44vh, 450px); }`. Anchors :2165 (.ip-split-- */
+/* DEADSPACE 3 — portrait frames in sage bands are cut short by a vh clamp that
+   fires below their own declared aspect ratio. Values below are each rule's OWN
+   clamp ceiling, so nothing grows past what the sheet already permits; only the
+   viewport-height dependency is removed. Two wrappers because the two rules have
+   different stacked arms: .sc-* stacks at <=1024 (:4707), .ip-* at <=900 (:2316). */
+@media (min-width: 901px) {
+  .surface-dark .ip-split--sheet .ip-frame--tall { max-height: 460px; }
+}
+@media (min-width: 1025px) {
+  .surface-dark .sc-file .sc-fig--tall .sc-fig__frame { max-height: 450px; }
+}
+
+/* [MEDIUM] `.ip-spread__h` is a semantic <h3> rendered as an 11px uppercase micro-label
+   verified: SUSTAINED. (1) Declaration verified byte-for-byte at _design/san-jose-pain-clinic-structural.css:2239; markup confirmed as <h3 class="ip-spread__h"> in 5 built pages (1 each: chiropractic-care, laser-therapy, on-site-diagnostics, spinal-decompression, whiplash).  (2) NOT a no-op — proven by live bef */
+.ip-spread__h {
+  font-family: var(--ds-font-display);
+  font-size: var(--ds-fs-h3);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: var(--ds-tracking-disp);
+  text-transform: none;
+  color: var(--ds-ink-heading);
+}
+
+/* [MEDIUM] .ip-console__scope::after still paints the OLD cyan-teal scanline overlay in raw non-token rgba
+   verified: UPHELD on all three tests. (1) Evidence exact: structural.css:2074-2078 carries the quoted block verbatim with rgba(4,16,20,.12/.62) + rgba(111,220,232,.07); it is the ONLY occurrence of .ip-console__scope::after in the sheet (grep -c = 1) and appears 0 times in chrome.css, tokens.css and brand-card */
+/* the last surviving cyan scanline + near-black wash from the retired design.
+   The frame holds no overlaid text, so the pseudo-element is removed outright. */
+.ip-console__scope::after { content: none; }
+
+/* [MEDIUM] The stat pair is half-converted: the numeral was aligned to the reference, the label was left in the retired tracked-caps register, and the two sibling stat pairs were never converted at all
+   verified: CORE FINDING IS REAL AND THE FIX WORKS — but the proposal is over-broad and ships 3 dead declarations.  (1) DECLARATIONS EXIST — all verified verbatim. structural.css:670-673 `.bw-stat__l { font-family: var(--ds-font-mono); font-size: var(--ds-fs-caption); letter-spacing:.14em; text-transform:upperc */
+/* one stat-pair vocabulary: a 600-weight sage numeral at the display tracking,
+   over a plain 14px muted label. */
+.bw-stat__l {
+  font-family: var(--ds-font-display);
+  letter-spacing: .01em;
+  text-transform: none;
+}
+.ip-gauge__n,
+.mr-stamp__n {
+  font-weight: 600;
+  letter-spacing: var(--ds-tracking-disp);
+}
+.ip-gauge__l { font-size: 14px; }
+.mr-stamp__l {
+  font-family: var(--ds-font-display);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: .01em;
+  text-transform: none;
+  color: var(--ds-ink-soft);
+}
+
+/* [MEDIUM] Six panel components still paint a white→cream vertical gradient fill (and .bw-compare a live rest drop-shadow) where the reference card is flat #ffffff
+   verified: PARTIALLY CONFIRMED — the gradient defect is real and the fix works, but one declaration is a pure no-op and the rule violates the .kit-unconf constraint. Ship only after amendment.  VERIFIED (1): All seven declarations exist verbatim at the claimed lines (:476-481, :1145/1147, :1320/1322, :1819/182 */
+/* flat surfaces, hairline separation — the reference's card is a solid fill */
+.bw-form,
+.bw-toc,
+.bw-compare,
+.ip-record,
+.ip-console,
+.kit-ledger__fig,
+.pp-sweep { background: var(--ds-bg-surface-2); }
+.bw-compare { box-shadow: none; }
+
+/* [MEDIUM] The media-frame caption chip is still in the tracked-caps register PASS 2 §10 retired everywhere else
+   verified: VERIFIED REAL — not refuted. (1) EXISTENCE: all 8 selectors exist at the cited lines carrying var(--ds-font-mono) + tracked uppercase; .ip-frame__cap :2198-2202 matches the quote verbatim; .kit-figure__cap :1669, .spn-fig__cap :2874, .pp-cap :3292, .ct-cap :3698, .hm-fig__cap :5219 all confirmed at  */
+/* the caption chip on a rounded media frame — same plate (contrast untouched),
+   reference label register instead of tracked caps. */
+.stk-cap,
+.hm-fig__cap,
+.ip-frame__cap,
+.kit-figure__cap,
+.sc-fig__cap,
+.spn-fig__cap,
+.ct-cap,
+.pp-cap {
+  font-family: var(--ds-font-display);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .01em;
+  text-transform: none;
+}
+
+/* [MEDIUM] Three more label components were left out of §10's conversion and still ship 11px/700 tracked uppercase
+   verified: CONFIRMED — could not refute. (1) All four quoted declarations exist verbatim in _design/san-jose-pain-clinic-structural.css: .bw-form__legend :1167-1171, .bw-field__label :1191-1195, .kit-mark :1462-1466 (mono/11px/700/--ds-tracking-label/uppercase/--ds-ink-faint), .kit-src :1488-1491. PASS 2 §10 ( */
+/* the remaining half of §10: the record mark, the form field label and the
+   fieldset legend. .kit-unconf is deliberately excluded and stays loud. */
+.kit-mark,
+.kit-src,
+.bw-field__label,
+.bw-form__legend {
+  font-family: var(--ds-font-display);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: .01em;
+  text-transform: none;
+}
+
+/* [LOW] Diagonal hatch texture still paints behind the reviews placeholder stamp (.stk-rev__stamp)
+   verified: UPHELD. Every claim verified against the real files and a real render.  (1) EVIDENCE IS ACCURATE. structural.css:4988-4996 matches the quote verbatim, incl. line 4995 `background-image: repeating-linear-gradient(135deg, var(--ds-hairline) 0 2px, transparent 2px 7px);`. `.stk-rev__stamp` occurs EXACT */
+/* FLATNESS · the placeholder stamp carried a diagonal hatch fill. The flag
+   itself is NOT quieted: the 1px --ds-warning border and the --ds-warning-soft
+   fill both stay, so "REPRESENTATIVE - replace before launch" reads exactly as
+   loud as before — only the texture goes. */
+.stk-rev__stamp { background-image: none; }
+
+/* [LOW] Nine per-kit components still lift and drop a shadow on hover after the shared .card hover was flattened
+   verified: PARTIALLY REAL, MATERIALLY OVERSTATED, AND CARRIES A REGRESSION. Ship only after amendment.  (1) EXISTENCE — verified. All nine hover declarations exist verbatim at the claimed lines of _design/san-jose-pain-clinic-structural.css (1889, 1897, 1899, 2683, 3543, 3726, 4623, 5497). --ds-shadow-lift is  */
+/* the reference moves colour, not geometry. Hover feedback is kept — it just
+   changes surface and border instead of lifting. */
+.kit-note, .kit-faq__i, .kit-rail__step, .kit-chip,
+.mr-cta, .pp-fact, .sc-fence__plate, .hm-desk__line, .ct-arc__stage {
+  transition: background-color var(--ds-dur) var(--ds-ease),
+              border-color var(--ds-dur) var(--ds-ease),
+              color var(--ds-dur) var(--ds-ease);
+}
+/* AMENDED before shipping (adversarial verifier finding). The proposal set the
+   border-color SHORTHAND on all nine. Three of these carry a SEMANTIC LEFT RAIL —
+   .sc-fence__plate is the contact page's emergency-care notice ('go to an emergency
+   room or call 911'), .hm-desk__line and .kit-note--fence likewise — and a four-side
+   shorthand would have greyed those rails out on hover. Dimming a caution marker to
+   serve a look is the exact harm the .kit-unconf rule exists to prevent, so the
+   flattening (the actual goal) applies to all nine, while the border recolour is
+   restricted to the two components with a uniform, non-semantic border. */
+.kit-note:hover, .kit-faq__i:hover, .kit-rail__step:hover, .kit-chip:hover,
+.mr-cta:hover, .pp-fact:hover, .sc-fence__plate:hover,
+.hm-desk__line:hover, .ct-arc__stage:hover {
+  transform: none;
+  box-shadow: none;
+}
+.kit-faq__i:hover, .kit-chip:hover { border-color: var(--ds-control-border); }
+
+/* while here: the chip is the reference's mint pill, not a frosted-glass chip.
+   The tokens sheet keeps glass for the sticky header only. */
+.kit-chip {
+  background: var(--ds-accent-soft);
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+  border-color: transparent;
+  font-size: 13.5px;
+  padding: 8px 16px;
+}
+
+/* ===== PASS 4 — three mobile hero regressions introduced by the PASS 2/3 hero
+   conversion, found by the audit and adversarially verified. ===== */
+/* [HIGH] Image-first hero photo is full-bleed at 390/768 — no gutter, its 24px radius sits on the viewport edge, and its left edge misses the headline
+   verified: NOT REFUTED — defect real, fix effective on rendered pixels, no hard constraint violated. Ship with three amendments.  (1) DECLARATION EXISTS, LINE NUMBERS STALE. The quoted block is byte-exact in _design/san-jose-pain-clinic-structural.css but at lines 6120-6130, NOT 6133-6143; the `@media (max-wid */
+.hm-hero__bg { width: calc(100% - 2 * clamp(16px, 4vw, 32px)); }
+
+/* [MEDIUM] Hero has zero block padding, so the photo's rounded top corners butt directly against the sticky header
+   verified: NOT REFUTED — defect real, fix effective, no constraint violated. Ship only after amending the selector.  (1) EVIDENCE VERIFIED. All quoted declarations exist verbatim in _design/san-jose-pain-clinic-structural.css. Stable-region citations exact: .kit-hero-sec{position:relative} :1502, .kit-sec{padd */
+.hm-hero { padding-block-start: clamp(16px, 4vw, 32px); }
+
+/* [LOW] Homepage hero CTAs miss the ≤640px full-width stack that every other hero on the site gets
+   verified: NOT REFUTED — every claim verified in source and by live measurement.  EVIDENCE VERIFIED: structural.css:1909-1911 contains the quoted rule verbatim. index.html:123 is exactly `<div class="hm-hero__act">`. Full grep of `hm-hero` across tokens/chrome/structural returns `.hm-hero__act` exactly once, a */
+@media (max-width: 640px) {
+  .hm-hero__act .btn { flex: 1 1 auto; justify-content: center; }
+}
+
+
+/* ============================================================================
+   REFERENCE SYSTEM — PASS 5. MOTION, corrected against a live measurement.
+   ----------------------------------------------------------------------------
+   PASS 1 shipped an entrance I had NOT measured — I inferred it from screenshots.
+   Probing the live reference this session (12 of 220 blocks animate on scroll)
+   gives the real thing, and it differs from what we shipped in two ways:
+
+     MEASURED pattern A   transform: translateY(40px) -> 0, opacity STAYS 1
+     MEASURED pattern B   scale(.9) + translateY(20px) + opacity .5
+                          ->  scale(1) + translateY(0) + opacity 1
+     no blur anywhere; entrance only, never looping.
+
+   What we shipped was opacity 0 -> 1 with translateY(20px) and NO scale. Starting
+   from a hard 0 is why ours reads "poppy" rather than settled: the reference never
+   fully hides a block, it lifts it out of a half-state. The scale component is what
+   gives its cards the sense of arriving rather than sliding.
+
+   Two patterns, matching the measurement:
+     .ds-in-copy  (default)  — the soft B pattern, for text blocks and cards
+     .ds-in-media            — the A pattern, for large rounded media, which the
+                               reference moves further and does NOT fade
+   Everything stays behind @supports + prefers-reduced-motion, so an unsupported
+   browser or a reduced-motion reader gets the finished page, never a hidden one.
+   ============================================================================ */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+
+    /* --- pattern B (default): the settled arrival ------------------------- */
+    @keyframes ds-rise {
+      from { opacity: .5; transform: translateY(20px) scale(.9); }
+      to   { opacity: 1;  transform: translateY(0)    scale(1); }
+    }
+
+    /* --- pattern A: large media travels further and never fades ----------- */
+    /* travel REDUCED from the reference's measured 40px to 16px. The reference
+       moves its media 40px, but its frames sit in far more generous surrounding
+       space than ours. Measured on chiropractic-care at 375: the gap between an
+       .ip-frame caption and the paragraph beneath it is 35px, so a 40px travel put
+       the frame 5px INTO the next paragraph at its animation start — which the
+       no-text-overlap gate correctly caught and blocked on 7 pages. It only
+       surfaced now because the entrance start moved from opacity 0 (invisible, so
+       the gate skipped it) to the reference-faithful opacity .5 (measurable).
+       16px keeps the character of the move and clears the tightest gap on the site. */
+    @keyframes ds-rise-media {
+      from { transform: translateY(16px); }
+      to   { transform: translateY(0); }
+    }
+
+    .kit-figure, .bw-figure, .bw-media, .hm-fig,
+    .ip-frame, .spn-fig, .stk-fig, .ct-frame {
+      animation: ds-rise-media linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 52%;
+    }
+
+    /* transform-box safety: an SVG child inheriting a scaled ancestor can hairline
+       -shift its stroke. Pinning the origin keeps the instrument traces crisp. */
+    .kit-figure, .bw-figure, .bw-media, .hm-fig { transform-origin: 50% 60%; }
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   HOVER — "colour moves, geometry does not".
+   The reference's measured transitions are background 0.5s and color 0.5s on the
+   signature curve; it never lifts, scales or shadows a card on hover. Our cards
+   currently only shift a border. Adding a restrained surface shift gives the
+   pointer something to land on without reintroducing the depth the flat system
+   deliberately removed.
+   NOT applied to any component carrying a semantic left rail — .kit-note--fence,
+   .sc-fence__plate (the emergency-care notice) and .hm-desk__line keep their
+   --ds-warning / accent rail untouched, because dimming a caution marker to serve
+   a look is the harm the .kit-unconf rule exists to prevent.
+   ---------------------------------------------------------------------------- */
+@media (pointer: fine) {
+  .card, .bw-card, .kit-sheet, .spn-entry, .stk-rec, .mr-cta, .pp-fact {
+    transition: background-color var(--ds-dur) var(--ds-ease),
+                border-color var(--ds-dur) var(--ds-ease),
+                color var(--ds-dur) var(--ds-ease);
+  }
+  .card:hover, .bw-card:hover, .kit-sheet:hover {
+    background-color: var(--ds-accent-soft);
+  }
+  .surface-dark .card:hover,
+  .surface-dark .bw-card:hover,
+  .surface-dark .kit-sheet:hover {
+    background-color: var(--ds-bg-warm);
+  }
+}
+
+/* ============================================================================
+   REFERENCE SYSTEM — PASS 6. Section rhythm + enrichment, from a 5-family audit
+   (27 findings, each adversarially verified). 15 shipped here.
+   4 were DROPPED because the verifier said the remedy must not ship as written
+   (diagnosis real, prescription wrong) — those defects remain open and are
+   recorded in the session log rather than papered over.
+   7 more carry mandatory amendments and are handled separately.
+   ============================================================================ */
+/* [HIGH · spacing-defect] .hm-split--flip centres its copy against a 486px photo, leaving 73px of dead space above the paragraph and 73px below — while its sibling .hm-split--even is start-aligned
+   verified: NOT REFUTED — defect real, fix lands, no constraint touched. (1) EVIDENCE VERBATIM: structural.css:5377-5380 `.hm-split{display:grid;grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);gap:clamp(...);align-items:center}`, :5381 `.hm-split--even{...align-items:start}`, :5385 `.hm-split--flip{grid-template-columns:minmax(0,1.22fr) minmax(0,.78fr)}` with NO align override, :5561 the max-width:900  */
+@media (min-width: 901px) {
+  .hm-split--flip { align-items: start; }
+}
+
+/* [HIGH · spacing-defect] The media column is ragged: the two photographs differ by 109px in left edge and 37px in height at 1440, shrink to a 179x119px thumbnail at 768, and rung 02's photo is display:none at 375
+   verified: COULD NOT REFUTE — verified in isolated headless Chromium (shared MCP browser was hijacked by concurrent sessions; wrong-tab guard prevented a bad measurement).  (1) EXISTENCE — all quoted declarations exist byte-exact at the cited lines. :3063 `.spn-entry--r1 .spn-entry__main { grid-template-columns: minmax(0,1.2fr) minmax(0,.8fr) }` and :3064 (1.42fr/.58fr) confirmed. :3033-3036 `.spn-entry__mai */
+/* one media track, one aspect, one left edge. The two-column split applies
+   ONLY to rungs that own a photograph, so a media-less rung never reserves
+   an empty media track inside its card. */
+.spn-list .spn-entry__main {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+.spn-list .spn-entry--r1 .spn-entry__main,
+.spn-list .spn-entry--r2 .spn-entry__main {
+  grid-template-columns: minmax(0, 1fr) var(--spn-media, clamp(220px, 24%, 300px));
+}
+.spn-list .spn-entry .spn-fig { aspect-ratio: 3 / 2; max-height: none; height: auto; }
+
+@media (max-width: 640px) {
+  .spn-list .spn-entry--r1 .spn-entry__main,
+  .spn-list .spn-entry--r2 .spn-entry__main { grid-template-columns: 1fr; }
+  .spn-list .spn-entry--r2 .spn-fig { display: block; }
+  .spn-list .spn-entry { padding-block: var(--ds-space-xs); }
+}
+
+/* [HIGH · spacing-defect] reviews.html §02 strands its photograph: the site's only .row--stretch crushes the figure column to 2px and the image renders 0×1px
+   verified: CONFIRMED — could not refute. (1) EVIDENCE VERIFIED VERBATIM: structural.css:350 `.row--stretch { display: flex; align-items: stretch; }`, :344 `.col--measure`, :341 `.col, .col--full`, :1657-1662 `.kit-figure` (aspect-ratio 4/5) and the :1920 small-screen arm all exist exactly as quoted; `--ds-container-max: 1200px` exists at tokens.css:133; box-sizing:border-box is global at :37. `row--stretch`  */
+/* [HIGH] reviews.html §02 — the site's ONLY .row--stretch (1 occurrence in 28 built
+   pages) is display:flex with .col--measure (width:100% + max-width:1200px) as its
+   first child, so the sibling .col holding the 1536x2048 photograph is shrunk to
+   2px/2px/3px/4px at 1440/1024/768/375 and the <img> computes 0x1px. The auto side
+   margins also drag this section's measure 1px (4px at 375) out of line with the
+   other four. Stack the row: the copy panel returns to the shared measure and the
+   photograph lands beneath it as the reference's full-measure rounded media band.
+   Scoped through .stk-sec, which exists only on reviews.html + patient-forms.html. */
+.stk-sec .row--stretch { display: block; }
+
+.stk-sec .row--stretch > .col:not(.col--measure) {
+  width: 100%;
+  max-width: var(--ds-container-max);
+  margin: clamp(24px, 3vw, 40px) auto 0;
+  padding-inline: clamp(16px, 4vw, 32px);
+}
+
+.stk-sec .row--stretch > .col:not(.col--measure) > .kit-figure {
+  aspect-ratio: 16 / 7;
+  max-height: clamp(260px, 34vh, 420px);
+}
+
+/* [HIGH · spacing-defect] attorney-referrals: the .ct-station spine gutter is an empty 115px column on all 7 bands — the connector hairline that is supposed to make it read as an arc spans only 10.7–24% of its row
+   verified: UPHELD. (1) Declarations exist verbatim at structural.css:3749-3758 with the intent comment at :3746-3748. A full-sheet grep finds only five .ct-station__spine rules (3754/3755/3778/4021/4022) — no PASS 2/3/4 override, so the specificity map is complete. Spine is a DIRECT child in all 7 stations (attorney-referrals.html:149,179,233,274,308,341,378), so the child combinator matches. (2) NOT a no-op */
+/* the arc spine actually runs the arc. The gutter reserves 76-118px of column on
+   every station band; the connector was drawn from the spine's own CONTENT box,
+   so it stopped 68-96px down a 399-731px row and the rest of the column read as
+   dead paper. Stretching the spine to its grid row and running the hairline to
+   the row's foot is what the component's own comment (:3746-3748) describes.
+   Guarded above the 900px stack, where :4020-4023 turns the spine into a flex
+   row and hides ::before outright. No new markup, no JS, no motion. */
+@media (min-width: 901px) {
+  .ct-station > .ct-station__spine { align-self: stretch; }
+  .ct-station > .ct-station__spine::before { bottom: 0; }
+}
+
+/* [HIGH · thin-section] about: the "06 / The team" sage band is the emptiest section on the site at 36.7% fill, and its pull-quote component renders at 20px body scale while adding 80px of its own padding on top of the band's 244.8px
+   verified: CONFIRMED — could not refute. (1) EVIDENCE VERBATIM: .pp-plaque exists at structural.css:3476-3479 with padding-block: clamp(var(--ds-space-md),3vw,var(--ds-space-lg)) and .pp-plaque__p at :3486-3490 with font-size: clamp(17px,1.6vw,20px)/line-height 1.58/color var(--ds-ink-soft)/max-width 36em, exactly as quoted; the "#57 pull-quote register" comment is at :3474-3475. Grep confirms .pp-plaque app */
+/* the band the owner means by "too plain and boring". Two changes, copy frozen:
+   (1) the plaque stops double-padding a band that already spends 122.4px a side;
+   (2) the statement is set at the pull-quote scale its own comment (:3474) claims,
+   so the sentence CARRIES the band instead of floating in it — composition and
+   type, which is exactly where the reference's richness comes from. Colour moves
+   from --ds-ink-soft to --ds-ink: on .surface-dark that is #FFFFFF on #47625D =
+   6.62:1 (tokens header) vs #D6E4DE's 5.05:1, so contrast IMPROVES. Held above
+   641px; mobile already fills 54.5% and is left untouched. */
+@media (min-width: 641px) {
+  .pp-sec .pp-plaque { padding-block: 0; }
+  .pp-sec .pp-plaque__p {
+    font-size: clamp(21px, 2.3vw, 31px);
+    font-weight: 300;
+    line-height: 1.3;
+    letter-spacing: -.01em;
+    color: var(--ds-ink);
+    max-width: 22em;
+    margin-block-start: clamp(var(--ds-space-md), 2.6vw, var(--ds-space-lg));
+  }
+}
+
+/* [HIGH · spacing-defect] Every .ip-split media frame is capped by a viewport-HEIGHT clamp, leaving 1,725px of interior dead air across 26 media rows at 1440x900 (4,661px at 1024x768) — PASS 3 fixed exactly one of the 26
+   verified: SURVIVES REFUTATION on all four tests, verified by rendering the real pages in headless Chromium over HTTP.  (1) EXISTENCE — verbatim. .ip-split :2160 with `align-items: center` at :2162; .ip-frame :2179 with `aspect-ratio: 4/3; max-height: clamp(250px,33vh,370px)` at :2182; .ip-frame--wide :2196; .ip-frame--tall :2197. PASS 3's one-selector fix confirmed at :6404-6406 exactly as quoted.  (2) NOT  */
+@media (min-width: 901px) {
+  /* media fills its grid area; the row, not the window height, sets the height */
+  .ip-split > .ip-frame { align-self: stretch; max-height: none; }
+  /* PASS 3's DEADSPACE-3 rule at :6405 is (0,3,0) and would otherwise still cap
+     this one frame at 460px inside a 520px row — matched here so source order decides */
+  .surface-dark .ip-split--sheet > .ip-frame--tall { max-height: none; }
+}
+
+/* [MEDIUM · spacing-defect] The whole .hm-fig family is still capped by viewport-HEIGHT clamps — the same defect PASS 3's DEADSPACE 3 removed for .ip-frame--tall and .sc-fig--tall but never applied here; three of five homepage photos render short of their own declared aspect ratio
+   verified: UPHELD on all four tests, with one overclaim in the title corrected.  (1) EXISTENCE — exact. structural.css:5226-5228 carry `.hm-fig--wide {aspect-ratio:3/2; max-height:clamp(230px,30vh,340px)}`, `.hm-fig--sq {4/3; clamp(280px,44vh,420px)}`, `.hm-fig--tall {3/4; clamp(300px,54vh,500px)}` verbatim; :5384 `.hm-split--even > .hm-fig {max-height:clamp(250px,40vh,380px)}` verbatim; the stacked arms at  */
+@media (min-width: 901px) {
+  .hm-fig--wide { max-height: 340px; }
+  .hm-fig--sq   { max-height: 420px; }
+  .hm-fig--tall { max-height: 500px; }
+  .hm-split--even > .hm-fig { max-height: 380px; }
+}
+
+/* [MEDIUM · uneven-rhythm] The homepage's two panel primitives were left on the 8px control radius the reference layer reserved for inputs and chips — .hm-strip__i has square top corners beside a 24px sibling card row on the same page, and .hm-note is a tight 8px slab where the reference's mint panel is a 24px/40px block
+   verified: VERIFIED IN SOURCE + LIVE RENDER. (1) Declarations exist verbatim: structural.css:5315 `border-radius: 0 0 var(--ds-r-control) var(--ds-r-control);` in `.hm-strip__i` (rule opens :5309) and :5237 `border-radius: 0 var(--ds-r-control) var(--ds-r-control) 0;` in `.hm-note` (rule opens :5232). Tokens confirmed tokens.css:110-111 (control 8px / surface 24px). `.kit-note` + `.kit-note--fence` confirmed */
+.hm-strip__i { border-radius: var(--ds-r-surface); }
+.hm-note {
+  border-radius: var(--ds-r-surface);
+  padding: clamp(20px, 2.4vw, 32px) clamp(22px, 2.6vw, 36px);
+}
+
+/* [MEDIUM · uneven-rhythm] Card- and row-level titles on the homepage still render at font-weight 700 with double the measured tracking — PASS 3 normalised this exact register to 500 / −0.01em everywhere else and left the front door's three out
+   verified: NOT REFUTED — verified in source and by live render. (1) EVIDENCE EXACT: structural.css:5327 .hm-strip__n (font-weight:700 :5328, letter-spacing:-.02em :5330), :5406 .hm-line__n, :5428 .hm-cond__n all exist verbatim; PASS 3's fix at :6296-6302 carries exactly the five quoted selectors and none of the hm- three; tokens.css:202 --ds-tracking-disp:-0.01em confirmed. All three classes are <h3> on page */
+.hm-line__n, .hm-cond__n, .hm-strip__n {
+  font-weight: 500;
+  letter-spacing: var(--ds-tracking-disp);
+}
+
+/* [MEDIUM · thin-section] The uniform card — and conditions.html's 81px rail column holding nothing but a 53x3px hairline
+   verified: EVIDENCE VERIFIED EXACTLY. conditions.content.html:207 opens `<ol class="spn-list">`; the three `.spn-entry` at 208/222/236 are r3/r3/r4, each carries a `.spn-w`, none carries a `.spn-n`, and `</ol>` closes before the `.spn-n` at 264 — so the list is genuinely numeral-free. structural.css:3007 is `--spn-rail: clamp(54px, 5.6vw, 88px)` verbatim inside `.spn-list` (3006-3010). Every other citation i */
+/* the reference's device: a stack of UNIFORM cards. The card sits on
+   .spn-entry__main, so the numeral rail and its node stay outside it on the
+   page ground and the spine reading survives. */
+.spn-list .spn-entry__main {
+  background: var(--ds-bg-surface-2);
+  border-radius: var(--ds-r-surface);
+  padding: clamp(var(--ds-space-md), 2.4vw, var(--ds-space-lg));
+}
+/* on a band that is ALREADY --ds-bg-surface-2 (#fff), the card takes the
+   ground colour instead, or it would be invisible */
+.sec--alt  .spn-list .spn-entry__main,
+.sec--warm .spn-list .spn-entry__main { background: var(--ds-bg-surface); }
+
+.spn-list .spn-entry__rail { padding-top: clamp(var(--ds-space-md), 2.4vw, var(--ds-space-lg)); }
+
+/* hover moves colour on the CARD, not on the whole row */
+.spn-list .spn-entry:hover { background-color: transparent; }
+@media (pointer: fine) {
+  .spn-list .spn-entry__main { transition: background-color var(--ds-dur) var(--ds-ease); }
+  .spn-list .spn-entry:hover .spn-entry__main { background-color: var(--ds-accent-soft); }
+}
+
+/* a list whose rungs carry no numeral does not reserve a numeral-sized rail */
+@supports selector(:has(*)) {
+  .spn-list:not(:has(.spn-n)) { --spn-rail: clamp(30px, 3vw, 44px); }
+}
+
+/* [MEDIUM · spacing-defect] patient-forms §03: the photograph inside the tinted .stk-say panel stops 175px short of the copy beside it — half the left column is dead
+   verified: CONFIRMED — survives adversarial checks on all four axes. Measured with an isolated headless Chromium (CDP) against the real build served from the actual repo (the shared MCP browser's port 8791 serves a STALE patient-forms.html whose .stk-say has an h2 first child; all figures below come from my own server on 8863 rooted at C:/Users/kaylt/Oso/Code/client-sites/san-jose-pain-clinic).  (1) EVIDENCE */
+/* [MEDIUM] patient-forms §03: .stk-say is align-items:start, so the 16/9 .stk-fig in
+   its .44fr track measures 310x174 against a 349px body — 175px (50% of the inner
+   height) of empty tinted panel under the photograph, inside a bordered + tinted
+   surface. Let the media column take the panel height instead. Only the max-height
+   and the aspect cap are lifted; the frame's own 24px radius, border and caption
+   plate are untouched, and the panel height does not change because column 2 still
+   sets it. Wrapped at min-width:1025px because .stk-say collapses to one column at
+   :5035 (`@media (max-width: 1024px)`), where stretching would be meaningless. */
+@media (min-width: 1025px) {
+  .stk-say > .stk-fig {
+    align-self: stretch;
+    aspect-ratio: auto;
+    height: 100%;
+    max-height: none;
+  }
+}
+
+/* [MEDIUM · thin-section] about: the closing .pp-coda band is a 425px white panel around 145px of type (34.2% fill) sitting directly on top of the 354px .precta band
+   verified: NOT REFUTED — survives every test I could throw at it, including the one I expected to kill it.  (1) DECLARATION EXISTS VERBATIM. structural.css:3512-3518 matches the quote character-for-character. .sec--alt{background:var(--ds-bg-surface-2)} at :75, --ds-bg-surface-2:#FFFFFF at tokens:78. .pp-sec{padding-block:var(--ds-section-py)} at :3254; mobile .pp-sec at :3585 (max-width:640, cannot meet a m */
+/* the deliberate quiet closer, made to read finished instead of truncated.
+   Copy, links and the [UNCONFIRMED] badge are untouched; the band's cadence is
+   scaled to the composition it actually carries, and the ledger is CLOSED with
+   the same hairline it opens on, so the void reads as a designed record rather
+   than a cut-off section. Held to >=1025px, where the 34.2/48% fills are
+   measured; at 768 and below the band already fills 51-71%. */
+@media (min-width: 1025px) {
+  .pp-sec.sec--alt { padding-block: clamp(var(--ds-space-lg), 5vw, var(--ds-space-xl)); }
+  .pp-sec.sec--alt .pp-coda {
+    padding-bottom: clamp(var(--ds-space-md), 2.6vw, calc(var(--ds-space-lg) - 4px));
+    border-bottom: 1px solid var(--ds-divider);
+  }
+}
+
+/* [MEDIUM · spacing-defect] about: the credential record and the signature line draw two identical 1px hairlines 40px apart with nothing between them
+   verified: CONFIRMED — could not refute. (1) All three quoted declarations exist verbatim: structural.css:3403-3408 `.pp-record__row { ... border-bottom: 1px solid var(--ds-divider) }` with the border at :3407 and NO :not(:last-child) guard; :952-956 `.bw-founder__sig { margin-top: var(--ds-space-xl); padding-top: var(--ds-space-lg); border-top: 1px solid var(--ds-divider) }`; :3372-3375 `.pp-dossier .bw-fou */
+/* one rule closes the record and opens the signature, not two 40px apart.
+   The record's last row sheds its own bottom border and the signature's
+   existing border-top becomes the single closing hairline — the offsets at
+   :3372-3375 already provide the breathing room, so no spacing is added or
+   removed and no other .pp-record__row is affected. */
+.pp-dossier .pp-record__rows > .pp-record__row:last-child { border-bottom-width: 0; }
+
+/* [MEDIUM · uneven-rhythm] about: two of seven section headings shout in 58–64px ALL CAPS while the other five are 48px sentence case — the tracked-caps register PASS 2 §10 and PASS 3 retired everywhere else
+   verified: CONFIRMED REAL and NOT a no-op — verified by headless render, not by cascade reading alone.  (1) EVIDENCE ACCURATE. structural.css:941-945 `.bw-founder__h{...font-weight:700; text-transform:uppercase; letter-spacing:var(--ds-tracking-disp); line-height:1.0; font-size:clamp(34px,5vw,64px)...}` and :975-979 `.bw-manifesto__lead{...font-weight:600; text-transform:uppercase; line-height:1.04; font-siz */
+/* the last two survivors of the tracked-caps register PASS 2 §10 retired. The
+   headings keep their words, their weight family and their tracking token —
+   they just join the 48px sentence-case h2 rhythm the other five on this page
+   (and all seven on attorney-referrals) already keep. 1.04 is the value §2
+   pins for h2 at :5885. */
+.pp-dossier .bw-founder__h,
+.pp-creed .pp-creed__h {
+  text-transform: none;
+  font-size: var(--ds-fs-h2);
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: var(--ds-tracking-disp);
+}
+
+/* [LOW · uneven-rhythm] 51 .ip-head section rules still paint a 2px band where PASS 2 normalised the site's section head to a 1px hairline
+   verified: SURVIVES REFUTATION, but as a low-value polish item, not a defect fix.  (1) DECLARATIONS EXACT. structural.css:1992-1993 is `.ip-head {` / `  border-top: 2px solid var(--ds-divider);` byte-for-byte. structural.css:6092 is `.hm-head, .kit-head { border-top-width: 1px; border-top-color: var(--ds-line); }` byte-for-byte. Note :6092 was itself half-redundant — .kit-head:1444 was ALREADY 1px, so PASS 2 */
+/* the reference opens a section on one hairline; finish the conversion PASS 2 §10
+   started at :6092 for .hm-head / .kit-head */
+.ip-head { border-top-width: 1px; border-top-color: var(--ds-line); }
+
+
+/* ============================================================================
+   REFERENCE SYSTEM — PASS 7. THE SAGE-ON-SAGE SEAM. Owner-reported defect.
+   ----------------------------------------------------------------------------
+   Reported: "two section looks broken both green but has white gap."
+   Confirmed by measurement on 8 pages. The page tail is:
+
+     main … section.surface-dark   sage, border-radius 30px on ALL FOUR corners
+     section.precta                sage, radius 0        <- seam A
+     footer.site-footer            sage, radius 30px top, margin-top 86.4px  <- seam B
+
+   TWO defects, both introduced by me, both from treating a band as if it always
+   meets the page ground:
+
+   A. PASS 1 gave every .surface-dark section `border-radius: 30px` — all four
+      corners. Where the next block is the SAME sage, the section's bottom corners
+      curve away from a neighbour of identical colour, so the cream ground shows
+      through the seam as two white notches. The reference never does this: its
+      extraction carries `30px 30px 0 0` AND `0 0 30px 30px` as separate values,
+      i.e. a band rounds only the edge that actually MEETS the ground.
+
+   B. PASS 2 §13 gave .site-footer `margin-top: clamp(40px, 6vw, 88px)` to separate
+      it from a cream section above. But the block above it is .precta, which is
+      also sage — so that margin opens an 86px stripe of cream between two sage
+      blocks. Measured: .precta bottom 11670, footer top 11756.
+
+   THE FIX, stated as a rule rather than a patch: a sage band rounds the edge that
+   meets the page ground, and never the edge it shares with another sage band. The
+   tail therefore reads as ONE continuous closing block, which is what the sage
+   footer is supposed to be.
+
+   No :has() needed — .precta is chrome and is present on every page as a sibling
+   of <main>, immediately before the footer, so the adjacency is structural rather
+   than conditional. If the last section is NOT sage, nothing here matches and the
+   colour change carries the seam on its own, correctly.
+   ============================================================================ */
+
+/* A — the last section in <main> always butts .precta, so it must not round the
+   edge they share. Scoped to :last-of-type so an isolated sage band mid-page keeps
+   its full 30px, which is correct: that one really is surrounded by ground. */
+main > section.surface-dark:last-of-type {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* B — .precta and the footer are both sage: close the stripe and drop the rounding
+   at their shared seam so the closing block is continuous. */
+.precta + .site-footer {
+  margin-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+/* ============================================================================
+   REFERENCE SYSTEM — PASS 8. HERO REBUILD — concept A, "Proof Split".
+   ----------------------------------------------------------------------------
+   Owner brief: the hero "looks boring". Measured, it was boring for three
+   specific reasons, not vague ones:
+     1. the headline reached x=1176 but the lead stopped at 764 and the CTAs at
+        678 — roughly 500px of the right column was simply empty
+     2. hasProof was FALSE: no rating, stat, credential or trust signal anywhere
+     3. the photograph was a passive 525px band carrying no information
+
+   The reference fills exactly that dead right column with a proof stack (rating,
+   patient count, CTAs) beside the headline, under a wide+tall image PAIR. This
+   rebuilds that composition on our content.
+
+   WHAT THE PROOF COLUMN IS ALLOWED TO SAY — this is the important part.
+   Everything in it comes from the build's own fact-registry:
+     · "4.9 from 98 ratings, Healthgrades" — carried `⚠OWNER authorise + re-verify`
+       and was EXPLICITLY AUTHORISED by the owner on 2026-08-26. It is attributed
+       to its source on the page rather than floated as a bare number.
+     · EMG / nerve-conduction / vascular on site, "advertised by 0 of 6" — three
+       separate registry entries, each already marked verified (✅), and the same
+       claim the page already makes in section 02 with its measurement date. The
+       date is repeated here so the claim travels with its evidence.
+     · single-visit testing, six board certifications — registry, unflagged.
+   Nothing here was invented, and no banned claim (D-CLAIM-BANNED-100PCT) appears.
+
+   DOM ORDER vs VISUAL ORDER. The CTAs stay in the markup directly after the lead,
+   so the reading order for a screen reader and at phone width is headline → lead →
+   CTAs → proof. On desktop, grid-template-areas lifts them into the right column
+   beneath the proof card. Sequence stays meaningful in both (WCAG 1.3.2); nothing
+   depends on the visual reordering.
+   ============================================================================ */
+
+/* ---- the image pair --------------------------------------------------------
+   Replaces PASS 2 §11's single full-width figure. The pair is the reference's
+   signature opening: one wide establishing frame plus one tall human frame. */
+.hm-hero__media {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, .38fr);
+  gap: clamp(12px, 1.4vw, 20px);
+  width: calc(100% - 2 * clamp(16px, 4vw, 32px));
+  max-width: var(--ds-container-max);
+  margin-inline: auto;
+}
+/* re-point the wide figure: it is now a grid cell, not the page-width band that
+   PASS 2 §11 and PASS 4 made it. Equal specificity, later source, so this wins. */
+.hm-hero__bg {
+  position: relative;
+  inset: auto;
+  order: 0;
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--ds-r-surface);
+  overflow: hidden;
+}
+.hm-hero__aside {
+  position: relative;
+  margin: 0;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--ds-r-surface);
+  overflow: hidden;
+}
+.hm-hero__bg img,
+.hm-hero__aside img { width: 100%; height: 100%; object-fit: cover; }
+.hm-hero__aside img { object-position: center 32%; }
+
+/* ---- the split ------------------------------------------------------------- */
+@media (min-width: 901px) {
+  .hm-hero__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.24fr) minmax(0, .76fr);
+    column-gap: clamp(32px, 4.2vw, 76px);
+    row-gap: clamp(20px, 2.4vw, 32px);
+    grid-template-areas:
+      "copy  proof"
+      "copy  act";
+    align-items: start;
+  }
+  .hm-hero__copy  { grid-area: copy;  max-width: none; }
+  .hm-hero__proof { grid-area: proof; }
+  .hm-hero__act   { grid-area: act; align-self: start; }
+  .hm-hero__rail  { grid-column: 1 / -1; }
+  /* the headline no longer has to share its row, so it can run wider */
+  .hm-hero__h { max-width: 13em; }
+}
+
+/* ---- the proof card -------------------------------------------------------- */
+.hm-hero__proof {
+  background: var(--ds-accent-soft);
+  border-radius: var(--ds-r-surface);
+  padding: clamp(20px, 2.2vw, 30px);
+  margin: 0;
+}
+.hm-proof__rate {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px clamp(8px, 1vw, 12px);
+  margin: 0 0 clamp(14px, 1.6vw, 20px);
+  padding-bottom: clamp(14px, 1.6vw, 20px);
+  border-bottom: 1px solid var(--ds-control-border);
+}
+.hm-proof__score {
+  font-family: var(--ds-font-display);
+  font-size: clamp(34px, 3.4vw, 46px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: var(--ds-tracking-disp);
+  color: var(--ds-primary);
+}
+.hm-proof__meta {
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--ds-ink-soft);
+  max-width: 18em;
+}
+.hm-proof__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: clamp(12px, 1.4vw, 16px);
+}
+.hm-proof__list li {
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--ds-ink-soft);
+  padding-left: 18px;
+  position: relative;
+}
+/* a small sage marker, drawn in CSS so no icon font or SVG is introduced */
+.hm-proof__list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .52em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ds-primary);
+}
+.hm-proof__list b {
+  font-weight: 600;
+  color: var(--ds-ink-heading);
+}
+
+/* ---- phone / small tablet --------------------------------------------------
+   The pair would be far too tall stacked at 3:4, so below 901 the portrait takes
+   a landscape crop and the two frames sit side by side at a calmer ratio. Below
+   620 they stack, portrait first at 5:4 so the hero does not run away vertically. */
+@media (max-width: 900px) {
+  .hm-hero__media { grid-template-columns: minmax(0, 1fr) minmax(0, .5fr); }
+  .hm-hero__aside { aspect-ratio: 4 / 5; }
+  .hm-hero__proof { margin-top: clamp(20px, 3vw, 28px); }
+}
+@media (max-width: 620px) {
+  .hm-hero__media { grid-template-columns: 1fr; }
+  .hm-hero__bg    { aspect-ratio: 3 / 2; }
+  .hm-hero__aside { aspect-ratio: 5 / 4; }
+}
+
+/* ============================================================================
+   REFERENCE SYSTEM — PASS 9. SECTION 04 REBUILD — concept A, "the contrast pair".
+   ----------------------------------------------------------------------------
+   Measured problem: 171 words with 98 of them in a single paragraph — the densest
+   prose block on the page — set beside a 423x498 photograph of BLANK PAPER AND A
+   PEN. The section's whole argument is that a described symptom and a recorded
+   value are different things, and the picture illustrated neither. Section fill
+   was 76%, so this was never a whitespace problem; it was a presentation problem.
+
+   The fix turns the headline into the layout: the two things being contrasted sit
+   side by side, and the sentence that resolves the contrast sits underneath both.
+
+   COPY DISCIPLINE. Every word is the owner's existing copy, cut only at sentence
+   boundaries per their explicit approval. Nothing is reworded, shortened or added.
+   The approved sketch carried tick/cross marker bullets ("not comparable",
+   "repeatable next month") — those were DROPPED, because writing them would have
+   meant paraphrasing frozen copy. The existing payoff sentence does that work
+   already and does it verbatim.
+
+   The blank-paper photograph is removed rather than restyled; the page keeps ample
+   imagery elsewhere, so the marquee-imagery floor is unaffected.
+   ============================================================================ */
+
+.hm-contrast { display: grid; gap: clamp(20px, 2.6vw, 34px); }
+
+.hm-contrast__pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(14px, 1.8vw, 24px);
+  align-items: stretch;
+}
+
+.hm-contrast__card {
+  border-radius: var(--ds-r-surface);
+  padding: clamp(22px, 2.4vw, 34px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.2vw, 16px);
+}
+/* the quieter half — what a person can only assert */
+.hm-contrast__card--said {
+  background: var(--ds-bg-surface);
+  border: 1px solid var(--ds-line);
+}
+/* the load-bearing half — what an instrument produced. Carries the brand tint so
+   the eye lands on it first, which is the point the headline is making. */
+.hm-contrast__card--measured {
+  background: var(--ds-accent-soft);
+  border: 1px solid transparent;
+}
+
+.hm-contrast__label {
+  margin: 0;
+  font-family: var(--ds-font-display);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .01em;
+  color: var(--ds-accent-ink);
+}
+.hm-contrast__card--said .hm-contrast__label { color: var(--ds-ink-faint); }
+
+.hm-contrast__line {
+  margin: 0;
+  font-family: var(--ds-font-display);
+  font-size: clamp(17px, 1.5vw, 21px);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: var(--ds-tracking-disp);
+  color: var(--ds-ink-heading);
+}
+
+/* the resolution of the contrast, given its own line beneath both cards */
+.hm-contrast__payoff {
+  margin: 0;
+  font-family: var(--ds-font-display);
+  font-size: clamp(18px, 1.7vw, 24px);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: var(--ds-tracking-disp);
+  color: var(--ds-primary);
+  max-width: 30em;
+}
+
+/* the supporting prose returns to a comfortable single measure */
+.hm-contrast__rest { max-width: 62ch; }
+.hm-contrast__rest p { margin: 0 0 clamp(14px, 1.6vw, 20px); }
+
+@media (max-width: 760px) {
+  .hm-contrast__pair { grid-template-columns: 1fr; }
+}
+
+/* ============================================================================
+   REFERENCE SYSTEM — PASS 10. HERO FITS ONE SCREEN.
+   ----------------------------------------------------------------------------
+   Owner: "the spacing after the hero section is too big, lessen the height of
+   the images, and maybe the font size — I want them to fit in 100vh."
+
+   MEASURED BEFORE (1440x900): header 75 + hero section 1186 = 1261px against 900
+   available, i.e. 361px over a single screen. media 481 · inner 625 · rail 63 ·
+   hero gap 48 · hero padding-top 32 · and the NEXT section opening on 122.4px of
+   padding, which is the "spacing after the hero" being reported.
+
+   Budget approach rather than guesswork: the opener is given an explicit height
+   budget of one screen minus the sticky header, and each part is capped in vh so
+   the fit holds at 720, 800 and 900 tall instead of only at the size I tested.
+
+   svh (small viewport height) is used ahead of vh so a mobile URL bar cannot make
+   the hero taller than the visible screen; vh is kept as the fallback for engines
+   without svh. The whole block is scoped to >=901px — below that the hero stacks
+   and MUST be free to run taller than the screen, because forcing a stacked hero
+   into 100vh on a phone is how copy gets clipped.
+   ============================================================================ */
+@media (min-width: 901px) {
+  .hm-hero-sec {
+    --hero-fold: calc(100vh - 76px);
+    --hero-fold: calc(100svh - 76px);
+    min-height: var(--hero-fold);
+    display: flex;
+    align-items: center;
+  }
+  .hm-hero-sec > .container--full { width: 100%; }
+
+  /* tighter opener rhythm */
+  .hm-hero {
+    gap: clamp(16px, 1.8vh, 26px);
+    padding-block-start: clamp(8px, 1.4vh, 18px);
+    padding-block-end: clamp(8px, 1.4vh, 18px);
+  }
+
+  /* IMAGES: an explicit height cap replaces the aspect-ratio-driven height, so the
+     pair can never push the fold. The frames keep their radius and crop; only the
+     visible height changes. Both children fill the capped row, which is why the
+     aspect-ratio is released HERE and only here — the images are in normal flow
+     (not absolutely positioned), so a definite parent height is safe. */
+  /* HEIGHT INCREASED on owner request. A sweep of 26/30/34/38/42/46vh against the
+     fold showed 800px-tall screens are the binding case: only 26vh fitted there,
+     because the media and the hero top padding draw on the SAME slack. Rather than
+     refuse the taller image, the budget is shifted — padding gives up room so the
+     photograph can take it, which fills the viewport with CONTENT instead of air.
+     30vh is the largest that still clears the fold at 800 once padding is retuned. */
+  .hm-hero__media { height: clamp(200px, 30vh, 400px); }
+  .hm-hero__bg,
+  .hm-hero__aside { height: 100%; aspect-ratio: auto; }
+
+  /* TYPE: the display size now answers to viewport HEIGHT as well as width, so a
+     short laptop screen gets a smaller headline instead of a clipped hero. */
+  .hm-hero__h {
+    font-size: clamp(30px, min(3.4vw, 5.2vh), 48px);
+    line-height: 1.05;
+    max-width: 14em;
+  }
+  .hm-hero__lead {
+    font-size: clamp(14.5px, 1.8vh, 16.5px);
+    line-height: 1.45;
+    max-width: 46em;
+  }
+  .hm-hero .eyebrow { margin-block-end: clamp(6px, 1vh, 12px); }
+
+  .hm-hero__inner { row-gap: clamp(10px, 1.3vh, 20px); }
+
+  /* the instrument rail is decorative — it gives up height first */
+  .hm-hero__rail { height: clamp(18px, 3vh, 34px); overflow: hidden; }
+
+  /* proof card tightens with the rest so it never sets the floor */
+  .hm-hero__proof { padding: clamp(12px, 1.5vh, 22px); }
+  .hm-proof__rate { margin-block-end: clamp(8px, 1.2vh, 16px); padding-block-end: clamp(8px, 1.2vh, 16px); }
+  .hm-proof__score { font-size: clamp(26px, 4vh, 40px); }
+  .hm-proof__list { gap: clamp(7px, 1.1vh, 14px); }
+  .hm-proof__list li { font-size: 13px; line-height: 1.4; }
+
+  /* NOTE: the gap after the hero is the SITE-WIDE section rhythm (122px at 1440),
+     not hero padding. An override here was tried and correctly BLOCKED by the
+     section-rhythm gate, which requires leading == trailing across every section.
+     Shrinking it means shrinking --ds-section-py for all 28 pages — an owner call,
+     recorded rather than silently forced. */
+}
+
+/* ============================================================================
+   REFERENCE SYSTEM — PASS 11. SECTION 10 — the status ledger (concept A).
+   ----------------------------------------------------------------------------
+   MEASURED PROBLEM: three rows render identically (.hm-key label + .hm-rec__v
+   prose, 19/64/65 words) although they are three DIFFERENT KINDS OF STATEMENT —
+   unconfirmed third-party data · a verified first-party survey · disclosed
+   absences. The section's whole subject is what is and is not known, and that
+   distinction was invisible.
+
+   THIS IS THE AMENDED BUILD. Two implementations were authored and adversarially
+   verified; BOTH were refused as written, and the objections drove this design:
+
+   1. DUPLICATION. The recommended variant put a second [UNCONFIRMED] chip in row
+      one's label cell — measured as two pixel-identical badges 1.0px apart
+      vertically, reading as a copy-paste bug on the very row carrying the
+      unverified data. Row one therefore keeps ONLY its existing inline badge; the
+      label-cell marker uses a different form entirely, so the two never read as a
+      repeat of each other.
+
+   2. COLOUR-ALONE STATUS — the serious one. The rejected chips separated
+      [UNCONFIRMED] from [VERIFIED] by hue only: --ds-warning against --ds-success
+      computes to 1.00:1 LUMINANCE (rust vs green, the protan/deutan axis), and
+      both chip fills sit at ~1.01:1 against the sand band, so the 1px border was
+      carrying the entire signal. In greyscale, or for a red-green colour-deficient
+      reader, the two states were the same chip. WCAG 1.4.1 does not allow colour
+      to be the only carrier of meaning.
+      FIX: every state is carried by a distinct SHAPE and a distinct WORD. Colour
+      is decoration on top, never the signal. Filled disc = verified · hollow ring
+      = unconfirmed · bar = withheld. Turn the page greyscale and all three still
+      read.
+
+   3. VOCABULARY INVERSION. Bracketed-caps is this site's FLAG form and
+      [UNCONFIRMED] is its only status word. Minting a matching [VERIFIED] chip
+      would invert a convention the reader has already learned by section 10.
+      The markers here are sentence-case words, deliberately NOT bracketed caps,
+      so .kit-unconf keeps its meaning and stays the loudest thing in the section.
+
+   COPY: untouched. Not one sentence is reworded, dropped or reordered. The only
+   additions are the three status words, which are the approved part of concept A.
+   ============================================================================ */
+
+/* the label cell now holds the key plus its status; the row grid still has
+   exactly two children, so .hm-rec__r's 2-column track is undisturbed. */
+.hm-rec__stub { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+
+.hm-rec__st {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--ds-font-display);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: .01em;
+  line-height: 1.3;
+  color: var(--ds-ink-soft);
+}
+/* the shape carries the state. ::before is a real drawn marker, not an icon font
+   and not a colour swatch — its geometry differs per state. */
+.hm-rec__st::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+/* VERIFIED — a solid disc: the state that is filled in */
+.hm-rec__st--verified::before {
+  background: var(--ds-primary);
+  border: 2px solid var(--ds-primary);
+}
+.hm-rec__st--verified { color: var(--ds-accent-ink); }
+
+/* UNCONFIRMED — a hollow ring: present but not filled in */
+.hm-rec__st--unconfirmed::before {
+  background: transparent;
+  border: 2px solid var(--ds-warning);
+}
+.hm-rec__st--unconfirmed { color: var(--ds-warning); }
+
+/* WITHHELD — a bar, not a circle at all: deliberately absent */
+.hm-rec__st--withheld::before {
+  width: 12px;
+  height: 3px;
+  border-radius: 1px;
+  background: var(--ds-ink-faint);
+  border: 0;
+}
+.hm-rec__st--withheld { color: var(--ds-ink-faint); }
+
+/* the rows themselves gain a touch more room now that the label cell carries two
+   lines; no padding token is altered, so the section-rhythm gate is unaffected. */
+.hm-rec__k { line-height: 1.3; }
+
+@media (max-width: 760px) {
+  .hm-rec__stub { flex-direction: row; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+}
+
+/* ============================================================================
+   REFERENCE SYSTEM — PASS 12. THE POST-HERO DEAD AIR.
+   ----------------------------------------------------------------------------
+   Owner: "too much spacing here", pointing between the hero and section 02.
+   MEASURED at 1440x900 — the 298px gap decomposed into four parts, not one:
+     54px   last hero content -> the instrument rail
+     27px   the rail itself
+     59px   rail -> section bottom      <- a bug I introduced
+     158px  section bottom -> next eyebrow (site-wide cadence, handled in tokens)
+
+   THE 59px WAS MY ERROR. PASS 10 gave the opener `min-height: calc(100svh - 76px)`
+   with `align-items: center` to deliver "fit in 100vh". But min-height is a FLOOR:
+   with 730px of content in an 824px box it forced the section taller than its own
+   content and then centred it, converting 94px into dead air split above and below.
+   The ask was that the hero fit WITHIN one screen — a ceiling, not a floor. The
+   vh-based caps on the images and display type already guarantee that ceiling, so
+   the floor is removed outright and the hero is now exactly as tall as it needs to
+   be. Verified still inside the fold afterwards, at three viewport heights.
+
+   The rail is decorative and gives up its spacing first.
+   ============================================================================ */
+@media (min-width: 901px) {
+  .hm-hero-sec {
+    min-height: 0;
+    align-items: stretch;
+  }
+  /* the instrument rail sits closer to the copy it belongs to */
+  .hm-hero__inner { row-gap: clamp(8px, 1vh, 14px); }
+  .hm-hero__rail {
+    height: clamp(14px, 2.2vh, 24px);
+    margin-block-start: clamp(2px, 0.6vh, 8px);
+  }
+  .hm-hero { padding-block-end: clamp(4px, 0.8vh, 10px); }
+}
+
+/* ============================================================================
+   REFERENCE SYSTEM — PASS 13. HERO TOP BREATHING ROOM.
+   ----------------------------------------------------------------------------
+   Owner: "put a padding top on the hero section so less white space on the
+   bottom, or centre it." Measured first, because the two options do NOT behave
+   the same here:
+
+     vh=900   TOP_AIR 13px   BOTTOM_AIR 171px   slack 204px
+     vh=800   TOP_AIR 11px   BOTTOM_AIR 168px   slack 141px
+     vh=1080  TOP_AIR 15px   BOTTOM_AIR 178px   slack 314px
+
+   CENTRING WAS REJECTED ON THE NUMBERS. Centring needs min-height back, and it
+   splits the slack evenly: at 900 that is 102px added above AND 102px added
+   below, taking the bottom from 171px to ~273px. The bottom already carries the
+   inter-section cadence, so "balanced" centring makes the exact complaint worse.
+   It is also what PASS 10 did and PASS 12 had to undo.
+
+   PADDING-TOP ONLY. It buys breathing room above without adding a single pixel
+   below, and the section still grows only downward, so the fold is re-checked
+   rather than assumed. Expressed in vh so a short laptop gets proportionally
+   less rather than a fixed slab that would push the hero out of the fold.
+   ============================================================================ */
+@media (min-width: 901px) {
+  /* 9vh was measured to push the hero OUT of the fold at vh=720 (a real 1366x768
+     laptop): foldFits went false. Re-sized to 6.5vh, which is the largest value
+     that still clears the fold at 720 while keeping meaningful air at 900+. The
+     fold constraint outranks the balance, because the owner asked for 100vh fit
+     first and a hero that overflows on a common laptop is the worse defect. */
+  .hm-hero { padding-block-start: clamp(14px, 6.5vh, 100px); }
+}
+
+/* ============================================================================
+   REFERENCE SYSTEM — PASS 14. HERO CENTRED, WITH THE CADENCE ACCOUNTED FOR.
+   ----------------------------------------------------------------------------
+   Owner: "centre it vertically, so white space at the bottom and top is equal."
+
+   I argued against centring last turn and was working from a wrong assumption.
+   Re-reading the gate settled it: verify-section-rhythm carries HERO_EXEMPT:true
+   — "the hero is image-led with its own interior padding (not the body section
+   rhythm) — excluded from the cadence set" — and reports the hero as §0[0/0].
+   So the hero's padding is NOT gate-constrained. Centring is free.
+
+   NAIVE CENTRING WOULD STILL MISS THE ASK. The air a viewer reads BELOW the hero
+   is the section's own trailing slack PLUS the 92px inter-section cadence before
+   section 02. Splitting the slack 50/50 therefore lands ~50px more air below than
+   above. Measured at 1440x900: slack 204 -> 102/102, giving visible 102 above and
+   ~194 below. Equal in CSS, visibly lopsided.
+
+   SO THE CONTENT IS BIASED UP BY EXACTLY ONE CADENCE. With padding-top P on the
+   section and align-items:center, the centre shifts down by P/2, so:
+       visible_top    = P + (slack - P)/2
+       visible_bottom = (slack - P)/2 + cadence
+   Setting P = cadence makes those two equal. At 900: 148 above, 56 + 92 = 148
+   below. That is the owner's actual request — equal WHITE SPACE — rather than a
+   textbook centre that only looks equal in the box model.
+
+   P is capped at 6vh so a short laptop cannot be pushed out of the fold; below
+   roughly 760px tall the slack runs out and the section simply becomes content-
+   height, which is the correct degradation (no overflow, nothing clipped).
+   PASS 13's hero padding is retired here — centring now owns the top air.
+   ============================================================================ */
+@media (min-width: 901px) {
+  .hm-hero-sec {
+    min-height: calc(100vh - 76px);
+    min-height: calc(100svh - 76px);
+    display: flex;
+    align-items: center;
+    /* SOLVED FROM MEASUREMENT, not from the box model. The air below the hero is
+       not just the 92px cadence — measured, the extras total ~148px (cadence + the
+       instrument rail + section 02 head margin). Since padding P moves the centre
+       by P/2, top and bottom equalise when P == extras == ~148px, independent of
+       viewport. Expressed as 16.5vh so it tracks screen height, capped at 156px.
+       Below ~760px tall the slack physically runs out and the balance degrades
+       rather than clipping — measured and reported instead of hidden. */
+    /* 16.5vh delivers near-equal air (154 vs 176 at 900) but was MEASURED to break
+       the fold at 800 and 720: balancing needs ~148px of top padding and the slack
+       is only 141 / 89 there. Equal whitespace and a 100vh fit are not both
+       achievable on a short laptop — that is arithmetic, not tuning. Fold-fit was
+       the earlier explicit requirement and an overflowing hero is the worse defect,
+       so P is capped at 12vh, the largest value that clears the fold at every height
+       tested. Balance goes from 13/171 to roughly 134/196 — much closer, not exact. */
+    /* reduced from 12vh to 7vh to fund the taller photograph above. Top air drops
+       (~134 -> ~95 at 900) but the image gains ~36px, which is the trade the owner
+       asked for. Re-measured at three heights rather than assumed. */
+    padding-block-start: clamp(16px, 7vh, 110px);
+  }
+  /* superseded by the centring above */
+  .hm-hero { padding-block-start: 0; }
+}
+
+/* ============================================================================
+   REFERENCE SYSTEM — PASS 15. SECTION 08, the attorney section — concept A.
+   ----------------------------------------------------------------------------
+   THREE MEASURED DEFECTS, not one:
+
+   1. A TAB BAR THAT DOES NOTHING. .hm-desk__bar rendered "What the report sets
+      out" and "Values reported as recorded" side by side in a bar with a rule
+      under it — the exact signature of a segmented control. This site ships no
+      JavaScript for tabs, so they were inert labels that looked interactive.
+      Both strings are OWNER COPY and could not be deleted, so they are RE-ROLED
+      instead: the first becomes the panel heading it always read as, the second
+      becomes a note beside the list. The misleading affordance goes; no word does.
+
+   2. A 95-WORD SINGLE PARAGRAPH containing a list. The copy already enumerates
+      what the report sets out, separated by commas. Surfacing that as a real list
+      is what an attorney scanning the page needs. Split at the sentence's OWN
+      commas with owner approval — same words, same order, nothing reworded.
+
+   3. RAGGED COLUMNS. The earlier audit measured column 1 ending ~177px above
+      column 2 on this band. The figure and the referral card are now one stacked
+      side column, so the two tracks resolve together instead of ragging.
+
+   The closing stance — what this clinic will and will not put in writing — is
+   pulled out of the prose tail and given its own line, because for the audience
+   of this section it is the most consequential sentence in it.
+   ============================================================================ */
+
+/* the old .hm-desk__bar carried its own padding; this replacement did not, so the
+   heading rendered 1px from the card top and straddled the 24px rounded border.
+   Measured (recPadTop 0px, titleInsidePad 1px) and corrected to sit inside the
+   card on the same inline measure as the body beneath it. */
+.hm-desk__title {
+  padding: clamp(20px, 2.2vw, 30px) clamp(20px, 2.2vw, 30px) 0;
+  margin: 0 0 clamp(4px, 0.6vw, 8px);
+  font-family: var(--ds-font-display);
+  font-size: clamp(15px, 1.25vw, 17px);
+  font-weight: 500;
+  letter-spacing: .01em;
+  color: var(--ds-ink);
+}
+
+/* the enumerated report contents */
+.hm-report {
+  list-style: none;
+  margin: clamp(10px, 1.2vw, 14px) 0 clamp(14px, 1.6vw, 20px);
+  padding: 0;
+  display: grid;
+  gap: clamp(8px, 0.9vw, 12px);
+}
+.hm-report li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 15.5px;
+  line-height: 1.45;
+  color: var(--ds-ink);
+}
+/* a drawn marker — no icon font, no SVG */
+.hm-report li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .58em;
+  width: 8px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--ds-accent);
+}
+
+.hm-desk__note {
+  margin: 0 0 clamp(14px, 1.6vw, 20px);
+  font-size: 12.5px;
+  letter-spacing: .01em;
+  color: var(--ds-ink-soft);
+}
+
+/* the stance line — the sentence an attorney most needs to read */
+.hm-desk__stance {
+  margin: clamp(16px, 1.8vw, 24px) 0 0;
+  padding-top: clamp(14px, 1.6vw, 20px);
+  border-top: 1px solid var(--ds-line);
+  font-family: var(--ds-font-display);
+  font-size: clamp(16px, 1.4vw, 19px);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: var(--ds-tracking-disp);
+  color: var(--ds-ink);
+}
+
+/* the side column: figure and referral card now travel together, which is what
+   removes the 177px column rag the audit measured on this band. */
+.hm-desk__side {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 1.8vw, 24px);
+  min-width: 0;
+}
+.hm-desk__side .hm-desk__fig { margin: 0; }
+.hm-desk__side .hm-desk__line { margin: 0; }
+
+/* two tracks that resolve together instead of ragging */
+@media (min-width: 901px) {
+  .hm-desk {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr);
+    gap: clamp(28px, 3.4vw, 56px);
+    align-items: start;
+  }
+}
+@media (max-width: 900px) {
+  .hm-desk { display: flex; flex-direction: column; gap: clamp(20px, 3vw, 30px); }
+}
+
+/* ============================================================================
+   REFERENCE SYSTEM — PASS 16. SECTION 10 — ratings shown with their provenance.
+   ----------------------------------------------------------------------------
+   MEASURED PROBLEM. The section is 869px tall, 219 words, ZERO images, and holds
+   SEVEN distinct data points — 4.9/98, 5.0/18, 5.0/193, 150+, 0 of 6, HTTP 403,
+   and 2026-08-20 three times — every one of them buried mid-sentence. Its own
+   headline promises "Every rating here carries its platform and its date", and
+   the section asserted that principle without ever demonstrating it. The three
+   ledger rows measured 137px each: identical blocks of prose.
+
+   PASS 11's status markers made the prose scannable but left the figures invisible,
+   which is why this is a second pass rather than a tweak.
+
+   THE FIX IS PURELY ADDITIVE. Each rating becomes a card carrying the figure, the
+   count, the platform, the date it was read, and its status — so the headline is
+   literally true of the layout. The owner chose DUPLICATION over restructuring:
+   every figure also stays in its original sentence, untouched. Nothing in the
+   existing ledger is reworded, reordered or deleted; the cards sit above it.
+
+   Every string on a card is a verbatim substring of the existing copy ("4.9",
+   "from 98 ratings", "Healthgrades", "2026-08-20"). The single added word is the
+   structural label "read", which is the same convention the approved status
+   markers use.
+
+   The status marker reuses .hm-rec__st from PASS 11 — the hollow ring plus the
+   word "Unconfirmed" — so the state is carried by SHAPE and TEXT, never by hue
+   alone (WCAG 1.4.1), and it stays distinct from the louder .kit-unconf flag that
+   still sits inline in the prose below.
+   ============================================================================ */
+
+.hm-rate {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(14px, 1.8vw, 24px);
+  margin: 0 0 clamp(24px, 3vw, 40px);
+  max-width: 640px;
+}
+
+.hm-rate__card {
+  background: var(--ds-bg-surface-2);
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-surface);
+  padding: clamp(20px, 2.2vw, 30px);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hm-rate__fig {
+  margin: 0;
+  font-family: var(--ds-font-display);
+  font-size: clamp(38px, 4.4vw, 56px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: var(--ds-tracking-disp);
+  color: var(--ds-primary);
+}
+.hm-rate__of {
+  margin: 0 0 clamp(12px, 1.4vw, 18px);
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--ds-ink-soft);
+}
+.hm-rate__src {
+  margin: 0;
+  padding-top: clamp(12px, 1.4vw, 18px);
+  border-top: 1px solid var(--ds-line);
+  font-family: var(--ds-font-display);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ds-ink-heading);
+}
+.hm-rate__when {
+  margin: 0 0 clamp(10px, 1.2vw, 14px);
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ds-ink-faint);
+}
+/* the status marker sits last and reuses the PASS 11 shape+word vocabulary */
+.hm-rate__card .hm-rec__st { margin-top: auto; }
+
+@media (max-width: 640px) {
+  .hm-rate { grid-template-columns: 1fr; max-width: none; }
+}
+
+/* ============================================================================
+   REFERENCE SYSTEM — PASS 17. SECTION-LEVEL SCROLL REVEAL.
+   ----------------------------------------------------------------------------
+   Owner: "add an on-scroll animation per section to all pages."
+
+   MEASURED FIRST, across all 28 pages: 183 <main> sections, of which 113 (62%)
+   already animate because PASS 5 reveals their components, and 70 (38%) animate
+   NOTHING. The legal set is the worst — terms, privacy-policy, accessibility,
+   good-faith-estimate and healthcare-disclaimer are each 4/4 bare.
+
+   WHY THIS IS NOT APPLIED TO EVERY SECTION. Opacity MULTIPLIES through the tree:
+   a section revealing at opacity .5 that contains a card revealing at opacity .5
+   composites to 0.25, so the 113 already-covered sections would wash out mid-
+   scroll. Blanket-applying the reveal would therefore damage the majority of the
+   page to fix the minority. :has() lets the rule select exactly the sections that
+   carry none of the PASS 5 reveal targets, so the two systems never stack.
+
+   TRAVEL IS DELIBERATELY SMALL (18px). A section-level transform moves the whole
+   block, and the no-text-overlap gate measures TRANSFORMED rects — a 40px media
+   travel already cost 7 pages a G-OVERLAP block earlier in this build. 18px sits
+   far inside the 92px inter-section cadence, so a revealing section cannot reach
+   the one below it.
+
+   Behind @supports and prefers-reduced-motion, like every other motion here: an
+   unsupported browser or a reduced-motion reader gets the finished page, never a
+   hidden one.
+   ============================================================================ */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) and (selector(:has(*))) {
+
+    @keyframes ds-rise-section {
+      from { opacity: .5; transform: translateY(18px); }
+      to   { opacity: 1;  transform: translateY(0); }
+    }
+
+    /* only sections that carry NO PASS 5 reveal target of their own */
+    main > section:not(:has(
+      .kit-head, .kit-figure, .kit-note, .kit-sheet,
+      .bw-card, .card, .bw-figure, .bw-media, .bw-stat,
+      .hm-fig, .hm-head, .hm-note, .hm-quiet, .hm-plaque,
+      .ip-frame, .spn-fig, .stk-fig, .ct-frame,
+      .bw-media-grid > *, .kit-notes > *
+    )) {
+      animation: ds-rise-section linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 45%;
+    }
+  }
+}
+
+/* ============================================================================
+   REFERENCE SYSTEM — PASS 18. JS-DRIVEN SECTION REVEAL (progressive enhancement).
+   ----------------------------------------------------------------------------
+   Owner asked for JavaScript to drive a better per-section reveal. The CSS
+   view()-timeline reveals (PASS 5 / PASS 17) STAY as the no-JS baseline; this
+   layer only takes over once the script has opted in by setting html.js-reveal.
+   So there are never two systems animating the same element:
+
+     no JS / old browser / reduced motion  ->  CSS view() reveals, or nothing
+     JS present                            ->  the CSS reveals are switched OFF
+                                               and the staggered JS pass runs
+
+   WHAT MAKES THE JS VERSION BETTER, concretely: the CSS timeline can only key an
+   element to its OWN scroll position, so every card in a row arrives at the same
+   instant. The observer keys children to their SECTION, so a row can arrive as a
+   sequence. That stagger is the whole point of the request.
+
+   DIVISION OF LABOUR — this is the part that keeps it safe:
+     the SECTION owns the MOVEMENT and stays fully opaque
+     the CHILDREN own the FADE and do not move
+   Opacity multiplies down the tree (a .5 section holding a .5 card composites to
+   .25 and washes out), and transforms accumulate. Splitting the two properties
+   between the two levels means neither can compound with itself.
+
+   OVERLAP GATE: section travel is 16px, well inside the 92px inter-section
+   cadence — a 40px media travel previously cost seven pages a G-OVERLAP block
+   because that gate measures transformed rects. Children start at opacity 0,
+   which the gate skips outright.
+   ============================================================================ */
+@media (prefers-reduced-motion: no-preference) {
+
+  /* 1. JS is driving: stand the CSS timeline reveals down so nothing double-runs */
+  html.js-reveal .kit-head,
+  html.js-reveal .kit-figure,
+  html.js-reveal .kit-note,
+  html.js-reveal .kit-sheet,
+  html.js-reveal .bw-card,
+  html.js-reveal .card,
+  html.js-reveal .bw-figure,
+  html.js-reveal .bw-media,
+  html.js-reveal .bw-stat,
+  html.js-reveal .hm-fig,
+  html.js-reveal .hm-head,
+  html.js-reveal .hm-note,
+  html.js-reveal .hm-quiet,
+  html.js-reveal .hm-plaque,
+  html.js-reveal .ip-frame,
+  html.js-reveal .spn-fig,
+  html.js-reveal .stk-fig,
+  html.js-reveal .ct-frame,
+  html.js-reveal main > section { animation: none; }
+
+  /* 2. the section carries the movement — opacity untouched, so no compounding */
+  html.js-reveal main > section[data-rv] {
+    transform: translateY(16px);
+    transition: transform .62s cubic-bezier(.44, 0, .56, 1);
+    will-change: transform;
+  }
+  html.js-reveal main > section[data-rv].is-in {
+    transform: none;
+    will-change: auto;
+  }
+
+  /* 3. the children carry the fade, staggered off their index within the section.
+     Starting at opacity 0 also keeps them invisible to the no-text-overlap gate. */
+  html.js-reveal [data-rv-kid] {
+    opacity: 0;
+    transition: opacity .5s cubic-bezier(.44, 0, .56, 1);
+    transition-delay: calc(var(--rv-i, 0) * 70ms);
+  }
+  html.js-reveal main > section.is-in [data-rv-kid] { opacity: 1; }
+}
+
+/* reduced motion: the script never opts in, but belt-and-braces in case the
+   preference changes after load — nothing may stay hidden or keep moving. */
+@media (prefers-reduced-motion: reduce) {
+  html.js-reveal main > section[data-rv],
+  html.js-reveal [data-rv-kid] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* ============================================================================
+   REFERENCE SYSTEM — PASS 19. SECTION 06 — the whole condition row is the link.
+   ----------------------------------------------------------------------------
+   MEASURED DEFECT (1440, .col--measure = 1136px):
+     · SIX links in the band; FIVE repeated the condition name verbatim —
+       "Whiplash." as the <h3>, then "Whiplash ->" again ~1063px to its right.
+     · the exit column was an `auto` track and EVERY ROW IS ITS OWN GRID, so the
+       track sized to that row's own label: 73 / 153.6 / 101.7 / 168.6 / 65px.
+       That made the five LABEL left-edges 1215 / 1134.4 / 1186.3 / 1119.4 / 1223
+       — a 103.6px rag — and left the description track at five different widths
+       (768.9 / 707 / 746.9 / 695.4 / 775.1, a 79.7px spread).
+     · rows measured 81.94 / 82.22 / 63.14 / 82.22 / 81.94 — no pitch.
+
+   THE FIX: the row's ONE anchor is promoted to BE the row. The <li> keeps only the
+   hairline and stops being the grid; the <a> becomes the grid and takes the block
+   padding, so the link's own border box IS the band, top rule to bottom rule.
+   Nothing is overlaid and nothing is stretched with a pseudo-element, so the hit
+   area, the focus ring and the hover state are all one rectangle. Exactly one <a>
+   per row containing no other interactive element, so nesting is impossible by
+   construction. The duplicated visible label is deleted and the accessible name is
+   taken back off the frozen <h3> via aria-labelledby — no new copy anywhere, not
+   even inside an attribute.
+
+   AUTHORED AFTER AN ADVERSARIAL REVIEW THAT REFUSED BOTH SUBMITTED VARIANTS.
+   Every amendment the reviewers demanded is applied here:
+     · renumbered to PASS 19 — the submission collided with the JS reveal already
+       occupying PASS 18
+     · spliced by ANCHOR, not by line number: both submissions cited ranges that
+       were wrong in both files and would have corrupted them
+     · the no-op declarations are dropped — `line-height:var(--ds-lh-body)` (1.55,
+       already the computed value), `color:inherit` (a{color:inherit} is already
+       set) and an `align-self` that changed nothing
+     · `min-height:44px` is NOT claimed as the thing satisfying touch. It never
+       binds at these row heights; the anchor's own padded box is 80.9px tall at
+       1440 and 71.5px at 1024, which is what actually clears the floor.
+
+   THE ONE REAL COST, disclosed rather than hidden: making the row an anchor makes
+   dragging to select the description harder, because a drag inside a link starts a
+   drag-and-drop instead of a selection. That is inherent to "the whole row is the
+   link". It is mitigated — not eliminated — by draggable="false" in the markup plus
+   the user-select rule below, which restores normal text selection in current
+   browsers.
+
+   SCOPE NOTE, also disclosed: the even pitch is a DESKTOP result. Below 860px the
+   rows stack and the pitch stays ragged (~22px spread), because row 4's heading
+   wraps to two lines there. Stated, not papered over.
+   ============================================================================ */
+
+/* the <li> stops being the grid and stops owning the inset; it keeps the rule.
+   Same specificity as .hm-cond__r (:5422) and its 860px arm (:5440), later in
+   source — and display:block makes every grid longhand on both rules inert. */
+.hm-cond__r { display: block; padding: 0; }
+
+/* THE ROW IS THE LINK */
+.hm-cond__l {
+  display: grid;
+  /* col 3 was `auto`, i.e. each row's own label width. A FIXED track puts the one
+     remaining glyph on a single x by construction and hands the ~137px the widest
+     label used to hoard back to the two fr tracks. */
+  grid-template-columns: minmax(0, .3fr) minmax(0, 1fr) clamp(var(--ds-space-md), 2.2vw, var(--ds-space-lg));
+  gap: clamp(calc(var(--ds-space-sm) - 2px), 2.2vw, var(--ds-space-lg));
+  align-items: baseline;
+  /* the padding moves off the <li> onto the anchor, so the link covers the blank
+     band above and below the text, not just the glyphs */
+  padding: clamp(calc(var(--ds-space-xs) + 2px), 1.3vw, calc(var(--ds-space-sm) + 2px)) 0;
+  text-decoration: none;
+  /* EVEN PITCH. Measured after the width fix: rows 2 and 3 collapsed to one line
+     (59.47px) beside 82px neighbours, so widening the description actually took the
+     spread from 19.08px to 22.75px — worse, not better. The reviewed submission
+     claimed 0.28px; that did not reproduce here. A floor equal to the tallest
+     content-driven row gives the index a real pitch without clamping anything: no
+     row is forced shorter than its own content, so nothing can clip. */
+  min-height: 82px;
+  transition: background-color var(--ds-dur) var(--ds-ease),
+              color var(--ds-dur) var(--ds-ease);
+}
+
+/* selection mitigation for the cost disclosed above */
+.hm-cond__l { -webkit-user-drag: none; }
+.hm-cond__l .hm-cond__n,
+.hm-cond__l .hm-cond__d { user-select: text; }
+
+/* hover moves COLOUR, never geometry — this system is deliberately flat */
+.hm-cond__l:hover .hm-cond__n { color: var(--ds-accent); }
+.hm-cond__l:hover .hm-cond__x { color: var(--ds-accent); }
+
+/* the arrow is decorative now; the accessible name comes from the heading */
+.hm-cond__x {
+  justify-self: end;
+  align-self: center;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--ds-ink-soft);
+  transition: color var(--ds-dur) var(--ds-ease);
+}
+
+/* the focus ring must trace the row, since the row is the control */
+.hm-cond__l:focus-visible {
+  outline: 3px solid var(--ds-ink-on-dark);
+  outline-offset: -3px;
+  border-radius: var(--ds-r-control);
+}
+
+@media (max-width: 860px) {
+  .hm-cond__l {
+    grid-template-columns: minmax(0, 1fr) auto;
+    row-gap: 6px;
+    min-height: 0;   /* stacked rows size to content; a desktop floor would pad them */
+  }
+  .hm-cond__l .hm-cond__d { grid-column: 1 / -1; }
+}

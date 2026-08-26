@@ -12,10 +12,10 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Sans+3:wght@300;400;600;700&display=swap">
-<link rel="stylesheet" href="../design-system/tokens.css?v=46ce52bd">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="../design-system/tokens.css?v=e3089e62">
   <link rel="stylesheet" href="../design-system/chrome.css?v=9c8c35da">
-  <link rel="stylesheet" href="../design-system/structural.css?v=9c947947">
+  <link rel="stylesheet" href="../design-system/structural.css?v=aa49c73d">
   <link rel="stylesheet" href="../design-system/brand-card-standard.css?v=2d1d91ef">
 
   <!-- seo-inject: canonical + open graph (JSON-LD withheld until the NAP is confirmed) -->
@@ -255,7 +255,7 @@
         </div>
         <div class="kit-split">
           <figure class="kit-figure">
-            <img src="../assets/gen-hero-clinic.jpg" width="1024" height="576" alt="Clinical examination room with a treatment table, a rolling stool and an instrument trolley under daylight from a large window" loading="lazy">
+            <img src="../assets/gen-hero-clinic.jpg" width="2048" height="878" alt="Clinical examination room with a treatment table, a rolling stool and an instrument trolley under daylight from a large window" loading="lazy">
             <p class="kit-figure__cap">The first visit</p>
           </figure>
           <div class="kit-split__body">
@@ -487,6 +487,93 @@
   close&&close.addEventListener('click',function(){set(false)});
   scrim&&scrim.addEventListener('click',function(){set(false)});
   document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false)});
+})();
+</script>
+<script>
+/* Section scroll-reveal — IntersectionObserver, staggered.
+   Lives in the LOCKED CHROME CARRIER (_design/_chrome-block.html), not in
+   _build/_template.html: that template is a DERIVED artifact which build.mjs
+   regenerates from this carrier on every run, which is exactly why an earlier
+   copy of this script was silently wiped by the next build.
+
+   FOUR THINGS THIS IS CAREFUL ABOUT, each learned from a real defect in this build:
+
+   1. FAILS OPEN. The hiding rules are scoped to html.js-reveal, and that class is
+      only added once this script has decided to animate. No JS, an old browser, a
+      thrown error or a reduced-motion preference => the class never lands => the
+      page renders complete. Content is never gated behind an animation.
+
+   2. NO OPACITY COMPOUNDING. Opacity multiplies down the tree, so a section at .5
+      holding a card at .5 composites to .25 and washes out. Here the SECTION owns
+      the movement and stays fully opaque; only its CHILDREN fade. The two never
+      multiply.
+
+   3. NO OVERLAP-GATE REGRESSION. The build's no-text-overlap gate measures
+      TRANSFORMED rects, and a 40px media travel once cost seven pages a G-OVERLAP
+      block. Section travel is held at 16px — proven clear of the 92px inter-section
+      cadence — and children start at opacity 0, which the gate skips entirely.
+
+   4. RUNS ONCE. Each section is unobserved as it reveals, so nothing loops and
+      WCAG 2.2.2 is not engaged. */
+(function () {
+  if (!('IntersectionObserver' in window)) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var secs = [].slice.call(document.querySelectorAll('main > section'));
+  if (!secs.length) return;
+
+  var CHILD = [
+    '.kit-head', '.kit-figure', '.kit-note', '.kit-sheet',
+    '.bw-card', '.card', '.bw-figure', '.bw-media', '.bw-stat',
+    '.hm-fig', '.hm-head', '.hm-note', '.hm-quiet', '.hm-plaque',
+    '.ip-frame', '.spn-fig', '.stk-fig', '.ct-frame',
+    '.hm-rate__card', '.hm-contrast__card', '.hm-rec__r',
+    '.hm-cond__r', '.hm-strip__i', '.hm-report li', '.spn-entry'
+  ].join(',');
+
+  /* opt in — only now does any CSS hide anything */
+  document.documentElement.classList.add('js-reveal');
+
+  secs.forEach(function (sec) {
+    sec.setAttribute('data-rv', '');
+    var kids = [].slice.call(sec.querySelectorAll(CHILD)).filter(function (el) {
+      /* a card inside an already-tagged card would double-fade */
+      var p = el.parentElement;
+      while (p && p !== sec) { if (p.hasAttribute('data-rv-kid')) return false; p = p.parentElement; }
+      return true;
+    });
+    /* cap the stagger: past ~8 items the tail lags far behind the reader */
+    kids.slice(0, 8).forEach(function (el, i) {
+      el.setAttribute('data-rv-kid', '');
+      el.style.setProperty('--rv-i', String(i));
+    });
+  });
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('is-in');
+      io.unobserve(e.target);
+    });
+  }, { rootMargin: '0px 0px -12% 0px', threshold: 0.06 });
+
+  /* anything already on screen at load is revealed immediately and never animates
+     in — a hero that fades in after paint reads as a slow page, not as polish */
+  var vh = window.innerHeight || document.documentElement.clientHeight;
+  secs.forEach(function (sec) {
+    if (sec.getBoundingClientRect().top < vh * 0.92) { sec.classList.add('is-in'); return; }
+    io.observe(sec);
+  });
+
+  /* safety net: if a section is on screen 3s later and still hidden (an observer
+     that never fired, a late layout shift), force it. Only sections that SHOULD be
+     visible are touched, so the effect survives for everything further down. */
+  window.setTimeout(function () {
+    var h = window.innerHeight || 0;
+    secs.forEach(function (s) {
+      if (!s.classList.contains('is-in') && s.getBoundingClientRect().top < h) s.classList.add('is-in');
+    });
+  }, 3000);
 })();
 </script>
 </body>
