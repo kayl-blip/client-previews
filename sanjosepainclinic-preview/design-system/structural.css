@@ -1985,7 +1985,11 @@ p { color: var(--ds-ink-soft); }
   display: block; width: 100%; height: clamp(38px, 4.6vw, 82px);
   pointer-events: none;
 }
-.ip-seam path { fill: var(--ds-primary-deep); }
+/* the seam CONTINUES the band above it, so it must be that band's colour.
+   --ds-primary-deep (#3C534F) is the gradient floor, not the flat band
+   colour; every section this seam borders is --ds-primary (#47625D),
+   which is why it read as a second, slightly different green. */
+.ip-seam path { fill: var(--ds-primary); }
 
 /* ------------------------------------------------------------- 1 - THE HEAD */
 /* a ruled instrument head: a double rule, the channel eyebrow, the band name. */
@@ -2135,12 +2139,31 @@ p { color: var(--ds-ink-soft); }
 }
 /* the vertical arm: figure and caption on one ruled row, used where the band
    sits BESIDE prose instead of under it. */
-.ip-readout--stack { grid-template-columns: minmax(0, 1fr); border-top: 0; }
+/* ONE shared pair of columns for every row (subgrid), so the numeral track is
+   sized to the widest numeral instead of a fixed 3.1fr. "Review points" needs
+   227px and the old track gave it 190px, so it overflowed into the description
+   by 2px at 1440 and 17px from 1600 up. Rows still align because they all read
+   the same parent tracks. */
+.ip-readout--stack {
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: clamp(calc(var(--ds-space-sm) - 2px), 1.6vw, calc(var(--ds-space-md) - 2px));
+  border-top: 0;
+}
 .ip-readout--stack .ip-gauge {
-  display: grid; grid-template-columns: minmax(0, 3.1fr) minmax(0, 4.9fr);
-  gap: clamp(calc(var(--ds-space-sm) - 2px), 1.6vw, calc(var(--ds-space-md) - 2px)); align-items: baseline;
+  display: grid; grid-column: 1 / -1; grid-template-columns: subgrid;
+  align-items: baseline;
   border-right: 0; border-top: 1px solid var(--ds-divider);
   padding-inline: 0;
+}
+/* no subgrid: fall back to a wider fixed track, still enough for the longest
+   numeral, rather than the old 3.1fr which was not */
+@supports not (grid-template-columns: subgrid) {
+  .ip-readout--stack { grid-template-columns: minmax(0, 1fr); }
+  .ip-readout--stack .ip-gauge {
+    grid-column: auto;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 4fr);
+    column-gap: clamp(calc(var(--ds-space-sm) - 2px), 1.6vw, calc(var(--ds-space-md) - 2px));
+  }
 }
 .ip-readout--stack .ip-gauge__n { font-size: clamp(40px, 3.4vw, 52px); }
 .ip-readout--stack .ip-gauge__l { margin-top: 0; }
@@ -3649,7 +3672,13 @@ p { color: var(--ds-ink-soft); }
 .ct-sec .eyebrow { color: var(--ds-accent-ink); }
 
 /* the shared band heading + lede */
-.ct-body__h { margin: 0; max-width: 17em; }
+/* The heading owns its trailing space. Previously margin was 0 and the gap came
+   from whatever followed: .ct-lede and friends carry margin-top:24px, but the
+   composite blocks (.ct-doc, .ct-terms, .ct-cad) carry none, so sections 03/04/05
+   rendered their heading FLUSH against the card at 0px while 01/02/06/07 got 24px.
+   .ct-station__body is normal block flow, so this collapses with the existing
+   margin-top:24px rather than adding to it - verified after the change. */
+.ct-body__h { margin: 0 0 var(--ds-space-md); max-width: 17em; }
 .ct-lede {
   margin: clamp(var(--ds-space-sm), 1.8vw, var(--ds-space-md)) 0 0;
   font-size: 16.5px; line-height: var(--ds-lh-body); color: var(--ds-ink-soft); max-width: 46em;
@@ -5451,7 +5480,8 @@ p { color: var(--ds-ink-soft); }
   padding-left: clamp(calc(var(--ds-space-sm) + 3px), 2.4vw, calc(var(--ds-space-lg) - 6px));
 }
 .hm-quiet__h { max-width: 14em; font-size: clamp(26px, 2.7vw, 38px); }
-.hm-quiet > p:not(.eyebrow) { margin: clamp(calc(var(--ds-space-sm) + 1px), 1.9vw, var(--ds-space-md)) 0 0; font-size: 17px; line-height: var(--ds-lh-body); }
+.hm-quiet > p:not(.eyebrow),
+.hm-quiet__prose > p { margin: clamp(calc(var(--ds-space-sm) + 1px), 1.9vw, var(--ds-space-md)) 0 0; font-size: 17px; line-height: var(--ds-lh-body); }
 
 /* ----------------------------------------------------- 8 - THE ATTORNEY DESK */
 /* the register shift: the B2B reader gets a document, not reassurance. A ruled
@@ -8017,4 +8047,206 @@ main > section.surface-dark:last-of-type {
 .surface-dark:has(+ .precta) {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
+}
+
+/* ============================================================================
+   PASS 23 — LOTTIE INSTRUMENT MARKS (.hm-strip)
+
+   The five instrument traces are now Lottie animations, recoloured to
+   --ds-primary. Rungs 01-04 are LottieFiles free animations under the Lottie
+   Simple License (commercial use, modification permitted, no attribution
+   required); rung 05 is authored here from the original square-wave geometry
+   so the set reads as one family.
+
+   WHAT IS DELIBERATELY PRESERVED from the CSS sweep this replaces — each was a
+   measured decision in the block above, and none of them was about the motion
+   SOURCE, so none of them changes:
+   - the mark stays aria-hidden. That is what keeps auto-starting, indefinitely
+     looping motion out of WCAG 2.2.2 scope: the criterion applies to moving
+     INFORMATION, and the adjacent h3 and paragraph carry the entire meaning.
+   - no motion under prefers-reduced-motion, and none below 461px where the
+     strip is a single column and a looping trace would sit directly in the
+     reading path. Both are enforced in the initialiser, not just in CSS, so
+     the 168KB player is never even fetched in those cases.
+   - in both of those cases the ORIGINAL base path still renders, at full
+     opacity, exactly as it did before this pass. .hm-strip__rest is that path.
+   ========================================================================= */
+.hm-strip__anim { position: relative; }
+
+/* the fallback / reduced-motion render: the original trace, unchanged */
+.hm-strip__rest { display: block; width: 100%; height: auto; }
+
+/* the player replaces the resting line rather than stacking on it — the Lottie
+   geometry is not identical to the trace geometry, so painting both would read
+   as two superimposed lines */
+/* visibility, NOT display: the resting trace keeps reserving the box, so the
+   player inherits the exact slot geometry the SVG had — no aspect-ratio guess */
+.hm-strip__anim[data-lottie-ready] > .hm-strip__rest { visibility: hidden; }
+
+/* Rungs 01 and 02 no longer need a separate resting baseline: their
+   animations are now authored from their own trace geometry, so the
+   resting line IS the trace and lives inside the Lottie at 0.72 opacity
+   (>= 3:1). The previous .22 CSS underlay measured 1.38:1 and read as a
+   washed-out duplicate of a different shape. */
+.ds-anim__player { position: absolute; inset: 0; line-height: 0; }
+.ds-anim__player > svg { display: block; width: 100%; height: 100%; }
+
+/* ============================================================================
+   PASS 24 — SHARED LOTTIE MARK CONTAINER
+
+   Used by the homepage instrument strip (PASS 23) and by the instrument traces
+   on attorney-referrals, auto-accident-injury, laser-therapy,
+   on-site-diagnostics and spinal-decompression.
+
+   Each trace was converted to Lottie FROM ITS OWN PATH GEOMETRY rather than
+   replaced with stock artwork: these are bespoke signal shapes and the whole
+   point of them is that the shape matches the instrument.
+
+   The original SVG stays inside the container as .ds-anim__rest and is the
+   complete render when JS is unavailable, under prefers-reduced-motion, and
+   below 461px — the initialiser does not even fetch the player in those cases.
+
+   ACCESSIBILITY: .ct-read__trace and .kit-instr__trace previously carried
+   role="img" + aria-label. Indefinitely-looping motion on INFORMATIONAL content
+   is WCAG 2.2.2 scope, so they are now decorative and aria-hidden — the same
+   resolution the strip in PASS 23 documents, for the same reason: the adjacent
+   heading and paragraph carry the meaning, and the label only said
+   "Representation of a muscle activity tracing".
+   ========================================================================= */
+[data-lottie] { position: relative; }
+.ds-anim > .ds-anim__rest { display: block; width: 100%; height: 100%; }
+[data-lottie][data-lottie-ready] > .ds-anim__rest { visibility: hidden; }
+.ds-anim__player { position: absolute; inset: 0; line-height: 0; }
+.ds-anim__player > svg { display: block; width: 100%; height: 100%; }
+
+/* the converted traces no longer need the one-shot CSS draw-on: the Lottie
+   loops instead. Left intact for the fallback render, but neutralised once the
+   player has mounted so the two never run against each other. */
+.ds-anim[data-lottie-ready] .ds-anim__rest path { animation: none; }
+
+/* --- PASS 24b — colour inheritance, and why it is not baked ------------------
+   A Lottie JSON stores its stroke colour as a literal. That is fine on the
+   homepage cards, but these traces also sit on .surface-dark bands where the
+   ORIGINAL SVG inherited currentColor and the token system flipped it light.
+   Baked sage measured 1.00:1 on attorney-referrals (sage on sage - invisible)
+   and 1.16:1 on the three ip-chan bands, against 5.07-5.87:1 before.
+   SVG presentation attributes lose to any CSS rule, so restoring inheritance
+   here fixes every surface at once without editing the JSON. */
+.ds-anim__player svg path { stroke: currentColor; }
+
+/* ============================================================================
+   PASS 25 — SECTION 07, THE COST LEDGER
+
+   The audit measured this band using 768px of a 1200px container, leaving 432px
+   unused over a 416px-tall run: the only single-column section on a page of
+   two-column ones, which is why it read as unfinished. The ledger occupies that
+   column with the answer a patient wants before the prose: what do I pay.
+
+   Every value is lifted from the frozen copy, qualifiers included — "if you
+   qualify" and "does not resolve at all" are the honest part of this section and
+   are carried through rather than summarised away.
+   ========================================================================= */
+@media (min-width: 1080px) {
+  .hm-quiet--tab {
+    display: grid;
+    /* the base .hm-quiet caps at 46em, which would confine the WHOLE grid to one
+       column's worth and crush the ledger to ~65px. The prose keeps its measure
+       via the first track instead. */
+    max-width: none;
+    grid-template-columns: minmax(0, 46em) minmax(0, 1fr);
+    column-gap: clamp(var(--ds-space-lg), 5vw, 88px);
+    align-items: start;
+  }
+  /* the eyebrow and heading stay full width; prose and ledger share the row */
+  .hm-quiet--tab > .eyebrow,
+  .hm-quiet--tab > .hm-quiet__h { grid-column: 1 / -1; }
+  .hm-quiet--tab > .hm-tab { margin-top: clamp(var(--ds-space-md), 1.9vw, var(--ds-space-lg)); }
+}
+
+.hm-tab {
+  background: var(--ds-bg-surface-2);
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-surface);
+  padding: clamp(var(--ds-space-md), 2.2vw, var(--ds-space-lg));
+  margin-top: var(--ds-space-md);
+}
+.hm-tab__k {
+  margin: 0 0 var(--ds-space-sm);
+  font-family: var(--ds-font-mono); font-size: 11px; font-weight: 700;
+  letter-spacing: var(--ds-tracking-label); text-transform: uppercase;
+  color: var(--ds-ink-faint);
+}
+.hm-tab__l { list-style: none; margin: 0; padding: 0; }
+.hm-tab__r {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: var(--ds-space-md);
+  padding-block: calc(var(--ds-space-xs) + 2px);
+  border-bottom: 1px solid var(--ds-line);
+}
+.hm-tab__r:last-child { border-bottom: 0; }
+.hm-tab__t { font-size: 15px; color: var(--ds-ink-soft); }
+.hm-tab__v {
+  font-weight: 600; font-size: 15px; text-align: right;
+  color: var(--ds-ink-heading); min-width: 0;
+}
+/* the qualifier is never dropped, only set quieter than the value it limits */
+.hm-tab__q {
+  display: block; font-family: var(--ds-font-mono); font-size: 11px;
+  font-weight: 700; letter-spacing: var(--ds-tracking-label);
+  text-transform: uppercase; color: var(--ds-signature);
+  margin-top: var(--ds-space-2xs);
+}
+.hm-tab__n {
+  margin: var(--ds-space-md) 0 0;
+  padding-top: var(--ds-space-sm);
+  border-top: 1px solid var(--ds-line);
+  font-size: 13.5px; line-height: 1.55; color: var(--ds-ink-soft);
+}
+
+/* ============================================================================
+   PASS 26 — ABOUT §02, THE CHAPTER PLATE
+
+   This band is title-only BY DESIGN: D-FOUNDER-STORY in the decisions ledger
+   records that no founding narrative exists in the client's material and must
+   not be invented. So nothing here adds copy — it only stops the plate reading
+   as a thin stray band while the gate stays open.
+
+   - taller: aspect-ratio 29/12 rendered ~470px at container width, which is
+     short for a full-bleed chapter break. 41/20 gives ~554px.
+   - deeper scrim, so the title carries against a brighter photograph.
+   - the parallax animates .pp-chapter__bg, NOT the img, because the img already
+     owns a hover transform (scale 1.045) and an animation on the same property
+     would win the cascade and kill the hover.
+   ========================================================================= */
+.pp-chapter--origin {
+  aspect-ratio: 41 / 20;
+  max-height: clamp(340px, 58vh, 600px);
+  min-height: 300px;
+}
+.pp-chapter--origin .pp-chapter__bg::after {
+  background:
+    linear-gradient(78deg, var(--ds-scrim) 0%, var(--ds-scrim) 44%, transparent 88%),
+    linear-gradient(180deg, transparent 14%, var(--ds-scrim) 78%, var(--ds-scrim) 100%);
+}
+.pp-chapter--origin .pp-chapter__h {
+  font-size: clamp(30px, 4.2vw, 56px);
+  max-width: 11em;
+}
+
+/* slow scroll parallax. Scroll-driven, so it costs no JS and simply does not
+   run where view() timelines are unsupported — the plate is then static, which
+   is the same render as reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .pp-chapter--origin .pp-chapter__bg {
+      animation: pp-chapter-drift linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+      will-change: transform;
+    }
+    @keyframes pp-chapter-drift {
+      from { transform: scale(1.14) translate3d(0, -2.6%, 0); }
+      to   { transform: scale(1.14) translate3d(0,  2.6%, 0); }
+    }
+  }
 }
