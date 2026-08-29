@@ -1,0 +1,1 @@
+PingResponse=2001397592

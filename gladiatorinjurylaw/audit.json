@@ -1,0 +1,1543 @@
+{
+ "shape": "mp",
+ "domain": "gladiatorinjurylaw.com",
+ "bundle_root": "C:\\Users\\kaylt\\clone-site-output\\gladiatorinjurylaw.com",
+ "pages": [
+  {
+   "name": "index.html",
+   "source": "https://gladiatorinjurylaw.com/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "about-us.html",
+   "source": "https://gladiatorinjurylaw.com/about-us/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "service.html",
+   "source": "https://gladiatorinjurylaw.com/service/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "case-result.html",
+   "source": "https://gladiatorinjurylaw.com/case-result/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "media-and-awards.html",
+   "source": "https://gladiatorinjurylaw.com/media-and-awards/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "location.html",
+   "source": "https://gladiatorinjurylaw.com/location/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "contact-us.html",
+   "source": "https://gladiatorinjurylaw.com/contact-us/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "las-vegas.html",
+   "source": "https://gladiatorinjurylaw.com/location/las-vegas/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "personal-injury.html",
+   "source": "https://gladiatorinjurylaw.com/services/personal-injury/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "car-accidents.html",
+   "source": "https://gladiatorinjurylaw.com/services/car-accidents/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "motorcycle-accidents.html",
+   "source": "https://gladiatorinjurylaw.com/services/motorcycle-accidents/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "truck-accident.html",
+   "source": "https://gladiatorinjurylaw.com/services/truck-accident/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "pedestrian-accidents.html",
+   "source": "https://gladiatorinjurylaw.com/services/pedestrian-accidents/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "rideshare-and-taxi-accidents.html",
+   "source": "https://gladiatorinjurylaw.com/services/rideshare-and-taxi-accidents/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "wrongful-death.html",
+   "source": "https://gladiatorinjurylaw.com/services/wrongful-death/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "commercial-law.html",
+   "source": "https://gladiatorinjurylaw.com/services/commercial-law/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "gladiator-injury-law-premises-liability.html",
+   "source": "https://gladiatorinjurylaw.com/services/gladiator-injury-law-premises-liability/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "gladiator-injury-law-motor-vehicle-accidents.html",
+   "source": "https://gladiatorinjurylaw.com/services/gladiator-injury-law-motor-vehicle-accidents/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "about-our-founder.html",
+   "source": "https://gladiatorinjurylaw.com/about-us/about-our-founder/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "traumatic-brain-injuries.html",
+   "source": "https://gladiatorinjurylaw.com/traumatic-brain-injuries/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "hotel-casino-injuries.html",
+   "source": "https://gladiatorinjurylaw.com/hotel-casino-injuries/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "hotel-and-casino-injuries.html",
+   "source": "https://gladiatorinjurylaw.com/hotel-and-casino-injuries/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "las-vegas-areas-served.html",
+   "source": "https://gladiatorinjurylaw.com/las-vegas-areas-served/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "video-library.html",
+   "source": "https://gladiatorinjurylaw.com/video-library/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "faqs.html",
+   "source": "https://gladiatorinjurylaw.com/blog/faqs/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "terms-and-conditions.html",
+   "source": "https://gladiatorinjurylaw.com/terms-and-conditions/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "home.html",
+   "source": "https://gladiatorinjurylaw.com/home/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "new-business.html",
+   "source": "https://gladiatorinjurylaw.com/new-business/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "nv-llc.html",
+   "source": "https://gladiatorinjurylaw.com/nv-llc/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "llc-and-business-formation.html",
+   "source": "https://gladiatorinjurylaw.com/llc-and-business-formation/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "nevada-llc-and-business-formation.html",
+   "source": "https://gladiatorinjurylaw.com/nevada-llc-and-business-formation/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "las-vegas-business-attorney.html",
+   "source": "https://gladiatorinjurylaw.com/las-vegas-business-attorney/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "north-las-vegas-business-attorney.html",
+   "source": "https://gladiatorinjurylaw.com/north-las-vegas-business-attorney/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "paradise-business-attorney.html",
+   "source": "https://gladiatorinjurylaw.com/paradise-business-attorney/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "spring-valley-business-attorney.html",
+   "source": "https://gladiatorinjurylaw.com/spring-valley-business-attorney/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "henderson-business-attorney.html",
+   "source": "https://gladiatorinjurylaw.com/henderson-business-attorney/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "las-vegas-top-business-attorneys.html",
+   "source": "https://gladiatorinjurylaw.com/las-vegas-top-business-attorneys/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "step-1-tell-about-business.html",
+   "source": "https://gladiatorinjurylaw.com/step-1-tell-about-business/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  },
+  {
+   "name": "step-2-payment.html",
+   "source": "https://gladiatorinjurylaw.com/step-2-payment/",
+   "templates_injected": [
+    "form-submit"
+   ]
+  }
+ ],
+ "chrome_css_chars": 1144830,
+ "css_sources_consolidated": 2246,
+ "assets_emitted": 927,
+ "transformations": {
+  "links_removed": 1767,
+  "styles_removed": 353,
+  "tracking_scripts_stripped": 468,
+  "base_stripped": 0,
+  "data_screen_label_stripped": 0,
+  "url_attrs_rewritten": 1984,
+  "internal_hrefs_rewritten": 2323,
+  "ajax_listings_injected": 1,
+  "noscript_rewritten": 235,
+  "video_widgets_localised": 3,
+  "templates_injected": [
+   "form-submit"
+  ]
+ },
+ "internal_link_map": [
+  [
+   "https://gladiatorinjurylaw.com/",
+   "index.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com",
+   "index.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/",
+   "index.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com",
+   "index.html"
+  ],
+  [
+   "/",
+   "index.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/about-us/",
+   "about-us.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/about-us",
+   "about-us.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/about-us/",
+   "about-us.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/about-us",
+   "about-us.html"
+  ],
+  [
+   "/about-us/",
+   "about-us.html"
+  ],
+  [
+   "/about-us",
+   "about-us.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/service/",
+   "service.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/service",
+   "service.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/service/",
+   "service.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/service",
+   "service.html"
+  ],
+  [
+   "/service/",
+   "service.html"
+  ],
+  [
+   "/service",
+   "service.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/case-result/",
+   "case-result.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/case-result",
+   "case-result.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/case-result/",
+   "case-result.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/case-result",
+   "case-result.html"
+  ],
+  [
+   "/case-result/",
+   "case-result.html"
+  ],
+  [
+   "/case-result",
+   "case-result.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/media-and-awards/",
+   "media-and-awards.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/media-and-awards",
+   "media-and-awards.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/media-and-awards/",
+   "media-and-awards.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/media-and-awards",
+   "media-and-awards.html"
+  ],
+  [
+   "/media-and-awards/",
+   "media-and-awards.html"
+  ],
+  [
+   "/media-and-awards",
+   "media-and-awards.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/location/",
+   "location.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/location",
+   "location.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/location/",
+   "location.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/location",
+   "location.html"
+  ],
+  [
+   "/location/",
+   "location.html"
+  ],
+  [
+   "/location",
+   "location.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/contact-us/",
+   "contact-us.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/contact-us",
+   "contact-us.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/contact-us/",
+   "contact-us.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/contact-us",
+   "contact-us.html"
+  ],
+  [
+   "/contact-us/",
+   "contact-us.html"
+  ],
+  [
+   "/contact-us",
+   "contact-us.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/location/las-vegas/",
+   "las-vegas.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/location/las-vegas",
+   "las-vegas.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/location/las-vegas/",
+   "las-vegas.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/location/las-vegas",
+   "las-vegas.html"
+  ],
+  [
+   "/location/las-vegas/",
+   "las-vegas.html"
+  ],
+  [
+   "/location/las-vegas",
+   "las-vegas.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/personal-injury/",
+   "personal-injury.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/personal-injury",
+   "personal-injury.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/personal-injury/",
+   "personal-injury.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/personal-injury",
+   "personal-injury.html"
+  ],
+  [
+   "/services/personal-injury/",
+   "personal-injury.html"
+  ],
+  [
+   "/services/personal-injury",
+   "personal-injury.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/car-accidents/",
+   "car-accidents.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/car-accidents",
+   "car-accidents.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/car-accidents/",
+   "car-accidents.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/car-accidents",
+   "car-accidents.html"
+  ],
+  [
+   "/services/car-accidents/",
+   "car-accidents.html"
+  ],
+  [
+   "/services/car-accidents",
+   "car-accidents.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/motorcycle-accidents/",
+   "motorcycle-accidents.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/motorcycle-accidents",
+   "motorcycle-accidents.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/motorcycle-accidents/",
+   "motorcycle-accidents.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/motorcycle-accidents",
+   "motorcycle-accidents.html"
+  ],
+  [
+   "/services/motorcycle-accidents/",
+   "motorcycle-accidents.html"
+  ],
+  [
+   "/services/motorcycle-accidents",
+   "motorcycle-accidents.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/truck-accident/",
+   "truck-accident.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/truck-accident",
+   "truck-accident.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/truck-accident/",
+   "truck-accident.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/truck-accident",
+   "truck-accident.html"
+  ],
+  [
+   "/services/truck-accident/",
+   "truck-accident.html"
+  ],
+  [
+   "/services/truck-accident",
+   "truck-accident.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/pedestrian-accidents/",
+   "pedestrian-accidents.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/pedestrian-accidents",
+   "pedestrian-accidents.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/pedestrian-accidents/",
+   "pedestrian-accidents.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/pedestrian-accidents",
+   "pedestrian-accidents.html"
+  ],
+  [
+   "/services/pedestrian-accidents/",
+   "pedestrian-accidents.html"
+  ],
+  [
+   "/services/pedestrian-accidents",
+   "pedestrian-accidents.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/rideshare-and-taxi-accidents/",
+   "rideshare-and-taxi-accidents.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/rideshare-and-taxi-accidents",
+   "rideshare-and-taxi-accidents.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/rideshare-and-taxi-accidents/",
+   "rideshare-and-taxi-accidents.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/rideshare-and-taxi-accidents",
+   "rideshare-and-taxi-accidents.html"
+  ],
+  [
+   "/services/rideshare-and-taxi-accidents/",
+   "rideshare-and-taxi-accidents.html"
+  ],
+  [
+   "/services/rideshare-and-taxi-accidents",
+   "rideshare-and-taxi-accidents.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/wrongful-death/",
+   "wrongful-death.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/wrongful-death",
+   "wrongful-death.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/wrongful-death/",
+   "wrongful-death.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/wrongful-death",
+   "wrongful-death.html"
+  ],
+  [
+   "/services/wrongful-death/",
+   "wrongful-death.html"
+  ],
+  [
+   "/services/wrongful-death",
+   "wrongful-death.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/commercial-law/",
+   "commercial-law.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/commercial-law",
+   "commercial-law.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/commercial-law/",
+   "commercial-law.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/commercial-law",
+   "commercial-law.html"
+  ],
+  [
+   "/services/commercial-law/",
+   "commercial-law.html"
+  ],
+  [
+   "/services/commercial-law",
+   "commercial-law.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/gladiator-injury-law-premises-liability/",
+   "gladiator-injury-law-premises-liability.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/gladiator-injury-law-premises-liability",
+   "gladiator-injury-law-premises-liability.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/gladiator-injury-law-premises-liability/",
+   "gladiator-injury-law-premises-liability.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/gladiator-injury-law-premises-liability",
+   "gladiator-injury-law-premises-liability.html"
+  ],
+  [
+   "/services/gladiator-injury-law-premises-liability/",
+   "gladiator-injury-law-premises-liability.html"
+  ],
+  [
+   "/services/gladiator-injury-law-premises-liability",
+   "gladiator-injury-law-premises-liability.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/gladiator-injury-law-motor-vehicle-accidents/",
+   "gladiator-injury-law-motor-vehicle-accidents.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/gladiator-injury-law-motor-vehicle-accidents",
+   "gladiator-injury-law-motor-vehicle-accidents.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/gladiator-injury-law-motor-vehicle-accidents/",
+   "gladiator-injury-law-motor-vehicle-accidents.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/gladiator-injury-law-motor-vehicle-accidents",
+   "gladiator-injury-law-motor-vehicle-accidents.html"
+  ],
+  [
+   "/services/gladiator-injury-law-motor-vehicle-accidents/",
+   "gladiator-injury-law-motor-vehicle-accidents.html"
+  ],
+  [
+   "/services/gladiator-injury-law-motor-vehicle-accidents",
+   "gladiator-injury-law-motor-vehicle-accidents.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/about-us/about-our-founder/",
+   "about-our-founder.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/about-us/about-our-founder",
+   "about-our-founder.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/about-us/about-our-founder/",
+   "about-our-founder.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/about-us/about-our-founder",
+   "about-our-founder.html"
+  ],
+  [
+   "/about-us/about-our-founder/",
+   "about-our-founder.html"
+  ],
+  [
+   "/about-us/about-our-founder",
+   "about-our-founder.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/traumatic-brain-injuries/",
+   "traumatic-brain-injuries.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/traumatic-brain-injuries",
+   "traumatic-brain-injuries.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/traumatic-brain-injuries/",
+   "traumatic-brain-injuries.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/traumatic-brain-injuries",
+   "traumatic-brain-injuries.html"
+  ],
+  [
+   "/traumatic-brain-injuries/",
+   "traumatic-brain-injuries.html"
+  ],
+  [
+   "/traumatic-brain-injuries",
+   "traumatic-brain-injuries.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/hotel-casino-injuries/",
+   "hotel-casino-injuries.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/hotel-casino-injuries",
+   "hotel-casino-injuries.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/hotel-casino-injuries/",
+   "hotel-casino-injuries.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/hotel-casino-injuries",
+   "hotel-casino-injuries.html"
+  ],
+  [
+   "/hotel-casino-injuries/",
+   "hotel-casino-injuries.html"
+  ],
+  [
+   "/hotel-casino-injuries",
+   "hotel-casino-injuries.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/hotel-and-casino-injuries/",
+   "hotel-and-casino-injuries.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/hotel-and-casino-injuries",
+   "hotel-and-casino-injuries.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/hotel-and-casino-injuries/",
+   "hotel-and-casino-injuries.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/hotel-and-casino-injuries",
+   "hotel-and-casino-injuries.html"
+  ],
+  [
+   "/hotel-and-casino-injuries/",
+   "hotel-and-casino-injuries.html"
+  ],
+  [
+   "/hotel-and-casino-injuries",
+   "hotel-and-casino-injuries.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/las-vegas-areas-served/",
+   "las-vegas-areas-served.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/las-vegas-areas-served",
+   "las-vegas-areas-served.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/las-vegas-areas-served/",
+   "las-vegas-areas-served.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/las-vegas-areas-served",
+   "las-vegas-areas-served.html"
+  ],
+  [
+   "/las-vegas-areas-served/",
+   "las-vegas-areas-served.html"
+  ],
+  [
+   "/las-vegas-areas-served",
+   "las-vegas-areas-served.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/video-library/",
+   "video-library.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/video-library",
+   "video-library.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/video-library/",
+   "video-library.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/video-library",
+   "video-library.html"
+  ],
+  [
+   "/video-library/",
+   "video-library.html"
+  ],
+  [
+   "/video-library",
+   "video-library.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/blog/faqs/",
+   "faqs.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/blog/faqs",
+   "faqs.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/blog/faqs/",
+   "faqs.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/blog/faqs",
+   "faqs.html"
+  ],
+  [
+   "/blog/faqs/",
+   "faqs.html"
+  ],
+  [
+   "/blog/faqs",
+   "faqs.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/terms-and-conditions/",
+   "terms-and-conditions.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/terms-and-conditions",
+   "terms-and-conditions.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/terms-and-conditions/",
+   "terms-and-conditions.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/terms-and-conditions",
+   "terms-and-conditions.html"
+  ],
+  [
+   "/terms-and-conditions/",
+   "terms-and-conditions.html"
+  ],
+  [
+   "/terms-and-conditions",
+   "terms-and-conditions.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/home/",
+   "home.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/home",
+   "home.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/home/",
+   "home.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/home",
+   "home.html"
+  ],
+  [
+   "/home/",
+   "home.html"
+  ],
+  [
+   "/home",
+   "home.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/new-business/",
+   "new-business.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/new-business",
+   "new-business.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/new-business/",
+   "new-business.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/new-business",
+   "new-business.html"
+  ],
+  [
+   "/new-business/",
+   "new-business.html"
+  ],
+  [
+   "/new-business",
+   "new-business.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/nv-llc/",
+   "nv-llc.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/nv-llc",
+   "nv-llc.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/nv-llc/",
+   "nv-llc.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/nv-llc",
+   "nv-llc.html"
+  ],
+  [
+   "/nv-llc/",
+   "nv-llc.html"
+  ],
+  [
+   "/nv-llc",
+   "nv-llc.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/llc-and-business-formation/",
+   "llc-and-business-formation.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/llc-and-business-formation",
+   "llc-and-business-formation.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/llc-and-business-formation/",
+   "llc-and-business-formation.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/llc-and-business-formation",
+   "llc-and-business-formation.html"
+  ],
+  [
+   "/llc-and-business-formation/",
+   "llc-and-business-formation.html"
+  ],
+  [
+   "/llc-and-business-formation",
+   "llc-and-business-formation.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/nevada-llc-and-business-formation/",
+   "nevada-llc-and-business-formation.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/nevada-llc-and-business-formation",
+   "nevada-llc-and-business-formation.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/nevada-llc-and-business-formation/",
+   "nevada-llc-and-business-formation.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/nevada-llc-and-business-formation",
+   "nevada-llc-and-business-formation.html"
+  ],
+  [
+   "/nevada-llc-and-business-formation/",
+   "nevada-llc-and-business-formation.html"
+  ],
+  [
+   "/nevada-llc-and-business-formation",
+   "nevada-llc-and-business-formation.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/las-vegas-business-attorney/",
+   "las-vegas-business-attorney.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/las-vegas-business-attorney",
+   "las-vegas-business-attorney.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/las-vegas-business-attorney/",
+   "las-vegas-business-attorney.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/las-vegas-business-attorney",
+   "las-vegas-business-attorney.html"
+  ],
+  [
+   "/las-vegas-business-attorney/",
+   "las-vegas-business-attorney.html"
+  ],
+  [
+   "/las-vegas-business-attorney",
+   "las-vegas-business-attorney.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/north-las-vegas-business-attorney/",
+   "north-las-vegas-business-attorney.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/north-las-vegas-business-attorney",
+   "north-las-vegas-business-attorney.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/north-las-vegas-business-attorney/",
+   "north-las-vegas-business-attorney.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/north-las-vegas-business-attorney",
+   "north-las-vegas-business-attorney.html"
+  ],
+  [
+   "/north-las-vegas-business-attorney/",
+   "north-las-vegas-business-attorney.html"
+  ],
+  [
+   "/north-las-vegas-business-attorney",
+   "north-las-vegas-business-attorney.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/paradise-business-attorney/",
+   "paradise-business-attorney.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/paradise-business-attorney",
+   "paradise-business-attorney.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/paradise-business-attorney/",
+   "paradise-business-attorney.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/paradise-business-attorney",
+   "paradise-business-attorney.html"
+  ],
+  [
+   "/paradise-business-attorney/",
+   "paradise-business-attorney.html"
+  ],
+  [
+   "/paradise-business-attorney",
+   "paradise-business-attorney.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/spring-valley-business-attorney/",
+   "spring-valley-business-attorney.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/spring-valley-business-attorney",
+   "spring-valley-business-attorney.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/spring-valley-business-attorney/",
+   "spring-valley-business-attorney.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/spring-valley-business-attorney",
+   "spring-valley-business-attorney.html"
+  ],
+  [
+   "/spring-valley-business-attorney/",
+   "spring-valley-business-attorney.html"
+  ],
+  [
+   "/spring-valley-business-attorney",
+   "spring-valley-business-attorney.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/henderson-business-attorney/",
+   "henderson-business-attorney.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/henderson-business-attorney",
+   "henderson-business-attorney.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/henderson-business-attorney/",
+   "henderson-business-attorney.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/henderson-business-attorney",
+   "henderson-business-attorney.html"
+  ],
+  [
+   "/henderson-business-attorney/",
+   "henderson-business-attorney.html"
+  ],
+  [
+   "/henderson-business-attorney",
+   "henderson-business-attorney.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/las-vegas-top-business-attorneys/",
+   "las-vegas-top-business-attorneys.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/las-vegas-top-business-attorneys",
+   "las-vegas-top-business-attorneys.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/las-vegas-top-business-attorneys/",
+   "las-vegas-top-business-attorneys.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/las-vegas-top-business-attorneys",
+   "las-vegas-top-business-attorneys.html"
+  ],
+  [
+   "/las-vegas-top-business-attorneys/",
+   "las-vegas-top-business-attorneys.html"
+  ],
+  [
+   "/las-vegas-top-business-attorneys",
+   "las-vegas-top-business-attorneys.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/step-1-tell-about-business/",
+   "step-1-tell-about-business.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/step-1-tell-about-business",
+   "step-1-tell-about-business.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/step-1-tell-about-business/",
+   "step-1-tell-about-business.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/step-1-tell-about-business",
+   "step-1-tell-about-business.html"
+  ],
+  [
+   "/step-1-tell-about-business/",
+   "step-1-tell-about-business.html"
+  ],
+  [
+   "/step-1-tell-about-business",
+   "step-1-tell-about-business.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/step-2-payment/",
+   "step-2-payment.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/step-2-payment",
+   "step-2-payment.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/step-2-payment/",
+   "step-2-payment.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/step-2-payment",
+   "step-2-payment.html"
+  ],
+  [
+   "/step-2-payment/",
+   "step-2-payment.html"
+  ],
+  [
+   "/step-2-payment",
+   "step-2-payment.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/business-formation",
+   "wrongful-death.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/business-formation/",
+   "wrongful-death.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/business-formation",
+   "wrongful-death.html"
+  ],
+  [
+   "/services/business-formation",
+   "wrongful-death.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/negotiations",
+   "pedestrian-accidents.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/negotiations/",
+   "pedestrian-accidents.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/negotiations",
+   "pedestrian-accidents.html"
+  ],
+  [
+   "/services/negotiations",
+   "pedestrian-accidents.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/general-counseling",
+   "rideshare-and-taxi-accidents.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/general-counseling/",
+   "rideshare-and-taxi-accidents.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/general-counseling",
+   "rideshare-and-taxi-accidents.html"
+  ],
+  [
+   "/services/general-counseling",
+   "rideshare-and-taxi-accidents.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/contract-attorney/",
+   "motorcycle-accidents.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/contract-attorney",
+   "motorcycle-accidents.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/contract-attorney/",
+   "motorcycle-accidents.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/contract-attorney",
+   "motorcycle-accidents.html"
+  ],
+  [
+   "/services/contract-attorney/",
+   "motorcycle-accidents.html"
+  ],
+  [
+   "/services/contract-attorney",
+   "motorcycle-accidents.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/litigation/",
+   "personal-injury.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/litigation",
+   "personal-injury.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/litigation/",
+   "personal-injury.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/litigation",
+   "personal-injury.html"
+  ],
+  [
+   "/services/litigation/",
+   "personal-injury.html"
+  ],
+  [
+   "/services/litigation",
+   "personal-injury.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/business-sale-attorney/",
+   "car-accidents.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/business-sale-attorney",
+   "car-accidents.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/business-sale-attorney/",
+   "car-accidents.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/business-sale-attorney",
+   "car-accidents.html"
+  ],
+  [
+   "/services/business-sale-attorney/",
+   "car-accidents.html"
+  ],
+  [
+   "/services/business-sale-attorney",
+   "car-accidents.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/asset-purchase-or-sale/",
+   "truck-accident.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/asset-purchase-or-sale",
+   "truck-accident.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/asset-purchase-or-sale/",
+   "truck-accident.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services/asset-purchase-or-sale",
+   "truck-accident.html"
+  ],
+  [
+   "/services/asset-purchase-or-sale/",
+   "truck-accident.html"
+  ],
+  [
+   "/services/asset-purchase-or-sale",
+   "truck-accident.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services",
+   "service.html"
+  ],
+  [
+   "https://gladiatorinjurylaw.com/services/",
+   "service.html"
+  ],
+  [
+   "//gladiatorinjurylaw.com/services",
+   "service.html"
+  ],
+  [
+   "/services",
+   "service.html"
+  ]
+ ],
+ "clone_stage": 3,
+ "emitted_at": "2026-08-29T00:23:17.804Z",
+ "stage_5_audit": {
+  "audited_at": "2026-08-29T00:47:38.730Z",
+  "files_walked": 1223,
+  "file_counts": {
+   "html": 77,
+   "css": 1,
+   "js": 182,
+   "asset": 945,
+   "doc": 18
+  },
+  "layer_2_hard_issues": [],
+  "layer_2_soft_issues": [
+   {
+    "file": "C:\\Users\\kaylt\\clone-site-output\\gladiatorinjurylaw.com\\chrome.css",
+    "kind": "css",
+    "rule_name": "transition: all (source-derived)",
+    "scope_ref": "§C.3",
+    "soft": true
+   },
+   {
+    "file": "C:\\Users\\kaylt\\clone-site-output\\gladiatorinjurylaw.com\\chrome.css",
+    "kind": "css",
+    "rule_name": "hardcoded color outside :root",
+    "scope_ref": "§C.3",
+    "soft": true
+   }
+  ],
+  "acceptance_gates": [
+   {
+    "id": 1,
+    "name": "Folder structure",
+    "passed": true,
+    "detail": {
+     "has_readme": true,
+     "has_audit": true,
+     "has_project": true,
+     "shape": "mp"
+    }
+   },
+   {
+    "id": 2,
+    "name": "HTML head conformance",
+    "passed": true,
+    "detail": {
+     "failed": []
+    }
+   },
+   {
+    "id": 3,
+    "name": "CSS placement",
+    "passed": true,
+    "detail": null
+   },
+   {
+    "id": 4,
+    "name": "Google Fonts @import (or no fonts needed)",
+    "passed": true,
+    "detail": {
+     "has_google_fonts_import": false
+    }
+   },
+   {
+    "id": 5,
+    "name": "Fluid type via clamp()",
+    "passed": false,
+    "detail": {
+     "has_clamp": false
+    }
+   },
+   {
+    "id": 6,
+    "name": "@keyframes present (or none in source)",
+    "passed": true,
+    "detail": {
+     "has_keyframes": true
+    }
+   },
+   {
+    "id": 7,
+    "name": "prefers-reduced-motion override",
+    "passed": true,
+    "detail": {
+     "has_reduced_motion": true
+    }
+   },
+   {
+    "id": 8,
+    "name": "Interactive state rules",
+    "passed": true,
+    "detail": null
+   },
+   {
+    "id": 9,
+    "name": "≥3 distinct responsive breakpoints",
+    "passed": true,
+    "detail": {
+     "breakpoints_found": [
+      26,
+      45,
+      60,
+      70,
+      100,
+      150,
+      250,
+      370,
+      400,
+      420,
+      479,
+      500,
+      544,
+      579,
+      600,
+      640,
+      654,
+      679,
+      713,
+      716
+     ]
+    }
+   },
+   {
+    "id": 10,
+    "name": "Cross-origin URL audit",
+    "passed": true,
+    "detail": {
+     "suspicious_refs": []
+    }
+   },
+   {
+    "id": 11,
+    "name": "README.md follows §M structure",
+    "passed": true,
+    "detail": null
+   },
+   {
+    "id": 12,
+    "name": "No build artifacts",
+    "passed": true,
+    "detail": {
+     "has_package_json": false,
+     "has_node_modules": false,
+     "has_dist": false
+    }
+   }
+  ],
+  "all_gates_pass": false,
+  "no_hard_issues": true,
+  "overall_pass": false
+ }
+}
