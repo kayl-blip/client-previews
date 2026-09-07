@@ -1,0 +1,716 @@
+/* 03-base.css — Phase 2 FOUNDATION, liquorlicense re-skin.
+
+   Scope: ground, typography, links, buttons, focus rings — plus the small set of
+   FUNCTIONAL rules that §5 says must be re-covered without !important. NOTHING here
+   styles a page section; that is the next stage. The page is expected to look
+   unfinished after this file.
+
+   RULES OBSERVED
+   - NO !important anywhere in this file. Not one. Every conflict below is resolved by
+     source order (this file is last in the chain) or by plain specificity.
+   - No rule here is written to beat the old theme stylesheet. main.min.css and the
+     theme half of the page inline <style> are UNLINKED, not out-specified. Where this
+     file re-declares a button or a nav rule it is contesting BOOTSTRAP — which is KEPT
+     and loaded — exactly as recover-list.md §1a and section-map.md §8 instruct
+     ("write to win by specificity and order").
+   - Every design value is cited to audit/design-tokens.md. No hand-picked one-offs.
+     Structural values (position/inset/flex/display) carry no design meaning and are
+     re-covered verbatim from the source rule they replace.
+*/
+
+/* ============================================================================
+   1. GROUND — design-tokens.md §a.2 "Page / grounds", §b "Root context"
+   Bootstrap Reboot's body rule has the same specificity and comes earlier in the
+   chain, so these win on source order alone. No !important, no extra specificity.
+   ============================================================================ */
+body {
+  background-color: var(--rs-band-base);          /* rgb(43,33,27) #2b211b — §a.2 page bg (body) */
+  color: var(--ds-ink);                           /* rgb(255,255,255)      — §a.2 page text (body) */
+  font-family: var(--ds-font-body);               /* Libre Franklin stack  — §b Root context */
+  font-size: var(--body-font-size);               /* 16px                  — §b */
+  font-weight: 400;                               /* §b */
+  line-height: 1.55;                              /* 24.8/16               — §b */
+  -webkit-font-smoothing: antialiased;            /* §b Root context */
+}
+/* R10 (2026-09-05 sweep) — THE SITE-WIDE MOBILE TYPE DOWN-SCALE. The expression is verbatim from
+   chrome.css byte offset 426933; only its LOCATION is authored, and it has to be.
+   The live cascade is three rules deep: bootstrap body{font-size:var(--bs-body-font-size)}
+   (chrome.css 5827) -> main.min.css body{...font-size:var(--body-font-size)...} (306563) ->
+   main.min.css @<=575 body{font-size:calc(var(--body-font-size) / 1.1)} (426933). The `body` rule
+   directly above plays the role of the MIDDLE one, and because 03-base is the LAST file in the
+   chain it out-orders any copy of the third rule placed in 00-vendor-keep at the same (0,0,1)
+   specificity. So the unconditional font-size above is exactly what silently killed the downscale.
+   MEASURED: 462 elements change computed font-size at 375 in one step. It is invisible at 768 and
+   1280, which is why two earlier verification rounds missed it and the sweep did not.
+   Baseline body font-size at 375: 14.5455px (= 16 / 1.1). */
+@media only screen and (max-width: 575px) {
+  body { font-size: calc(var(--body-font-size) / 1.1); }
+}
+
+/* ============================================================================
+   2. TYPOGRAPHY — design-tokens.md §b (type scale) and its quoted source lines
+   S:41  h1,h2,h3 { line-height:1.08; margin:0; font-weight:600 }
+   S:42  h1 { font-size: clamp(40px,6vw,72px) }
+   S:43  h2 { font-size: clamp(28px,4vw,44px) }
+   S:44  h3 { font-size: 20px }
+   Per-role sizes (hero h1, #about h2, card h3 ...) are SECTION rules — next stage.
+   ============================================================================ */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--ds-font-display);            /* Fraunces stack — §b: 120 measured entries */
+  color: var(--rs-ink-heading);                   /* SURFACE-SCOPED — see §10 for the mechanism */
+}
+h1, h2, h3 {
+  line-height: 1.08;                              /* S:41 */
+  margin: 0;                                      /* S:41 — rhythm comes from the NEXT element (§c.5) */
+  font-weight: 600;                               /* S:41 */
+}
+h1 { font-size: clamp(40px, 6vw, 72px); }         /* S:42 */
+h2 { font-size: clamp(28px, 4vw, 44px); }         /* S:43 */
+h3 { font-size: 20px; }                           /* S:44 */
+
+/* Muted body copy on the base/warm grounds — §a.2 "body copy — base & warm bands". */
+p { color: var(--rs-ink-body); }                  /* SURFACE-SCOPED — see §10 for the mechanism */
+
+/* ============================================================================
+   3. LINKS — design-tokens.md §a.2 "accent (ink / links / numerals)" and
+   "in-copy / card link hover". The measured redesign underlines links inside copy
+   (.section p a:not(.btn)) and leaves nav / card / footer links un-underlined, which
+   is also how the live page reads today.
+   ============================================================================ */
+a {
+  color: var(--ds-accent-ink);                    /* rgb(235,164,89) #eba459 — §a.2 */
+  text-decoration: none;
+}
+a:hover { color: var(--ds-ink); }                 /* → rgb(255,255,255) — §a.2 hover states */
+p a:not(.btn) { text-decoration: underline; }     /* §a.2: .section p a:not(.btn) is underlined */
+
+/* ============================================================================
+   4. BUTTONS — design-tokens.md §a.2 "Primary / buttons", §c.6, §b, §d.1, §d.4.
+   Decision 3 (decisions-approved.md): the primary pill ships WITHOUT the
+   .btn-primary::after { content:"→" } arrow. There is no ::after rule in this file.
+   These contest Bootstrap's kept .btn / .btn-primary (which colour themselves through
+   --bs-btn-* custom properties, NOT !important), so plain source order settles it.
+   ============================================================================ */
+.btn {
+  font-family: var(--ds-font-body);               /* §b: Libre Franklin 600 16/24.8 */
+  font-size: 16px;                                /* §b button row */
+  font-weight: 600;                               /* §b */
+  line-height: 1.55;                              /* 24.8/16 — §b */
+  padding: var(--ds-space-sm) var(--ds-space-lg); /* 12px 24px — §c.6 buttons (S:63) */
+  border: 1px solid transparent;
+  border-radius: var(--button-radius);            /* 999px, --ds-r-pill — §d.1 */
+  transition:
+    transform  var(--ds-dur) var(--ds-ease),
+    box-shadow var(--ds-dur) var(--ds-ease),
+    background var(--ds-dur) var(--ds-ease);      /* §d.4: .btn-primary/.btn-secondary 0.2s ease */
+}
+
+/* --- primary: the measured gradient + 1px accent border + glow + pill ---------- */
+.btn-primary {
+  background-color: var(--ds-primary);            /* rgb(173,30,30) #ad1e1e — §a.2 */
+  background-image: linear-gradient(135deg, color(srgb 0.767843 0.315294 0.192941), rgb(173, 30, 30));
+                                                  /* §a.2 "primary button rest gradient" (measured) */
+  border-color: color(srgb 0.901961 0.611765 0.305882 / 0.6);
+                                                  /* §a.2 "primary button border" (measured) */
+  color: var(--ds-ink);                           /* rgb(255,255,255) — §a.2 primary button text */
+  box-shadow: var(--ds-glow);                     /* 0 0 40px rgba(173,30,30,.32) — §a.2, §d.3 */
+}
+.btn-primary:hover {
+  background-color: var(--ds-primary-deep);       /* → rgb(23,18,15) — §a.2 primary button hover */
+  background-image: linear-gradient(135deg, rgb(173, 30, 30), rgb(23, 18, 15));  /* §a.2 */
+  filter: brightness(1.05);                       /* §a.2 */
+  transform: translateY(-2px);                    /* §a.2 (measured matrix(1,0,0,1,0,-2)) */
+  color: var(--ds-ink);
+}
+
+/* --- secondary: every non-primary live .btn variant takes the measured secondary
+   recipe — transparent ground, 1px white border, white label, no shadow (§a.2
+   "secondary button rest"), hover ground --ds-primary-soft with the border unchanged
+   (§a.2 "secondary button hover", concern 12). The live button classes are the 8 in
+   recover-list §2a / §1a: .btn-light .btn-outline-light .btn-outline-primary
+   .btn-outline-secondary .btn-default (.btn-block is layout-only). ------------- */
+.btn-light,
+.btn-default,
+.btn-outline-light,
+.btn-outline-primary,
+.btn-outline-secondary {
+  background-color: rgba(0, 0, 0, 0);             /* §a.2 secondary button rest */
+  background-image: none;
+  border-color: var(--rs-ink-btn-secondary);      /* 1px solid #fff — §a.2 (measured at DPR 1) */
+  color: var(--rs-ink-btn-secondary);             /* §a.2 — SURFACE-SCOPED, see §10 (R49) */
+  box-shadow: none;                               /* §a.2 "shadow none" */
+}
+.btn-light:hover,
+.btn-default:hover,
+.btn-outline-light:hover,
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover {
+  background-color: var(--ds-primary-soft);       /* → rgb(58,26,24) #3a1a18 — §a.2 */
+  border-color: rgb(255, 255, 255);               /* border stays white — §a.2, concern 12 */
+  color: rgb(255, 255, 255);
+}
+
+/* ============================================================================
+   5. FOCUS RINGS — design-tokens.md §a.3 (keyboard focus, measured).
+
+   §a.3 lists FIVE elements that take the accent ring — .btn-primary, button.mm-trigger,
+   .mm-burger, .site-drawer__close, .mm-acc__btn — and puts everything else (.btn-secondary,
+   footer links, inline links) on the UA default `auto 1px rgb(16,16,16)` / offset 1px.
+
+   Counted in the live DOM (querySelectorAll, both pages, measured):
+     .btn-primary ........... 9 (index) / 6 (services)   -> EXISTS, gets the ring
+     button.mm-trigger ...... 0 / 0                      -> no such element
+     .mm-burger ............. 0 / 0                      -> no such element
+     .site-drawer__close .... 0 / 0                      -> no such element
+     .mm-acc__btn ........... 0 / 0                      -> no such element
+   So .btn-primary is the ONLY §a.3 accent-ring member present, and it is the only selector
+   this rule may carry.
+
+   FIX F4. The previous selector was `.btn`, which put the accent ring on the WHOLE button
+   family, including .btn-light / .btn-default / .btn-outline-light / .btn-outline-primary /
+   .btn-outline-secondary — the five classes lines 118-127 map to the redesign's .btn-secondary,
+   which §a.3 explicitly leaves on the UA default. Measured with real Tab presses before the
+   fix: 19 accent rings at 1280 on index (incl. "+1 800-799-9081" .btn-light, "TALK TO US"
+   .btn-outline-primary, "SELL A LICENSE" .btn-light) where §a.3 allows only .btn-primary.
+   The comment above previously claimed the split was honoured; it was not. It now describes
+   what the code does.
+
+   The four absent members' live counterparts (button#mm-trigger.mm-hamburger, .mm-close,
+   .mm-back) are NOT ringed from here, deliberately: they belong to the KEPT vendor file
+   sgen-mobile-menu.css, which already declares
+   `.mm-hamburger:focus-visible{outline:2px solid rgba(255,255,255,.7);outline-offset:2px}`.
+   Ringing them would mean writing a higher-specificity override against a still-loaded vendor
+   rule (CSS LAW 2), and §5a says the drawer is re-skinned through the tenant token names, not
+   by out-specifying its file. FLAGGED in the Phase 2 report, not fixed here.
+
+   MEASURED CONSEQUENCE OF THIS NARROWING — read before "improving" it.
+   With the accent ring removed from the secondary family, Bootstrap's KEPT
+   `.btn:focus-visible{...outline:0;box-shadow:var(--bs-btn-focus-box-shadow)}`
+   (00-vendor-keep.css BLOCK 1) is now the winning focus rule for those buttons, and
+   --bs-btn-focus-box-shadow resolves to a transparent zero shadow on this page. Measured with
+   real Tab presses at 1280 on index, AFTER: "+1 800-799-9081" (.btn-light) computes
+   outline "rgb(0,0,0) none 0px", box-shadow "rgba(0,0,0,0) 0px 0px 0px 0px" — i.e. NO visible
+   keyboard focus indicator. BEFORE the fix it had the (over-applied) accent ring; the box-shadow
+   was already transparent then too, so this rule change removed the only visible indicator.
+   §a.3 records those elements on the UA default `auto 1px rgb(16,16,16)` / offset 1px, which is
+   visible in the redesign but is suppressed here by the kept Bootstrap rule. Restoring a visible
+   non-accent ring would mean authoring a value §a.3 records as a UA default rather than a token,
+   so it is NOT done here — it needs an owner decision. FLAGGED in the Phase 2 report.
+   ============================================================================ */
+.btn-primary:focus-visible {
+  outline: 3px solid var(--ds-accent);            /* solid 3px rgb(230,156,78) — §a.3 row 1 */
+  outline-offset: 2px;                            /* §a.3 */
+}
+/* .btn-primary keeps its glow while focused — §a.3 ("keeps rgba(173,30,30,.32) 0 0 40px").
+   No declaration needed: nothing above resets box-shadow on :focus-visible. */
+
+/* ============================================================================
+   6. HEADER NAV — decisions-approved.md decision 5: KEEP THE CAPS.
+   The live nav is ALL-CAPS through exactly ONE rule, in the page inline <style>
+   (inline-3). It is the only text-transform in either page's inline block, and a
+   scan of main.min.css found ZERO text-transform rules whose selector tokens all
+   exist in the live DOM — so this rule is the whole of the live caps behaviour.
+   Chromium bakes text-transform into innerText, so dropping it would make the
+   renderedText1280 SEO category non-empty. Same selector, redesign colour.
+   ============================================================================ */
+header#masterhead > .primary-navbar ul.sg-navbar-nav > li > a,
+header#masterhead > .primary-navbar ul.sg-navbar-nav > li > span {
+  text-transform: uppercase;                      /* decision 5 — REQUIRED, do not remove */
+  font-size: 15px;                                /* §b: nav link / nav trigger (header) 15/15 */
+  line-height: 1;                                 /* §b: ratio 1 */
+  font-weight: 600;                               /* §b: nav link Libre Franklin 600 15px */
+  color: var(--ds-ink);                           /* rgb(255,255,255) — §a.2 header nav text */
+}
+/* The dropped inline-3 set header#masterhead{font-size:14px}, so nav links inherited 14px.
+   Without a size here they would inherit the 16px body size and the 5 top-level items wrap
+   into 5 rows at 1280 (measured) where the live header wraps into 2. 15px is the redesign's
+   OWN measured nav size (§b), so this is the token-grounded value, not a fix-up. Full header
+   chrome (glass ground, bar padding, logo treatment, CTA sizing) is the next stage. */
+
+/* --- D1: the HOVER / FOCUS half of the same nav recipe. ------------------------
+   THE BUG, measured at 1280 on BOTH pages with a real page.hover(), a real .focus() and CDP
+   forcePseudoState: the two dropdown-PARENT top-level links ("HOW TO GET A LIQUOR LICENSE",
+   "BUY & SELL") paint rgb(255,255,255) on rgb(233,236,239) = 1.186:1 on :hover and on :focus.
+   The pristine baseline measures rgb(51,51,51) on rgb(255,255,255) = 12.635:1 at rest.
+
+   CAUSE, measured with CSS.getMatchedStylesForNode, not assumed: those two links carry BOTH
+   `.sg-nav-link` AND `.sg-dropdown-item` in the live DOM, so the KEPT vendor rule
+   `.sg-dropdown-item:focus,.sg-dropdown-item:hover{color:#1e2125;background-color:#e9ecef}`
+   (00-vendor-keep BLOCK 2, chrome.css byte offset 324447) paints the Bootstrap grey ground.
+   The rest rule directly above wins the COLOUR axis at (1,3,3) and repaints the label white —
+   but it never contested background-color, so white landed on the grey. Exactly the failure
+   mode section-map.md §0 warns about: contest the KEPT vendor by specificity and order.
+
+   NOT R13. R13 (§9 below) covers `.sg-navbar-nav .sg-dropdown-menu .sg-nav-item>.sg-nav-link
+   :hover` — the 39 links INSIDE the panels. Its scope is faithful to its own source rule,
+   verified byte-for-byte against reskin/_original-inline/index.inline.css:95, whose selector
+   is likewise dropdown-menu-only. The two selectors are DISJOINT (measured element counts:
+   5 top-level vs 39 in-panel, zero overlap — a top-level <a> has no .sg-dropdown-menu
+   ancestor), so this is the missing state on the §6 recipe, not a rule competing with R13.
+
+   VALUE — from the contract, not invented: section-map.md §1 row H, "hover/open colour
+   rgb(173,30,30) on bg rgb(58,26,24)"; design-tokens.md §a.2 "nav link / trigger hover" =
+   `--ds-primary` on `--ds-primary-soft`, cited to `.site-header .mm-navlink:hover`.
+
+   ⚠ MEASURED CONSEQUENCE — READ BEFORE "IMPROVING" THIS. The contract's own recipe computes
+   rgb(173,30,30) on rgb(58,26,24) = **2.223:1**, which does NOT clear WCAG AA 4.5:1 for this
+   15px/600 text. That is not a porting error: the redesign SOURCE was rendered and driven
+   (audit/redesign-src/index.html, .site-header .mm-navlink, real hover AND forced hover, all
+   4 nav links) and measures the identical 2.223:1 — structural.css:589
+   `.mm-navlink:hover{color:var(--ds-primary);background:var(--ds-primary-soft)}`.
+   Per the standing Phase 2 rule "if the redesign looks wrong, FLAG it, do not fix it", the
+   measured recipe is applied here as specified and the residual AA failure is REPORTED as an
+   owner decision. Do not silently substitute a colour: the two contract-legal repairs are
+   `--ds-ink` on `--ds-primary-soft` (15.66:1) or `--ds-accent-ink` on `--ds-primary-soft`
+   (7.45:1), and choosing between them re-values a documented token role — owner's call.
+
+   :focus is covered alongside :hover because the vendor rule being contested covers both, and
+   a mouse-click focus would otherwise keep the 1.186:1 grey. :focus-visible is listed too:
+   the redesign gives it the same recipe (structural.css:589) plus its own accent outline. */
+header#masterhead > .primary-navbar ul.sg-navbar-nav > li > a:hover,
+header#masterhead > .primary-navbar ul.sg-navbar-nav > li > a:focus,
+header#masterhead > .primary-navbar ul.sg-navbar-nav > li > a:focus-visible {
+  color: var(--ds-primary);                       /* rgb(173,30,30) — §1 row H "hover/open colour" */
+  background-color: var(--ds-primary-soft);       /* rgb(58,26,24)  — §1 row H "on bg" */
+}
+
+/* ============================================================================
+   7. FUNCTIONAL SUPPORT — §5 rows the audit says to re-cover WITHOUT !important.
+   These carry no design values; each is the structural half of a rule whose theme
+   half was dropped. They live here because 00-vendor-keep.css is reserved for CSS
+   copied verbatim, and these are authored (the !important had to come off).
+   ============================================================================ */
+
+/* --- §5 row 3 / recover-list §1b inline-3: the LAYOUT lines the audit says to
+   re-implement — they are what centres the nav and stacks the dropdown items.
+
+   The container line is a THIRD one, added after measuring. recover-list §1b names two
+   lines; dropping inline-3 also drops header#masterhead>.primary-navbar>.container
+   {max-width:100%}, and then Bootstrap's kept .container{max-width:1140px} clamps the
+   header. Measured at 1280: header container 1220px -> 1140px, nav <ul> 570px -> 304px,
+   so the 5 top-level items wrapped from 2 rows to 5 and the header grew 163px -> 249px.
+   Re-covering the original declaration restores it. This beats Bootstrap on SPECIFICITY
+   (0,2,2 vs 0,1,0), which is precisely what section-map.md §0 "container ⚠ Phase 2"
+   prescribes ("must beat on specificity, not with !important"). The other five live
+   container widths are SECTION containers and belong to the next stage. ------------- */
+header#masterhead > .primary-navbar > .container { max-width: 100%; }
+
+header#masterhead > .primary-navbar .sg-navbar-wrapper > .sg-nav.sg-site-navigation {
+  margin: 0;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+/* The `.sg-navbar-nav .sg-dropdown-menu .sg-nav-item > .sg-nav-link { display: flex }` partial
+   that used to sit here is GONE: R12 showed only 1 of that source rule's 4 declarations had been
+   re-covered, so the complete rule is now carried as a verbatim slice in 00-vendor-keep.css
+   BLOCK 11 (inline-3). Nothing is lost — the slice includes `display: flex`. */
+
+/* --- §5 row 7: the sticky mobile CTA bar's three buttons. inline-5 needed
+   flex:1 !important; margin:0 !important ONLY to beat .sg-m-1{margin:.25rem!important}
+   in main.min.css. .sg-m-1 is NOT carved out, so no !important competes and none is
+   used here. Measured live end state: flex "1 1 0%", margin 0 (recover-list §1b). --- */
+.sticky-mobile-ctas > a.btn {
+  flex: 1;
+  margin: 0;
+  /* R38, added by the 2026-09-05 sweep. The source rule (inline-5) is
+     `.sticky-mobile-ctas>a.btn{flex:1!important;box-shadow:none;margin:0!important;
+      border:1px solid #e3e3e3}` — only the flex/margin half had been re-covered, so the buttons
+     kept the carve-out's `box-shadow:rgb(0 0 0/50%) 0 10px 50px` and `border:0`.
+     box-shadow and the 1px solid are the live values verbatim; only the #e3e3e3 becomes
+     --ds-line, for the reason given against .sticky-mobile-ctas in §9. */
+  box-shadow: none;
+  border: 1px solid var(--ds-line);
+}
+
+/* --- §5 row 12: the map + form overlay (#i9mz8). Re-covered without the three
+   !important the source used. Appearance (band padding, card skin) is a SECTION
+   rule and is deliberately not set here. ---------------------------------------- */
+[data-component-id="mfgcw47ukpx70"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+}
+[data-component-id="mfgcw47ukpx70"] iframe {
+  width: 100%;
+  height: 100%;
+}
+#i9mz8 {
+  display: flex;
+  padding: 100px 50px 100px 50px;                 /* FIX F1 — see note below */
+  justify-content: center;
+}
+/* FIX F1, second half. The source declaration is
+     #i9mz8{display:flex;padding:100px 50px 100px 50px;background-color:#e3e3e3;
+            --shape-divider-color-top:#000000;--shape-divider-color-bottom:#000000;
+            justify-content:center}
+   (_original-inline/index.inline.css:341, services:291 — byte-identical). Only display and
+   justify-content had been re-covered; the padding was dropped, so the band fell back to
+   .sgb-component-div{padding:5px} from 00-vendor-keep.css and the map/form band lost its
+   100px/50px inset. Measured pristine baseline: padding "100px 50px" at every breakpoint.
+   This rule is AUTHORED rather than a verbatim slice on purpose: the source declaration also
+   carries background-color:#e3e3e3, which is theme colour the re-skin deliberately drops, so
+   slicing it whole would re-introduce the light band. Id specificity (1,0,0) beats
+   .sgb-component-div (0,1,0) with no !important, exactly as §5 row 12 prescribes. */
+#i2e42 {
+  max-width: 1199px;
+  width: 100%;
+  margin: 0 0px 0 0;                              /* FIX F1 — see note below */
+  display: flex;
+  justify-content: flex-end;
+}
+/* FIX F1, third half-covered declaration, found by measurement, not by the brief.
+   §5 row 12's summary quotes #i2e42 as {max-width;width;display;justify-content} and omits the
+   margin, so the re-cover above omitted it too. The SOURCE rule
+   (_original-inline/index.inline.css:341, services:291) also carries `margin:0 0px 0 0`, and
+   dropping it let the carved vendor rule .sgb-component-div>.sgb-component-div{margin:10px}
+   (00-vendor-keep.css:308) apply instead. Measured @1280 with the margin dropped: #i2e42
+   x=60 w=1160 and the restored card at x=715; pristine baseline: #i2e42 x=50 w=1180, card
+   x=725. Re-covering the declaration puts the card back on its measured baseline x. */
+
+/* --- §5 row 12 / decision 2 (decisions-approved.md N11): the four lead-form labels
+   STAY HIDDEN. Selector copied from inline-14/inline-16 exactly, including the
+   :not(.fg-field-radio) exclusion. Placeholders already carry the field names. ---- */
+[data-component-id="mfgdsqns4ggbi"] .fg-field:not(.fg-field-radio) .form-label {
+  display: none;
+}
+
+
+/* ============================================================================
+   8. STACKING ORDER — R19 / R20 / R21 (2026-09-05 sweep).
+
+   The live paint order is header 9999 / main 26 / footer 30. All three were dropped when
+   main.min.css was unlinked, flattening the whole document to `auto` so overlap became pure
+   DOM order. `.site-content{z-index:26}` (chrome.css 334494) and
+   `footer#masterfoot{...z-index:30}` (354884) are verbatim slices in 00-vendor-keep.css; the two
+   declarations below are AUTHORED because their source rules also carry values the re-skin drops.
+
+   NOT the sticky header. decisions-approved.md decision 4 approves `position: sticky` at all
+   widths, but that is the SECTION stage's job (section-map §1 row H). This restores the BASELINE
+   `position: relative` stacking that was lost and nothing more.
+   ============================================================================ */
+
+/* R19, authored half. Source: header#masterhead{color:var(--color-light);
+   box-shadow:0 0 5px 5px rgba(0,0,0,.05);z-index:9999} — chrome.css byte offset 343689.
+   Only z-index is taken. `box-shadow` is deliberately dropped: design-tokens.md §a.2 "header
+   glass at rest" measures the redesign header at `shadow none`, and the sweep itself records that
+   half of R19 as already justified. `color:var(--color-light)` is redundant (it resolves to
+   #ffffff, which body already sets). Sliced verbatim it would have re-introduced the live shadow.
+   The `position:relative` and background-size/repeat/position half IS a verbatim slice
+   (00-vendor-keep, chrome.css offset 338994). */
+header#masterhead { z-index: 9999; }
+
+/* R21, authored half. Source: .copyright,footer#masterfoot{background-color:var(--color-accent);
+   color:var(--color-light);background-repeat:no-repeat;position:relative;background-size:cover}
+   — chrome.css byte offset 353945. The three structural declarations are taken; the two colour
+   declarations are NOT, per §5 row 17: `background-color:var(--color-accent)` now resolves to
+   #e69c4e and its live neutraliser (inline-2 footer#masterfoot{background-color:#ffffff;
+   color:#000000}) is a dropped light ground. The footer therefore keeps the body ground until the
+   section stage paints design-tokens §a.2 "footer ground". FLAGGED in the Phase 2 report.
+   `.copyright` is dropped from the selector because no element on either page carries it. */
+footer#masterfoot {
+  position: relative;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+
+/* ============================================================================
+   9. AUTHORED STRUCTURAL HALVES — rules whose verbatim slice would drag in a colour the
+   re-skin deliberately drops. Each quotes its source and names the omitted declaration.
+   No !important anywhere: every one of these wins by specificity or by source order, verified
+   by measurement. (2026-09-05 sweep: R09, R13, R32, R37, R38.)
+   ============================================================================ */
+
+/* --- R09: the six index industry cards. -------------------------------------
+   Source (index.inline.css:240-268, inline-8):
+     [data-component-id="mfgc2r1lzika5"]>.sgb-component-div{--item_per_row:3;
+       background-color:#fafafa;max-width:calc(100% / var(--item_per_row));
+       flex:calc(100% / var(--item_per_row));min-height:250px !important;
+       background-repeat:no-repeat;background-size:cover;background-position:center;
+       margin:0 !important;padding:50px !important;text-align:center}
+     [data-component-id="mfgc2r1lzika5"]>.sgb-component-div:nth-child(odd){background-color:#e3e3e3}
+     @media only screen and (max-width:767px){...{--item_per_row:1}}
+   OMITTED: both background-color declarations — #fafafa / #e3e3e3 are the alternating live band
+   grounds that section-map.md §0 "bands" lists as replaced by the re-skin's five grounds. The
+   :nth-child(odd) rule therefore has nothing left to carry and is not re-emitted.
+   The three source !important are NOT reproduced (CSS LAW 1) and are not needed: this selector is
+   (0,2,0) and 03-base is last in the chain, so it beats .sgb-component-div{padding:5px;flex:1}
+   (0,1,0) and .sgb-component-div>.sgb-component-div{margin:10px} (0,2,0, earlier) on order alone.
+   This is exactly what section-map §2 row 3 prescribes: "Drop the inline-8 !important on
+   min-height/padding and re-declare by specificity." */
+[data-component-id="mfgc2r1lzika5"] > .sgb-component-div {
+  --item_per_row: 3;
+  max-width: calc(100% / var(--item_per_row));
+  flex: calc(100% / var(--item_per_row));
+  min-height: 250px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  margin: 0;
+  padding: 50px;
+  text-align: center;
+}
+@media only screen and (max-width: 767px) {
+  [data-component-id="mfgc2r1lzika5"] > .sgb-component-div { --item_per_row: 1; }
+}
+
+/* --- R13: dropdown link hover. ----------------------------------------------
+   Source (index.inline.css:95 / services :80, inline-3):
+     .sg-navbar-nav .sg-dropdown-menu .sg-nav-item>.sg-nav-link:hover{
+       color:#fff !important; background-color:#538E4F !important}
+   OMITTED: the literal #538E4F — that is the live green brand, which the approved token swap
+   replaces (01-tokens (c): --color-primary: var(--ds-primary)). The declaration is re-emitted
+   through the token, which is the same substitution 01-tokens already performs for the whole
+   kept mobile drawer. `color:#fff` is kept as-is: it is also the re-skin's own --ds-ink.
+   The two source !important are NOT reproduced and are not needed — this selector is (0,4,0)
+   against Bootstrap's kept .sg-dropdown-item:hover (0,2,0) and 03-base's a:hover (0,1,1).
+   WHY THIS IS A FIX AND NOT A RESTYLE — measured with CDP forcePseudoState at 1280 on index:
+     baseline  39/39 links -> #fff on rgb(83,142,79)
+     before    6/39 -> rgb(30,33,37) on rgb(233,236,239) (Bootstrap's default resurfacing);
+               33/39 -> rgb(255,255,255) on rgba(0,0,0,0), i.e. WHITE TEXT ON THE KEPT WHITE
+               .sg-dropdown-menu PANEL — the link disappears on hover.
+   White on #ad1e1e measures 11.6:1 (01-tokens (a)), so this also closes that contrast hole. */
+.sg-navbar-nav .sg-dropdown-menu .sg-nav-item > .sg-nav-link:hover {
+  color: #fff;
+  background-color: var(--color-primary);
+}
+
+/* --- R32: the two band paddings whose source rule carries a dropped ground. ---
+   Source (index.inline.css:341 inline-13 / services :291 inline-15, byte-identical):
+     #im3f{background-color:#fafafa;padding:50px 0px 50px 0px;--shape-divider-color-top:#000000;
+           --shape-divider-color-bottom:#000000}
+     #i559u{background-color:#fafafa;padding:25px 0px 25px 0px;--shape-divider-color-top:#000000;
+            --shape-divider-color-bottom:#000000}
+   OMITTED: background-color:#fafafa on both — the live light band ground.
+   The --shape-divider-* customs are inert (no shape-divider element exists on either page) and
+   are dropped with the colour rather than half-carried. #i9mz8, the third member of this family,
+   is already handled by FIX F1 in §7 above — same pattern, same reason (#e3e3e3).
+   These id rules (1,0,0) beat the restored .section,.sg-section,section{padding:100px 0}
+   (0,0,1) carve-out, reproducing the live cascade exactly. */
+#im3f { padding: 50px 0px 50px 0px; }
+#i559u { padding: 25px 0px 25px 0px; }
+
+/* --- R37: the footer utility bar's type. -------------------------------------
+   Source (index.inline.css:390-397 inline-14 / services :340-347 inline-16):
+     [data-component-id="mfgd2m8et9h8i"]{font-size:14px;color:#333}
+     [data-component-id="mfgd2m8et9h8i"] a{color:#636363;font-weight:600}
+   OMITTED: both colour declarations. #333 and #636363 are the live dark inks; measured against
+   the re-skin's ground they compute to 1.3:1 and 1.9:1, i.e. restoring them verbatim would author
+   a contrast failure. The bar keeps the inherited re-skin ink until the section stage paints
+   design-tokens §a.2 "footer link" / "footer bottom".
+   The font-size IS load-bearing beyond type: the six Font Awesome SVG-mask icons in this bar size
+   their mask box in `em`, so at 16px they render 16x16 instead of the live 14x14. */
+[data-component-id="mfgd2m8et9h8i"] { font-size: 14px; }
+[data-component-id="mfgd2m8et9h8i"] a { font-weight: 600; }
+
+/* --- R38: the sticky mobile CTA bar. -----------------------------------------
+   Sources: inline-2 `.sticky-mobile-ctas{background-color:#ffffff}` (index.inline.css:33) and
+   inline-5 `.sticky-mobile-ctas{border-top:1px solid #e3e3e3;padding:0}` +
+   `.sticky-mobile-ctas>a.btn{flex:1!important;box-shadow:none;margin:0!important;
+   border:1px solid #e3e3e3}` (index.inline.css:173-183 / services :158-168).
+
+   PADDING and BOX-SHADOW are the live values, verbatim. The two COLOURS are NOT:
+   - `background-color:#ffffff` is NOT restored. Restoring it would have been the faithful slice,
+     but it is measurably unsafe here: the bar's three buttons are `.btn.btn-default`, which §4
+     above maps to the redesign's secondary recipe (transparent ground, WHITE label). White label
+     on a white bar is 1.00:1. The live pair only worked because the live `.btn-default` was
+     #000 on #ededed, and re-instating that would undo an authored, design-tokens-cited decision.
+     The value used instead is the MEASURED redesign value for this exact component —
+     design-tokens.md §a.2 "sticky mobile CTA bar | --ds-glass-bg, --ds-line, --ds-shadow-lift |
+     bg rgba(26,26,26,.74) ... border-top 1px rgb(74,74,74); text #fff". Nothing is invented.
+   - `#e3e3e3` on both borders becomes --ds-line for the same reason (the same design-tokens row).
+   These rules are (0,1,0) and (0,2,1) and later in the chain than the kept
+   @media(max-width:767px){.sticky-mobile-ctas{...background-color:var(--color-accent)...}} and
+   {...border:0;box-shadow:...} carve-outs, so they win on source order — no !important.
+   FLAGGED: the redesign's blur(16px) saturate(160%), --ds-shadow-lift and 12px/16px padding for
+   this bar are section-stage (section-map §1 row O5) and are deliberately not built here. */
+.sticky-mobile-ctas {
+  background-color: var(--ds-glass-bg);           /* rgba(26,26,26,.74) — §a.2 sticky CTA bar */
+  border-top: 1px solid var(--ds-line);           /* rgb(74,74,74)      — §a.2 sticky CTA bar */
+  padding: 0;                                     /* live value, verbatim (inline-5) */
+}
+
+
+/* ============================================================================
+   10. SURFACE-SCOPED INK — R40 / R41 / R42 (2026-09-05 sweep).
+
+   THE BUG. §2 above paints every h1-h6 with --ds-ink-heading (#ffffff) and every p with
+   --ds-ink-soft (#c8c6c5). That is right for the dark bands and wrong for every LIGHT surface
+   still in the page — and there are light surfaces by design, all of them KEPT vendor CSS:
+     #i4gzv  [data-component-id="mfgdsqns4ggbi"]  bg #fff, color #333   (00-vendor-keep BLOCK 11)
+     .sg-drawer (the cart drawer)                 bg #fff, color #1f2937 (00-vendor-keep BLOCK 5)
+     .sg-popup-container (the lightbox)           bg #fff                (00-vendor-keep BLOCK 2)
+     .sg-dropdown-menu (the nav dropdown panel)   bg #fff, color #212529 (00-vendor-keep BLOCK 2)
+   Measured before this fix: the lead-form card's h4 rendered #ffffff on #ffffff (1.00:1) and its
+   p.sub #c8c6c5 on #ffffff (1.70:1), on BOTH pages at 375/768/1280. The contrast sweep then found
+   a THIRD victim the audit had never enumerated — "Your Cart" in the cart drawer, also 1.00:1 —
+   which is the proof that a per-element patch on #i4gzv would have shipped the bug.
+
+   THE MECHANISM: an inherited custom property, re-declared per surface.
+   §2's two rules stay exactly one rule each, unscoped, at their original (0,0,1) specificity;
+   they just read --rs-ink-heading / --rs-ink-body instead of a fixed token. :root sets those to
+   the dark-band values. Each light surface re-declares them for its own subtree, and because
+   custom properties inherit, EVERY descendant heading and paragraph — at any nesting depth,
+   including markup that does not exist yet (the lightbox and the cart body are JS-injected) —
+   picks up the right ink automatically.
+
+   Why this and not the alternatives:
+   - NOT !important: forbidden by CSS LAW 1, and unnecessary here.
+   - NOT a blanket per-element override (`#i4gzv h4 {color:...}`): that is the patch that would
+     have left the cart drawer broken, and it needs one new rule per element per surface.
+   - NOT an override against a kept vendor rule (CSS LAW 2): none of the four rules below removes
+     or contradicts a declaration in the vendor rule for that surface. They ADD a custom property
+     those vendor rules never declare. The vendor `background`/`color` declarations are untouched.
+   - It also survives the section stage: when the drawer and the lightbox are re-tokened to the
+     dark card ground, deleting their line here is the whole change.
+
+   VALUES, all measured, none invented:
+   - #i4gzv headings -> --ds-primary-deep rgb(23,18,15). design-tokens.md §a.2 "form card h3 |
+     --ds-primary-deep | rgb(23,18,15)"; section-map.md row F2 measures the redesign's equivalent
+     `.cta-formcard` heading at rgb(23,18,15). This is the value the brief names.
+   - #i4gzv body -> rgb(74,74,74). design-tokens.md §a.2 "form card lede | rgb(74,74,74) #4a4a4a |
+     .cta-formcard__lede". 9.0:1 on #fff.
+   - The three kept vendor panels get, LITERALLY, the colour their own kept vendor rule already
+     declares for that surface — nothing is invented and nothing contradicts those rules:
+       .sg-drawer          #1f2937  (00-vendor-keep BLOCK 5: `.sg-drawer{...background:#fff;
+                                    color:#1f2937;...}`) — live measured rgb(31,41,55)
+       .sg-dropdown-menu   #212529  (00-vendor-keep BLOCK 2: `.sg-dropdown-menu{...color:#212529;
+                                    ...background-color:#fff;...}`) — live measured rgb(33,37,41)
+       .sg-popup-container #1a1a1a headings / #444 body, from its own two text-child rules
+                                    (.sgpopup-title at chrome.css offset 403438, .sgpopup-content
+                                    at 403633). The container itself declares no `color`.
+
+   ONE THING THAT DOES NOT WORK, recorded so it is not re-attempted: writing
+   `--rs-ink-heading: inherit` on the light surface. A CSS-wide keyword in a CUSTOM PROPERTY is
+   applied to the custom property itself, so `--rs-ink-heading: inherit` makes that property take
+   its PARENT's --rs-ink-heading — which is :root's #ffffff — and the heading stays white. This was
+   the first mechanism tried here; it was caught by re-measuring, not by reasoning: the cart
+   drawer's h3 still computed rgb(255,255,255) after the change. The literal per-surface values
+   above are what actually fixes it.
+
+   R49 — A THIRD PROPERTY JOINS THE MECHANISM, found by re-running the contrast sweep AFTER the
+   R40/R41/R42 fix landed. The secondary button family in §4 also paints a fixed
+   `color/border-color: rgb(255,255,255)`, and the cart drawer contains one:
+   `a.btn.btn-outline-secondary.btn-block` "View cart" measured 1.00:1 — WHITE ON WHITE, on both
+   pages at 375/768/1280, with the drawer forced open.
+   PROVENANCE, stated plainly: this pair is PRE-EXISTING, not caused by this pass. Both halves —
+   §4's `color: rgb(255,255,255)` on the secondary family, and 00-vendor-keep BLOCK 5's
+   `.sg-drawer{background:#fff}` — were present before this pass and neither was modified by it.
+   What this pass changed is only that R26 restored `.btn-block{display:block;width:100%}`, so the
+   invisible button is now full-width instead of shrink-wrapped. It is fixed here rather than
+   merely reported because a 1.00:1 control is the exact failure mode this run exists to end, and
+   because the fix is three lines of the mechanism already in place.
+   ============================================================================ */
+:root {
+  --rs-ink-heading:      var(--ds-ink-heading);   /* #ffffff          — §a.2 heading on dark bands */
+  --rs-ink-body:         var(--ds-ink-soft);      /* rgb(200,198,197) — §a.2 body copy base/warm */
+  --rs-ink-btn-secondary: rgb(255, 255, 255);     /* §a.2 secondary button rest (label + 1px border) */
+}
+
+[data-component-id="mfgdsqns4ggbi"] {             /* #i4gzv, the white lead-form card */
+  --rs-ink-heading: var(--ds-primary-deep);       /* rgb(23,18,15)  — §a.2 form card h3 / row F2 */
+  --rs-ink-body:    rgb(74, 74, 74);              /* #4a4a4a        — §a.2 form card lede */
+  --rs-ink-btn-secondary: var(--ds-primary-deep); /* no secondary button sits here today; declared so
+                                                     the surface is complete rather than lucky */
+}
+
+.sg-drawer {                                      /* #dpzDrawer cart panel */
+  --rs-ink-heading: #1f2937;                      /* its own colour (00-vendor-keep BLOCK 5, sg-drawer.css
+                                                     `.sg-drawer{...background:#fff;color:#1f2937}`);
+                                                     live measured rgb(31,41,55) */
+  --rs-ink-body:    #1f2937;
+  --rs-ink-btn-secondary: #1f2937;                /* R49 — "View cart" was 1.00:1 white on white */
+}
+
+.sg-dropdown-menu {                               /* nav dropdown panel */
+  --rs-ink-heading: #212529;                      /* its own colour (00-vendor-keep BLOCK 2,
+                                                     `.sg-dropdown-menu{...color:#212529...}`);
+                                                     live measured rgb(33,37,41) */
+  --rs-ink-body:    #212529;
+  --rs-ink-btn-secondary: #212529;
+}
+
+.sg-popup-container {                             /* lightbox card: declares no colour of its own */
+  --rs-ink-heading: #1a1a1a;                      /* its own .sgpopup-title colour (chrome 403438) */
+  --rs-ink-body:    #444;                         /* its own .sgpopup-content colour (chrome 403633) */
+  --rs-ink-btn-secondary: #1a1a1a;
+}
+
+
+/* ============================================================================
+   11. MOBILE-DRAWER CHIP INK — C2 (2026-09-05 re-sweep).
+
+   THE BUG, measured on the REAL drawer at 375 (button#mm-trigger clicked, root panel open;
+   NOT a forced class): the 8 sub-panel `.mm-back` "Back" chips and the 9 `.mm-close` chips all
+   compute `color: rgb(173,30,30)` painted over `rgb(43,33,27)` = **2.23:1** on both pages.
+   The pristine baseline measures `rgb(83,142,79)` on `rgb(255,255,255)` = 3.93:1 there.
+
+   CAUSE, not a new decision: the chips come from the KEPT sgen-mobile-menu.css
+   (00-vendor-keep BLOCK 3), whose rule reads `color: var(--color-primary, #d51522)`. 01-tokens (c)
+   re-declares `--color-primary: var(--ds-primary)` (#ad1e1e) for the whole drawer, which is right
+   for the drawer's primary CTA pill (design-tokens §a.2 "primary ... .mm-drawer__cta .btn") and
+   wrong for these two chips, whose own measured value in the contract is different.
+
+   VALUE — from the contract, not invented: section-map.md §1 row M measures
+   `.mm-close`/`.mm-back` at **colour `rgb(235,164,89)`**, i.e. --ds-accent-ink
+   (design-tokens.md §a.2 "accent (ink / links / numerals)" also names "drawer close-button colour"
+   as an --ds-accent-ink consumer). Measured after this rule: 7.47:1 over the painted
+   rgb(43,33,27) — clears WCAG AA 4.5:1.
+
+   WHY `color` AND NOTHING ELSE. The alternative was to re-declare `--color-primary` scoped to the
+   chips and let the vendor rule resolve it — the §10 mechanism. It was rejected AFTER working out
+   what it does: the same variable also feeds `.mm-head .mm-back.is-tap-hover{background:
+   linear-gradient(90deg, var(--color-primary), var(--color-primary_hover)); color:#fff}`, so a
+   scoped token would repaint the hover chip amber and put WHITE ON #eba459 = 1.91:1 — trading one
+   contrast failure for a new one. Setting only `color` leaves that (0,3,0) hover rule, the chip
+   border/background/box-shadow (which read `--color-primary-rgb`, untouched) and every other
+   drawer consumer of `--color-primary` exactly as they are.
+
+   The `svg` inside each chip is `stroke: currentColor` in the same vendor block, so the chevron
+   and the X follow the label with no second rule.
+
+   NO !important and none needed: this selector is (0,2,0), identical to the vendor rule it
+   supersedes, and 03-base is the last file in the chain. It does not contest the UNLINKED theme
+   (CSS LAW 2) — sgen-mobile-menu.css is KEPT vendor, and this corrects the re-skin's OWN token
+   substitution at the one place that substitution measured a contrast failure.
+
+   OUT OF SCOPE, deliberately left alone (section-map §1 row M, the SECTION stage): the chip's
+   44x44 box, its `rgb(58,26,24)` ground, its `rgb(74,74,74)` 1px border and its 6px radius.
+
+   --- D2 (2026-09-05): THE 44 DRAWER ARROWS ARE THE SAME BUG, SO THEY JOIN THIS RULE. ---
+   Measured on the REAL drawer at 375 (button#mm-trigger clicked, root panel AND a drilled
+   `.mm-card[data-mm-drill]` sub-panel, both pages — not a forced class): all 44
+   `.mm-card-arrow` compute stroke `rgb(173,30,30)` over the painted `rgb(46,33,27)` =
+   **2.209:1**, below the WCAG 1.4.11 non-text threshold of 3:1. The pristine baseline
+   measures `rgb(83,142,79)` over `rgb(251,252,251)` = **3.822:1**, which passed.
+
+   IDENTICAL CAUSE to the chips above: the vendor rule
+   `.mm-card-arrow{color:var(--color-primary,#d51522)}` (00-vendor-keep BLOCK 3,
+   sgen-mobile-menu.css) reads the tenant token, and 01-tokens (c) re-values
+   `--color-primary` to `--ds-primary` (#ad1e1e) for the whole drawer. Right for the drawer's
+   primary CTA pill, wrong here.
+
+   IDENTICAL VALUE SOURCE: section-map.md §1 row M measures `.mm-card` with "arrow
+   `rgb(235,164,89)`" — the same `--ds-accent-ink` this rule already carries for the chips.
+   Nothing is invented and no new token is introduced; the selector list is extended.
+
+   `.mm-card .mm-card-arrow` is (0,2,0) vs the vendor's (0,1,0), and 03-base is last in the
+   chain, so it wins on specificity AND order — no !important, none needed. Verified in the
+   live DOM that all 44 arrows have a `.mm-card` ancestor (44/44, both pages), so the
+   descendant combinator loses none of them. The `svg` inside each arrow is
+   `stroke: currentColor` in the same vendor block, so the chevron follows `color` with no
+   second rule — the same mechanism the chips use.
+
+   NOT TOUCHED: `.mm-card:hover .mm-card-arrow{transform:translateX(4px);opacity:1}` (vendor,
+   (0,2,0), no colour) and the `.mm-card` row box — both stay exactly as they are.
+   ============================================================================ */
+.mm-head .mm-back,
+.mm-head .mm-close,
+.mm-card .mm-card-arrow {
+  color: var(--ds-accent-ink);                    /* rgb(235,164,89) — section-map §1 rows M */
+}

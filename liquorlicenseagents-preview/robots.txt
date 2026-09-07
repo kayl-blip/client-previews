@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Every page carries <meta name="robots" content="noindex,nofollow">.
+# This is an internal client preview of a re-skin, not the live site.

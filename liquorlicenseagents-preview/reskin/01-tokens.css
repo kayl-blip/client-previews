@@ -1,0 +1,291 @@
+/* 01-tokens.css — Phase 2 foundation, liquorlicense re-skin.
+
+   THREE groups, in cascade order:
+     (a) the 64 --ds-* redesign tokens, copied VERBATIM from the redesign's own
+         audit/redesign-src/design-system/tokens.css :root (declared == measured;
+         design-tokens.md §a.1 / CT §1 confirm no --ds-* is re-declared anywhere).
+     (b) the 5 measured band grounds (design-tokens.md §a.2). Three are token-backed;
+         TWO are non-token literals in the redesign's structural.css and are named here
+         under the --rs-* (re-skin) prefix so they are never mistaken for --ds-* tokens.
+     (c) the TENANT token NAMES that kept vendor CSS reads by var() (section-map.md §5a).
+         Dropping the NAMES — not just the values — unstyles the kept drawer, the kept
+         sticky bar, the kept carousel controls and the kept form scaffolding.
+   No !important anywhere. Every value is cited to design-tokens.md. */
+
+/* ============================================================================
+   (a) THE 64 --ds-* TOKENS — verbatim from redesign-src/design-system/tokens.css
+   ============================================================================ */
+:root {
+
+  /* ── COLOUR — measured (§2.1) ───────────────────────────────────────────── */
+
+  /* The oxblood CTA colour. Measured #ad1e1e (17.5K px, PDF hero + nav buttons).
+     White on it = 11.6:1. Independently corroborated at §1.4 (Latham & Watkins
+     ships #ac0000 as its accent — one step away). */
+  --ds-primary:        #ad1e1e;
+
+  /* ⚠ THE DARK GROUND — .section--dark bg + .site-footer bg. Near-black, as the
+     schema requires. Measured #1e1e1e (378K px). --ds-ink-on-dark on it = 16.7:1. */
+  --ds-primary-deep:   #17120f;  /* WARM ESPRESSO palette (owner) — was #1e1e1e */
+
+  /* Deep oxblood tint — .btn-secondary:hover ground. Kept dark so the light
+     --ds-ink-heading label stays legible on it. */
+  --ds-primary-soft:   #3a1a18;
+
+  /* THE ACCENT — the brand's OWN amber, measured from its OWN photography.
+     Dominant amber family in the source page is #bb7327 (144,840 px: the whiskey,
+     the tungsten, the wood). Taken at that exact hue (30.8deg) and saturation and
+     lifted in VALUE only, to clear WCAG as small text:
+        on #333333 = 5.55:1   ·   on #292929 = 6.39:1   ·   on #1e1e1e = 7.33:1
+     The PDF's own eyebrow colour #8b0000 measured 1.26:1 on #333333 and was
+     REJECTED on that evidence (§2.1 candidate a). */
+  --ds-accent:         #e69c4e;
+
+  /* Accessible accent for SMALL text on the default ground (.feature-row__kicker).
+     Slightly lifted again: 6.01:1 on #333333, 8.5:1 on #0d0d0d. */
+  --ds-accent-ink:     #eba459;
+
+  /* Tinted amber ground for soft chips/badges. */
+  --ds-accent-soft:    #2a2016;
+
+  /* ── GROUNDS — the measured three-step ladder (§2.1, modelled on §1.6) ──── */
+  --ds-bg-surface:     #2b211b;  /* WARM ESPRESSO base .section (owner) — was #333333 */
+  --ds-bg-surface-2:   #0e0a08;  /* WARM ESPRESSO card (owner) — was #0d0d0d */
+  --ds-bg-warm:        #221a15;  /* WARM ESPRESSO .section--warm (owner) — was #292929 */
+
+  /* ── INK — light by construction, because polarity is dark (§2.0) ───────── */
+  --ds-ink:            #ffffff;
+  --ds-ink-heading:    var(--ds-ink);  /* THEME-POLAR. dark brand -> LIGHT ink.
+                                          A light brand would set --ds-primary-deep.
+                                          structural.css consumes this with a
+                                          primary-deep fallback at the use-site. */
+  --ds-ink-soft:       #c8c6c5;        /* measured, 41K px. 7.42:1 on #333333 */
+  --ds-ink-on-dark:    #ffffff;
+  --ds-line:           #4a4a4a;
+  --ds-scrim:          rgba(13, 13, 13, .72);
+
+  /* ── SEMANTIC ───────────────────────────────────────────────────────────── */
+  /* The availability green, measured #2dd86b (75K px — the PDF's "Acquire License"
+     buttons). Reserved strictly for licence-availability status. 6.71:1 on #333333. */
+  --ds-signature:      #2dd86b;
+  --ds-warning:        #d9682f;
+  --ds-warning-soft:   #2e1c12;
+
+  /* ── TYPOGRAPHY — §2.2 ──────────────────────────────────────────────────── */
+  --ds-font-display:   'Fraunces', Georgia, 'Times New Roman', serif;
+  --ds-font-body:      'Libre Franklin', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ds-font-mono:      'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* ── RADIUS — SURFACE #2 Micro 4-6px (§2.12.1). ONE radius language. ────── */
+  --ds-r-sm:           4px;
+  --ds-r-md:           6px;
+  --ds-r-lg:           10px;
+  --ds-r-xl:           14px;
+  --ds-r-pill:         999px;
+  --ds-r-squircle:     clamp(18px, 3vw, 40px);
+
+  /* ── SHADOW — DS TOP-12 #3: layered ambient + key, INK-TINTED not pure black.
+        The rgba is warmed toward the oxblood ink so a #0d0d0d card reads as ABOVE
+        a #1e1e1e band rather than cut into it (§3 point 1 — the highest-leverage
+        flatness fix on a dark ground). ─────────────────────────────────────── */
+  --ds-shadow-rest:       0 1px 2px rgba(10, 4, 4, .34);
+  --ds-shadow-card:       0 4px 14px rgba(10, 4, 4, .42), 0 14px 38px rgba(10, 4, 4, .30);
+  --ds-shadow-card-2stop: 0 12px 16px -4px rgba(10, 4, 4, .40), 0 4px 6px -2px rgba(10, 4, 4, .24);
+  --ds-shadow-lift:       0 10px 26px rgba(10, 4, 4, .50), 0 26px 60px rgba(10, 4, 4, .40);
+
+  /* ── SPACING + LAYOUT — §5.2 / §5.3 ─────────────────────────────────────── */
+  --ds-space-2xs:      4px;
+  --ds-space-xs:       8px;
+  --ds-space-sm:       12px;
+  --ds-space-md:       16px;
+  --ds-space-lg:       24px;
+  --ds-space-xl:       40px;
+  --ds-space-2xl:      64px;
+  --ds-space-3xl:      96px;
+  /* Section vertical rhythm. TIGHTENED 2026-08-07 from clamp(64px, 8.5vw, 116px)
+     on the owner's brief that every band should fit the viewport it is read in,
+     so the page feeds information without heavy scrolling.
+     MEASURED WHY: at 1440x900 the usable budget is 818px (900 less the 82px
+     sticky header). The old token spent 232px of that — 28% of the whole
+     budget — on padding alone, and 12 of the homepage's 14 sections overflowed.
+     At 1440 this resolves to 72px a side, returning 88px to every band on every
+     page. Consumers that derive from it (#faq's CTA-overlap padding at
+     structural.css:3882, the smoke band at :3071) follow automatically. */
+  --ds-section-py:     clamp(48px, 5vw, 76px);
+  --ds-container-max:  1200px;
+
+  /* ── MOTION (base) — §2.13 ──────────────────────────────────────────────── */
+  --ds-ease:           cubic-bezier(.4, 0, .2, 1);
+  --ds-dur:            200ms;
+
+  /* ── GRADIENTS ──────────────────────────────────────────────────────────── */
+  --ds-accent-2:       #f2c07d;
+  --ds-grad-brand:     linear-gradient(135deg, var(--ds-accent), var(--ds-primary));
+  --ds-grad-text:      linear-gradient(100deg, var(--ds-accent), var(--ds-accent-2));
+  --ds-grad-hero:      linear-gradient(135deg, #2b2b2b, #1e1e1e 55%, #141414);
+  --ds-fade-to-paper:  linear-gradient(180deg, rgba(51, 51, 51, 0) 0%, var(--ds-bg-surface) 65%);
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+   * THE 12 GLOBALS — locked at the WEB CARD, Direction C "Tungsten Bloom".
+   * This is the ONE visual decision of the build. Every surface downstream
+   * inherits these through the wow-* classes; there is no second pick.
+   * ═══════════════════════════════════════════════════════════════════════════ */
+
+  /* Glass: .74 / 16px / 160% sits inside DS TOP-12 #6's stated band — translucent
+     enough to read as material, saturated enough that the amber photography warms
+     the header as it scrolls beneath it. */
+  --ds-glass-bg:       rgba(26, 26, 26, .74);
+  --ds-glass-blur:     blur(16px) saturate(160%);
+  --ds-glass-border:   rgba(230, 156, 78, .18);
+
+  /* Edge: a faint white hairline + an .08 inset top-highlight. Together with the
+     layered shadow above, this is what lifts a card off its band. */
+  --ds-hairline:       rgba(255, 255, 255, .09);
+  --ds-inset-hi:       inset 0 1px 0 rgba(255, 255, 255, .08);
+
+  /* Light: oxblood bloom on the primary CTA; amber radial wash behind the hero and
+     ONE mid-page anchor only (DS TOP-12 #12a + the one-of-each-moment rule). */
+  --ds-glow:           0 0 40px rgba(173, 30, 30, .32);
+  --ds-glow-wash:      radial-gradient(ellipse 62% 48% at 50% 0%, rgba(230, 156, 78, .16), transparent 68%);
+
+  /* Texture: medium grain. Enough to give a large flat charcoal field the tooth of
+     a material; low enough to stay felt rather than seen. (.wow-grain::after also
+     applies opacity .5 + mix-blend-mode overlay on top of this.) */
+  --ds-grain:          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+
+  /* Smoke: a VOLUMETRIC plume for the hero -> next-band transition. Same feTurbulence
+     family as --ds-grain, but stretched anisotropically (low X freq, higher Y freq) so
+     the noise reads as horizontal drifting wisps rather than isotropic static. The
+     feColorMatrix drives ALPHA off the turbulence red channel (gain 1.6, bias -.42),
+     which thresholds the field into discrete plumes with real negative space between
+     them — that is what separates smoke from a flat dark gradient. Colour is pure
+     black; density is carried entirely by alpha, so it composites over any band. */
+  --ds-smoke:          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='420'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.009 .028' numOctaves='4' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.6 0 0 0 -.42'/%3E%3C/filter%3E%3Crect width='1200' height='420' filter='url(%23s)'/%3E%3C/svg%3E");
+  /* Second plume, decorrelated (different seed + frequency) so the two layers drifting
+     at different speeds never visibly repeat against each other. */
+  --ds-smoke-alt:      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='500'%3E%3Cfilter id='s2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006 .019' numOctaves='5' seed='29' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.35 0 0 0 -.38'/%3E%3C/filter%3E%3Crect width='1600' height='500' filter='url(%23s2)'/%3E%3C/svg%3E");
+  /* Depth of the hero -> band dissolve. */
+  --ds-smoke-h:        clamp(190px, 30vh, 360px);
+
+  /* Divider: 0px. DIVIDER-PATTERNS #10 — band contrast IS the divider. Shape
+     dividers are both mechanically removed (reboot) and a verified law/finance
+     anti-pattern (DS _MODERN-DESIGN-PATTERN-LIBRARY §0.5, §3.7 rule 1). */
+  --ds-divider-h:      0px;
+
+  /* Motion: 170ms micro / 640ms reveal on a gentle curve — settles without either
+     Direction A's drift (760ms) or Direction B's clip (520ms). */
+  --ds-dur-fast:       170ms;
+  --ds-dur-slow:       640ms;
+  --ds-ease-out:       cubic-bezier(.22, .68, .24, 1);
+
+  /* Icon recolour for SOURCE (non-currentColor) raster icons in the mega-menu /
+     drawer chips. This build uses inline SVG with currentColor throughout, so this
+     is emitted for schema completeness rather than actively relied on.
+     Approximate landing hue: the locked amber #e69c4e. */
+  --ds-icon-tint:      brightness(0) saturate(100%) invert(78%) sepia(38%) saturate(680%) hue-rotate(331deg) brightness(97%) contrast(91%);
+}
+
+/* ============================================================================
+   (b) THE 5 MEASURED BAND GROUNDS — design-tokens.md §a.2 "Page / grounds"
+   Two of the five are NOT tokens in the redesign; they are literals in
+   structural.css and design-tokens.md §a.2 flags both (CT §2, concern 1).
+   ============================================================================ */
+:root {
+  --rs-band-base:  var(--ds-bg-surface);   /* rgb(43,33,27)  #2b211b  — .section base ground */
+  --rs-band-warm:  var(--ds-bg-warm);      /* rgb(34,26,21)  #221a15  — .section--warm */
+  --rs-band-dark:  var(--ds-primary-deep); /* rgb(23,18,15)  #17120f  — .section--dark + .hero */
+  --rs-band-wood:  #241915;                /* NON-TOKEN literal, structural.css S:3925-3926 */
+  --rs-band-paper: #f2ece3;                /* NON-TOKEN literal, structural.css S:3976 */
+}
+
+/* ============================================================================
+   (c) TENANT TOKEN NAMES — section-map.md §5a, re-declared with redesign values.
+   The §5a list (12 names) was verified against the kept CSS mechanically: every
+   var() name consumed by 00-vendor-keep.css was collected and checked against the
+   names that file declares. That audit CONFIRMED all 12 and surfaced 5 more that
+   §5a does not list but that kept CSS consumes with NO fallback — marked [audit].
+   Names left undeclared on purpose are listed at the foot of this file.
+   ============================================================================ */
+:root {
+  /* --- §5a: read by sgen-mobile-menu.css (the whole drawer recolours through these) --- */
+  --color-primary:       var(--ds-primary);        /* #ad1e1e — design-tokens §a.2 "primary" */
+  --color-primary-rgb:   173, 30, 30;              /* the rgb triplet of #ad1e1e */
+  --color-primary_hover: var(--ds-primary-deep);   /* #17120f — §a.2 primary button hover bg-color */
+  --color-body:          var(--ds-bg-surface);     /* #2b211b — §a.2 page bg (body) */
+  --color-text:          var(--ds-ink);            /* #ffffff — §a.2 page text (body) */
+  --body-font-family:    var(--ds-font-body);      /* Libre Franklin stack — §b "Root context" */
+  --body-font-size:      16px;                     /* §b: body 16px */
+  --button-radius:       var(--ds-r-pill);         /* 999px — §d.1, every .btn */
+
+  /* --- §5a: read by the main.min.css carve-outs --- */
+  --color-accent:        var(--ds-accent);         /* #e69c4e — §a.2 "accent (chrome)". Consumers:
+                                                      .sticky-mobile-ctas ground and
+                                                      .swiper-pagination-bullet-active. */
+  --color-danger:        var(--ds-warning);        /* #d9682f — §a.2 "warning tokens". The redesign
+                                                      measures NO danger/error colour on these two
+                                                      pages, so the nearest DECLARED redesign token
+                                                      is used for .sg-text-danger (the required-field
+                                                      asterisk). Reasoned mapping, not a measurement. */
+  --color-light:         var(--ds-ink-on-dark);    /* #ffffff — §a.2 */
+  --color-secondary:     var(--ds-ink-soft);       /* #c8c6c5 — §a.2 "muted labels". Its only
+                                                      no-fallback consumer is muted text in the
+                                                      (inert) ecommerce.css block. Reasoned mapping. */
+
+  /* --- [audit] consumed by kept CSS with NO fallback; NOT in the §5a list --- */
+  --radius:                 var(--ds-r-lg);        /* 10px — §d.1 panel radius (.mm-panel/.mm-mega).
+                                                      Consumer: carve-out .sg-dropdown-menu. */
+  --form-control-radius:    var(--ds-r-md);        /* 6px  — §d.1 .form--light input/textarea */
+  --form-control-padding-y: 12px;                  /* §c.6 inputs: .form--light input/textarea 12px 16px */
+  --form-control-padding-x: 16px;                  /* §c.6, as above */
+  --sg-color-primary:       var(--ds-primary);     /* alias name read by kept CSS (with a fallback) */
+
+  /* --- [R35] the h4/h5/h6 SIZE + FAMILY names. Added by the R01-R48 sweep pass.
+     00-vendor-keep.css now carries chrome.css's `.h4,h4{font-size:var(--headings_4-font-size);
+     font-family:var(--headings_4-font-family),sans-serif}` chain (offsets 335250/335348/335446)
+     plus its <=575 downscale twins, because h4/h5 were falling through to Bootstrap Reboot's
+     viewport-responsive calc(1.275rem + .3vw) at weight 500, where the live page is a FIXED
+     22px at weight 600. Without these six names the carved rules resolve to nothing.
+
+     SIZES are the live inline-2 values, verbatim (index.inline.css:33 / services :18):
+       --headings_4-font-size: 22px; --headings_5-font-size: 20px; --headings_6-font-size: 18px
+     FLAGGED, not invented: design-tokens.md has NO h4/h5/h6 role outside `.site-footer h4`
+     (12px/700/uppercase/#e69c4e), so there is no redesign value to map these to. The live scale
+     is restored so the elements are neither live-wrong nor redesign-wrong by accident; the
+     section stage owns the final h4 treatment. h1/h2/h3 are NOT restored this way — 03-base §2
+     authors those from design-tokens S:41-44.
+
+     FAMILIES are chrome.css's own :root default `var(--body-font-family)` (offset 307660),
+     which is the exact relationship the live page had. Consequence, measured and intended:
+     bare `h4`/`h5`/`h6` still take Fraunces from 03-base §2 (equal specificity, later in the
+     chain), while the one class-only `.h5` in the DOM (`.h5.mb-0.dpz-cart-total`, the cart
+     drawer total) takes the body face at (0,1,0) — which is what it does on the live site. */
+  --headings_4-font-size:   22px;
+  --headings_5-font-size:   20px;
+  --headings_6-font-size:   18px;
+  --headings_4-font-family: var(--body-font-family);
+  --headings_5-font-family: var(--body-font-family);
+  --headings_6-font-family: var(--body-font-family);
+}
+
+/* ----------------------------------------------------------------------------
+   DELIBERATELY LEFT UNDECLARED — each is undeclared on the LIVE site too, so
+   leaving it alone reproduces live behaviour exactly instead of inventing a value:
+
+     --bs-body-text-align, --bs-nav-link-font-size, --bs-breadcrumb-font-size
+        Bootstrap internals that bootstrap.min.css itself never declares. Unchanged
+        by this re-skin, because bootstrap.min.css is KEPT byte-for-byte.
+
+     --primary, --danger
+        Dead variables inside ecommerce.css (.sgcom-* only). No block of chrome.css
+        ever declared them, so they resolve to nothing on the live site today, and
+        ecommerce.css matches 0 elements on either audited page (recover-list §1a).
+
+     --swiper-centered-offset-before, --swiper-centered-offset-after, --swiper-virtual-size
+        Set by Swiper's OWN JavaScript, inline on the element, only when its centered /
+        virtual modes are in use. The Swiper CSS is kept verbatim in index.html's inline
+        <style>, so this is unchanged from live.
+
+   Verified mechanically over the WHOLE shipped chain (00 + 01 + 02 + 03 + the kept page
+   inline <style>): these 8 names are the ONLY var() names consumed with no fallback and
+   no declaration, and every one of them was in exactly that state before this re-skin.
+   ---------------------------------------------------------------------------- */
