@@ -179,34 +179,51 @@
                { background-image: none !important; }
 
            The trailing " *" kills backgrounds on every descendant, and an
-           !important STYLESHEET declaration beats an inline style. Measured
-           before the fix: art.style.backgroundImage still read the right
-           url(), while getComputedStyle(art).backgroundImage read "none" — 3
-           blanked pictures on each of the four pages, 12 in all, every one
-           painting as a flat #DCE4E9 box. Only 4 of ~28 .e-con.e-parent ever
-           gain .e-lazyloaded in this static clone, so the rule never lifts.
+           !important STYLESHEET declaration beats an inline style, so while
+           that rule is live the art div's own style attribute holds the right
+           url() and getComputedStyle reports "none".
 
-           Moving the url into a custom property and re-declaring
-           background-image: var(--nf-art) !important in our own sheet does NOT
-           work, and this was measured rather than assumed: both declarations
-           are author-origin !important, so specificity decides, and Elementor's
-           (0,5,0) selector outranks our (0,2,0) one. The custom property
-           survives; the background-image is still "none".
+           ⚠ CORRECTION, and it matters: that rule DOES lift for a real reader,
+           and an earlier version of this comment claimed it never did. The page
+           ships an IntersectionObserver (woodbury-nj.html, the inline script
+           after the footer) with rootMargin 200px that adds .e-lazyloaded and
+           then unobserve()s, so the class is permanent once a container comes
+           near the viewport. Measured on the pre-fix code with a human-paced
+           scroll (600px steps, 350ms dwell): .e-lazyloaded goes 2/28 at load to
+           16/29, and all three art divs paint their backgrounds. The "12 blanked
+           pictures" finding was an artifact of a probe that scrolled in 30-45ms
+           steps — faster than an IntersectionObserver callback can run — and
+           then jumped back to the top. Do not trust a fast synthetic scroll to
+           tell you what this page does.
 
-           An <img> sidesteps the contest entirely — the rule only ever talks
-           about background-image, and a replaced element's content is not a
-           background. It also hands loading and decoding back to the browser.
+           So an <img> is NOT load-bearing for correctness here. It is kept
+           because it is still the better element for the job — the browser owns
+           loading, decoding and srcset, object-fit does the cropping, and the
+           element is structurally out of reach of any background-image rule —
+           but it buys robustness, not a bug fix. The real defect on this section
+           was the ART pool being shorter than the heading run (see ART above).
 
-           NOT loading="lazy": the CSS background it replaces was eager, so this
-           keeps first-paint behaviour at parity, and stacking a second
-           deferral mechanism onto the very element a deferral mechanism just
-           blanked is how this bug happened in the first place. */
+           For the record, since it was measured: moving the url into a custom
+           property and re-declaring background-image: var(--nf-art) !important
+           in our own sheet does NOT work. Both declarations are author-origin
+           !important, so specificity decides, and Elementor's (0,5,0) selector
+           outranks our (0,2,0) one.
+
+           loading="lazy" IS set, and the earlier rationale for omitting it was
+           wrong on its facts. It claimed "the CSS background it replaces was
+           eager"; it was not — a background-image computing to none is never
+           requested at all, and once it does resolve it is gated by the same
+           IntersectionObserver above. Leaving these eager made 12 decorative
+           pictures, all of them 4-7 screens below the fold, load on first paint:
+           measured +6 image requests before any scroll on this page alone, and
+           about +1.2MB across the four story pages. */
         var img = document.createElement('img');
         img.className = 'nf-story__img';
         img.src = art.src;
         img.alt = '';                              // decorative, see above
         img.setAttribute('aria-hidden', 'true');   // keep it out of the a11y tree
         img.decoding = 'async';
+        img.loading = 'lazy';                      // 4-7 screens down; see above
         fig.appendChild(img);
 
         row.appendChild(fig);

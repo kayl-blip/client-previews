@@ -4153,9 +4153,15 @@ html.nf-chrome-solid body > header.elementor-location-header {
 
    16/9 IS 1.78, so every farm image sits native, and it is the closest common
    shape to the 2.62 strips — a 4/3 frame, which the mockup used, would have
-   cropped 32% off the width of every store photo. At this container's 923px a
-   row's art is ~440px wide, so the 800px strips are downscaled rather than up.
-   No source here is enlarged. */
+   cropped 32% off the width of every store photo.
+
+   ⚠ The "~440px wide, so the strips are downscaled, no source here is enlarged"
+   note that used to close this paragraph was stale: it was written against the
+   923px container this file later widened. Measured on the shipped layout, the
+   art box is 550x309 at >=901px, 708x472 at <=900px and 564x423 at <=600px. So
+   an 800x305 strip covers at 1.01x on desktop but 1.55x on tablet — it WAS
+   being enlarged, just not where the note was looking. The strips have since
+   been resolution-restored, which is what actually makes the claim true. */
 [data-nf-story="rows"] .nf-story__art {
   /* Sticky, so in a tall row the picture travels with the reader instead of
      scrolling away in the first third and leaving the rest of the copy beside
@@ -4177,21 +4183,35 @@ html.nf-chrome-solid body > header.elementor-location-header {
        .e-con.e-parent:nth-of-type(n+4):not(.e-lazyloaded):not(.e-no-lazyload) *
        { background-image: none !important; }
 
-   and an !important stylesheet declaration beats an inline style, so all 12
-   pictures computed to "none" and painted as flat #DCE4E9 boxes. Re-declaring
-   background-image here could not win it back either — measured, not assumed:
-   both sides are author !important, so specificity decides, and Elementor's
-   (0,5,0) selector outranks the (0,2,0) one above. story-rows.js therefore
-   appends a real <img>, which that rule has nothing to say about.
+   and an !important stylesheet declaration beats an inline style, so while that
+   rule is live the picture computes to "none".
+
+   ⚠ CORRECTION: an earlier version of this comment said "all 12 pictures
+   computed to none and painted as flat #DCE4E9 boxes". They did not, for a real
+   reader. The rule LIFTS — the page's own IntersectionObserver (rootMargin
+   200px) adds .e-lazyloaded and unobserves, permanently. Measured on the
+   pre-fix code with a human-paced scroll: .e-lazyloaded 2/28 at load -> 16/29,
+   and every art div painted. The blanked-picture reading came from a probe
+   scrolling in 30-45ms steps, faster than the observer could fire. The <img>
+   is kept because it is the better element (browser-owned loading and decoding,
+   object-fit cropping, out of reach of any background-image rule), not because
+   it rescues a broken render. See story-rows.js for the full correction.
+
+   Re-declaring background-image here could not have won it back anyway —
+   measured, not assumed: both sides are author !important, so specificity
+   decides, and Elementor's (0,5,0) selector outranks the (0,2,0) one above.
 
    No background-size/position/repeat above any more: with nothing setting a
    background-image they were inert, and object-fit does that job here.
 
-   cover, not contain, keeps the framing the background had. The sources are
-   800x305 strips and 1920x1080+ farm imagery against a ~550x309 box, so cover
-   crops the wide strips slightly rather than enlarging anything — the scale
-   factor to cover is max(550/800, 309/305) = 1.01, i.e. still effectively
-   native. */
+   cover, not contain, keeps the framing the background had. Measured box:
+   550x309 at >=901px, where the 1920x1080+ sources downscale and the 800x305
+   strips cover at max(550/800, 309/305) = 1.01, effectively native. NOTE the
+   box is NOT one size — the media queries below set 3/2 at <=900px and 4/3 at
+   <=600px, which measure 708x472 and 564x423, so an 800x305 strip covers at
+   1.55x and 1.39x there. That is not a regression (background-size: cover did
+   identical arithmetic) but it is why the store strips were resolution-restored
+   rather than left alone. */
 [data-nf-story="rows"] .nf-story__img {
   display: block;
   width: 100%;
