@@ -1381,8 +1381,91 @@ footer .elementor-button.elementor-size-sm {
    so this reaches the logo and nothing else. */
 [data-elementor-type="header"]
   .elementor-widget-image > .elementor-widget-container {
-  padding-top: 8px !important;
-  padding-bottom: 8px !important;
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+  /* display:flex is doing the real work here, not the padding. The container is
+     a block and the logo link inside it is inline-flex, so the link is an
+     INLINE-LEVEL box and picks up the line box's descender space — ~6px of dead
+     height welded under the logo that no padding rule can reach, and the reason
+     the logo still measured 3px above centre after its cell was already
+     centring. Measured at 1440: container 66.2 tall around 4 + 52.2 + 4 = 60.2
+     of content. Flex formatting has no line boxes, so the 6px disappears and
+     align-items then centres what is left. */
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* THE LOGO WAS NOT VERTICALLY CENTRED, and it is a one-word cause: the logo's
+   cell computes align-items:flex-start while the cell beside it computes
+   center. Both cells stretch to the row height, so SHOP and the drawer trigger
+   centre themselves in it and the logo pins to the top, leaving all the slack
+   underneath. Measured offset of each element's centre from the header's, on
+   attleboro-ma:
+
+       375    logo -0.3   SHOP -1.5   trigger  0.0
+       430    logo -1.9   SHOP -1.5   trigger  0.0
+       1440   logo -3.0   SHOP  0.0   (desktop nav row instead of a trigger)
+
+   It grows with width because the logo grows (33 -> 52px) while its cell keeps
+   matching the taller neighbour, so the unused space below it grows too. */
+[data-elementor-type="header"] .e-con:has(> .elementor-widget-image) {
+  align-items: center !important;
+}
+
+/* SHOP sat 1.5px high for the same reason at every width, but section 1 only
+   corrected it above 1025px. Its widget container carries `padding: 0 0 3px 0`,
+   so the widget is 49px around a 46px button and centring the widget leaves the
+   button 1.5px above the row's centre — measured -1.5px at 375 and 430, against
+   0.0 for the drawer trigger beside it. The desktop-only scoping was never about
+   the bottom padding; it was about the horizontal padding in the same rule
+   block, which genuinely must not apply at the narrow end (see section 2).
+   Verified: with this at every width, SHOP measures 0.0 offset at 375/430/1440. */
+[data-elementor-type="header"]
+  .elementor-widget-button > .elementor-widget-container {
+  padding-bottom: 0 !important;
+}
+
+/* ==================================== 4. THE TICKER BAND'S PADDING
+   OWNER ASK 2026-09-18, pointing at the strip between the ticker text and the
+   logo: "let's reduce spaces in this spot."
+
+   This is the SECOND half of a decision the owner already started. Read
+   assets/a11y/target-size.css, section "OWNER: the gap of the banner in the
+   header also lessen it a bit" — three stacked a11y height floors had grown
+   this band 35.5 -> 60px, all three were released, and the band went back to
+   its natural 35.5. That file then named exactly one lever left and declined to
+   pull it without an owner: "reclaiming it means cutting the band's own
+   padding, which is a brand-styling change to fix an accessibility floor."
+   This is that decision, now made.
+
+   Measured composition of the strip, index.html at 430:
+
+       ticker text ends           27.5
+       ticker band ends           35.5    <- 8px of .e-floating-bars__headlines padding
+       header row starts          36.0       (position:fixed, top:36px)
+       + header row padding-top    4.0
+       + logo widget padding-top   4.0
+       logo image starts          47.1
+                                  -----
+       visible gap                19.6px
+
+   Only the first 8px is reclaimable. The header's own 4 + 4 is symmetric and
+   load-bearing: section 3 above needs it to keep the logo, SHOP and the drawer
+   trigger on one centre line, and cutting only the top would put the logo back
+   off-centre, which is the defect the owner reported immediately before this one.
+
+   So: the band's padding 8px -> 4px, band 35.5 -> 27.5px.
+
+   4px and not less, and this is the binding constraint rather than taste: the
+   close button fills the band, so the band height IS its target height. It
+   measures 40 x 35.5 today; at 4px padding it becomes 40 x 27.5, which still
+   clears the 24x24 WCAG 2.5.8 AA floor. At 2px it would be 40 x 23.5 and fail
+   it outright — a worse trade than the one target-size.css already recorded,
+   where the owner accepted losing the 44px ENHANCED target but the AA floor was
+   kept. */
+.e-floating-bars__headlines {
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
 }
 
 /* Trimming the logo alone stops mattering almost immediately, which the box
@@ -1401,14 +1484,35 @@ footer .elementor-button.elementor-size-sm {
    4a3d33e on index, and the right-hand cell reuses the exact :has() selector
    section 2 already relies on. */
 [data-elementor-type="header"] > .e-con {
-  padding-top: 6px !important;
-  padding-bottom: 6px !important;
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
 }
 [data-elementor-type="header"]
   .e-con:has(> .elementor-widget-button):has(> .elementor-widget-nav-menu) {
-  padding-top: 6px !important;
-  padding-bottom: 6px !important;
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
 }
+
+/* OWNER, second pass: "the whole navbar is still tall, eats too much space."
+   Taken to the floor the controls allow. What is left after this is not
+   padding, it is the controls themselves:
+
+       drawer trigger   48px   (mobile-nav.css)
+       SHOP button      46px   (section 1, matched to the nav items)
+       logo             33-52px depending on width
+
+   so the row cannot be shorter than 48px on mobile or 46px on desktop without
+   shrinking a tap target, which is not on the table — WCAG 2.5.5 wants 44x44
+   and these already sit just above it. 4px top and bottom on the outer row, the
+   right-hand cell and the logo widget is therefore the end of what padding can
+   give:
+
+       page        375        430        1024       1440
+       index       96 -> ...  99 -> ...  108 -> ..  108 -> ..
+       attleboro   97 -> ...  100 -> ..  109 -> ..  110 -> ..
+
+   (measured values recorded in the commit; re-measure with header-probe.mjs
+   rather than trusting this comment if you change any of the three.) */
 
 /* -------------------------------------------------------------------------
    SOURCE: assets/location/location.css
