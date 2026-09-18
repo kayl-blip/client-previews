@@ -1339,6 +1339,72 @@ footer .elementor-button.elementor-size-sm {
   }
 }
 
+/* ============================================ 3. THE LOGO BAND'S DEAD HEIGHT
+   OWNER ASK 2026-09-18: "middle nav is too tall and has a lot of spaces on top
+   and bottom maybe we can reduce it."
+
+   Measured, and it is one rule in two variants. The logo widget's container
+   carries bottom-heavy vertical padding around a logo that is only 44-52px tall:
+
+       index.html   .elementor-element-184bc2c > .elementor-widget-container
+                    padding: 10px 12px 30px 12px
+       every other  .elementor-element-ea078fe > .elementor-widget-container
+                    padding: 12px 12px 20px 12px
+
+   40px and 32px of vertical padding respectively, and both are ASYMMETRIC —
+   which is the "spaces on top and bottom" being uneven, not just large. The
+   logo sits high in the band because the bottom gets 2-3x the top.
+
+   Measured header heights before (375 / 430 / 768 / 1024 / 1440):
+
+       index.html        96   99   96  108  108
+       attleboro-ma      97  100   98  109  110
+
+   Vertical only, and horizontal padding is deliberately untouched: the 12px
+   sides set the logo's inset from the edge, and section 2 above shows how
+   little horizontal room this header has at the narrow end.
+
+   8px is the floor, not a round number. The logo link is min-height:44px (the
+   2.5.5 target), the drawer trigger is 48px and the desktop nav items are 46px,
+   so the row cannot go below 48px of content however small this padding gets —
+   8px simply stops this widget from being the tallest thing in the row while
+   leaving the logo visibly inset rather than flush.
+
+   SCOPED BY STRUCTURE, not by element id, for the reason this file states at
+   the top: the id differs per page (184bc2c on index, ea078fe on the other 46).
+   Verified safe: every one of the 47 headers contains exactly ONE image widget,
+   so this reaches the logo and nothing else. */
+[data-elementor-type="header"]
+  .elementor-widget-image > .elementor-widget-container {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+/* Trimming the logo alone stops mattering almost immediately, which the box
+   anatomy shows: at 430 on attleboro-ma the header is 10 + 69 + 10, and that 69
+   is the RIGHT-hand cell (10 + the 49px SHOP button + 10), not the logo cell,
+   which by then is 63.8. So the two remaining levers are the outer row's own
+   padding and that cell's — trimmed together here, because trimming either
+   alone just hands the height to the other.
+
+   6px, and the floor is a real one: the drawer trigger is 48px and the SHOP
+   button 49px (section 1 gave it min-height 46 for WCAG 2.5.8), so the header
+   can never go below ~49px of content no matter what these say. 6px leaves
+   ~13px of air above and below that control rather than eliminating it.
+
+   Structural again — the outer row is 7600e13 on the 46 inner pages and
+   4a3d33e on index, and the right-hand cell reuses the exact :has() selector
+   section 2 already relies on. */
+[data-elementor-type="header"] > .e-con {
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+}
+[data-elementor-type="header"]
+  .e-con:has(> .elementor-widget-button):has(> .elementor-widget-nav-menu) {
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+}
+
 /* -------------------------------------------------------------------------
    SOURCE: assets/forms/form-fit.css
    ------------------------------------------------------------------------- */
