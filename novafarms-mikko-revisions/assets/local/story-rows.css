@@ -1,0 +1,250 @@
+/* =============================================================================
+   story-rows.css — direction D, "editorial rows", for the store-story block.
+
+   Pairs with story-rows.js, which groups the run by H2 and marks the container
+   data-nf-story="rows". Every selector hangs off that attribute, never off an
+   Elementor element id — the ids differ across the four pages that carry this.
+
+   WHY THE MEASUREMENTS HERE LOOK LIKE A DOWNGRADE AND ARE NOT
+   The block's real defect was measured before any of this was designed:
+
+       body type          14px
+       line length        ~197 characters      (readable is 45-75)
+       h2 / h3            20px / 18px          (a 2px gap = no hierarchy)
+       paragraphs in a row  15, no rule or image between them
+
+   So the type goes UP, not down, and the row layout is what brings the line
+   length inside the readable band for free — a half-width text column at this
+   container's 923px lands near 55 characters without needing a max-width.
+
+   CONTRAST, measured on white:
+       h2   #0A2C47   14.34:1
+       body #4A4A4A    8.86:1   (up from the client's #6D6D6D at 5.17:1)
+       eyebrow #5A6B76 5.53:1
+
+   ⚠ MOST OF THE IMAGERY IS NOT OF THE STORE. Owner's call, made with the
+   inventory in hand: there is no staff photography anywhere in the bundle,
+   every store photo is 800x305 with no retina headroom, and Dracut and
+   Woodbury have one each. Eight of the twelve rows therefore carry farm or
+   brand imagery. story-rows.js marks each of those data-nf-fallback="true" in
+   the DOM. Deliberately NOT styled differently — the owner asked for the
+   preview to stop labelling its own placeholders — so the record of which is
+   which lives in that attribute, in story-rows.js, and in the V1 log.
+   ============================================================================= */
+
+/* ---- the run --------------------------------------------------------------
+   The container keeps its width; the rows do the work. */
+/* The client's prose run sits on `--content-width: 65%`, which measured 923px
+   at left 259 — narrower than every other section on the page and the reason
+   the block never lined up with the ones above it. Brought onto the same
+   canonical container as everything else. Widening it also gives direction D's
+   rows more room; the text columns stay inside the readable band because they
+   are half of the row, not the full width. */
+[data-nf-story="rows"] {
+  display: block;
+  width: min(100% - (var(--nf-gutter, 20px) * 2), var(--nf-container, 1140px)) !important;
+  max-width: none !important;
+  margin-inline: auto !important;
+}
+/* On a phone this measured 30px in from the edge, not 18: the width formula
+   subtracts the gutter, and the theme's .e-con parent then adds its own 10px
+   on top. At desktop that is invisible because the container is narrower than
+   the viewport anyway; at mobile the two stack. Take the full width here and
+   let the padding alone be the gutter, so it cannot compound. */
+@media (max-width: 600px) {
+  /* The gutter has to be the ONLY horizontal padding in this subtree, or it
+     stacks with the theme's. Measured: the wrapper sits 10px in from its boxed
+     parent, so adding 18 put the copy at 28, and a nested container pushed one
+     heading to 32. Zero the parent's contribution and every nested one, then
+     apply the gutter once, here. */
+  .e-con-boxed:has(> [data-nf-story="rows"]) {
+    padding-inline: 0 !important;
+  }
+  [data-nf-story="rows"] {
+    width: 100% !important;
+    padding-inline: var(--nf-gutter, 18px) !important;
+  }
+  /* Rows lay out with grid gap, not padding, so zeroing horizontal padding in
+     here costs no spacing between the picture and the copy. */
+  [data-nf-story="rows"] .elementor-element,
+  [data-nf-story="rows"] .e-con,
+  [data-nf-story="rows"] .e-con-inner {
+    padding-inline: 0 !important;
+  }
+}
+
+/* The section label ("Learn About Nova Farms <store>") is the run's first
+   child and stays full width above the rows. */
+[data-nf-story="rows"] > .elementor-element:first-child {
+  margin-bottom: 26px !important;
+}
+
+/* ---- a row ----------------------------------------------------------------
+   Art and text side by side, alternating which side the art is on. */
+/* align-items: START, not center.
+
+   Centring was the first attempt and it looked wrong the moment it rendered,
+   for a reason the measurements made obvious: these rows are wildly unequal.
+   Dracut's "Why Shop at Nova Farms?" carries an intro plus three H3
+   sub-blocks — about 900px of text — against a 248px picture. Centred, that
+   picture floats in the middle of a tall column with dead space above and
+   below it and no relationship to anything.
+
+   Top-aligned it reads as a figure belonging to the heading it sits beside,
+   which is what it is. */
+[data-nf-story="rows"] .nf-story__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 40px;
+  align-items: start;
+  padding: 34px 0;
+  border-top: 1px solid #E6EBEF;
+}
+[data-nf-story="rows"] .nf-story__row:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+/* Alternate. `order` rather than direction:rtl, which would also flip the
+   text's own reading direction. */
+[data-nf-story="rows"] .nf-story__row.is-flipped .nf-story__art { order: 2; }
+
+/* A row with no art left in the pool is not half-empty — it goes full width
+   and keeps its own readable measure. */
+[data-nf-story="rows"] .nf-story__row.is-plain {
+  grid-template-columns: minmax(0, 1fr);
+}
+[data-nf-story="rows"] .nf-story__row.is-plain .nf-story__text {
+  max-width: 68ch;
+}
+
+/* ---- the art --------------------------------------------------------------
+   16 / 9, chosen against the measured sources rather than picked for looks:
+
+       store photos            800 x 305   ratio 2.62
+       farm / brand imagery    1920 x 1080 and up, ratio 1.78
+
+   16/9 IS 1.78, so every farm image sits native, and it is the closest common
+   shape to the 2.62 strips — a 4/3 frame, which the mockup used, would have
+   cropped 32% off the width of every store photo. At this container's 923px a
+   row's art is ~440px wide, so the 800px strips are downscaled rather than up.
+   No source here is enlarged. */
+[data-nf-story="rows"] .nf-story__art {
+  /* Sticky, so in a tall row the picture travels with the reader instead of
+     scrolling away in the first third and leaving the rest of the copy beside
+     an empty column. `top` clears the site's own sticky header. */
+  position: sticky;
+  top: 96px;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  overflow: hidden;      /* also what clips the <img> to the rounded corners */
+  background-color: #DCE4E9;      /* holds the shape before the image paints */
+}
+
+/* The picture itself.
+
+   This div used to CARRY the photo as an inline background-image, and that is
+   exactly what broke it: Elementor's container lazy-load rule, inline in all
+   four of these pages, declares
+
+       .e-con.e-parent:nth-of-type(n+4):not(.e-lazyloaded):not(.e-no-lazyload) *
+       { background-image: none !important; }
+
+   and an !important stylesheet declaration beats an inline style, so all 12
+   pictures computed to "none" and painted as flat #DCE4E9 boxes. Re-declaring
+   background-image here could not win it back either — measured, not assumed:
+   both sides are author !important, so specificity decides, and Elementor's
+   (0,5,0) selector outranks the (0,2,0) one above. story-rows.js therefore
+   appends a real <img>, which that rule has nothing to say about.
+
+   No background-size/position/repeat above any more: with nothing setting a
+   background-image they were inert, and object-fit does that job here.
+
+   cover, not contain, keeps the framing the background had. The sources are
+   800x305 strips and 1920x1080+ farm imagery against a ~550x309 box, so cover
+   crops the wide strips slightly rather than enlarging anything — the scale
+   factor to cover is max(550/800, 309/305) = 1.01, i.e. still effectively
+   native. */
+[data-nf-story="rows"] .nf-story__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* ---- the text -------------------------------------------------------------
+   The client's own widgets are moved in here untouched; these rules restyle
+   them in place. Nothing is rewritten and nothing is deleted. */
+[data-nf-story="rows"] .nf-story__text > .elementor-element {
+  width: auto !important;
+}
+
+[data-nf-story="rows"] .nf-story__text h2 {
+  font-size: 26px !important;
+  line-height: 1.16 !important;   /* the client's 1.0 collided when a heading
+                                     wrapped, which most of these do */
+  color: #0A2C47 !important;
+  margin: 0 0 12px !important;
+  text-wrap: balance;
+}
+[data-nf-story="rows"] .nf-story__text h3 {
+  font-size: 17px !important;
+  font-weight: 600 !important;
+  line-height: 1.25 !important;
+  color: #0A2C47 !important;
+  margin: 22px 0 6px !important;
+}
+[data-nf-story="rows"] .nf-story__text p,
+[data-nf-story="rows"] .nf-story__text .elementor-widget-text-editor {
+  font-size: 16px !important;
+  line-height: 1.65 !important;
+  color: #4A4A4A !important;      /* 8.86:1, up from the client's 5.17:1 */
+}
+[data-nf-story="rows"] .nf-story__text p { margin: 0 0 14px !important; }
+[data-nf-story="rows"] .nf-story__text > *:last-child { margin-bottom: 0 !important; }
+
+/* Inline links inside the prose keep the site's underline treatment but take
+   the on-light green, since the theme's brand green is 1.98:1 on white. */
+[data-nf-story="rows"] .nf-story__text a {
+  color: #4A7019 !important;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+   Stacking.
+
+   Below 900 the art goes above its text in every row, INCLUDING the flipped
+   ones — `order: 2` has to be undone or every other row would read
+   text-then-picture while its neighbours read picture-then-text, which looks
+   like a bug rather than a rhythm.
+
+   The art also shortens to 3/2: a 16/9 band across a phone is a stripe, and
+   the point of these pictures is that they interrupt the reading.
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  [data-nf-story="rows"] .nf-story__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    padding: 26px 0;
+  }
+  [data-nf-story="rows"] .nf-story__row.is-flipped .nf-story__art { order: 0; }
+  [data-nf-story="rows"] .nf-story__art {
+    aspect-ratio: 3 / 2;
+    position: static;      /* stacked, the picture is above its own text — a
+                              sticky image there would just hang in the way */
+  }
+  [data-nf-story="rows"] .nf-story__text h2 { font-size: 23px !important; }
+}
+
+@media (max-width: 600px) {
+  [data-nf-story="rows"] .nf-story__art { aspect-ratio: 4 / 3; }
+  [data-nf-story="rows"] .nf-story__text h2 { font-size: 21px !important; }
+  /* Type deliberately NOT reduced below 16px. Shrinking body copy on a phone
+     is the opposite of what the accessibility layer exists for, and the space
+     this layout saves comes from the structure, not from the words. */
+}
+
+/* The art is decorative and carries no state, so there is nothing here that
+   depends on motion — no transitions to suppress for prefers-reduced-motion. */

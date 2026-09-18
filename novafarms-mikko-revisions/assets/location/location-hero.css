@@ -1,0 +1,313 @@
+/* =============================================================================
+   location-hero.css — sections 2 and 7 of the location template.
+
+   Section 2 is the store hero; section 7 is the photo strip. Both were
+   specified in the locked 11-section template and neither had been built.
+
+   WHY THE HERO IS NOT SIMPLY A BIG STORE PHOTO
+
+   Measured, by reading the actual image headers rather than trusting file size:
+
+     New Britain  newbritain-ct-rotator-hero-bg.webp   1920 x 1080   usable
+     Attleboro    new-attleboro-store-interior.webp    1080 x 1080   square
+     Framingham   framingham-thumbnail.webp             800 x  305   too small
+     Dracut       dracut-thumbnail.webp                 800 x  305   too small
+     Woodbury     woodbury-thumbnail.webp               800 x  305   too small
+     Greenville   greenville-thumbnail.webp             800 x  305   too small
+
+   Only ONE of the six has a photograph that can carry a full-bleed hero. So the
+   hero is built the other way round: a brand farm image is the band, and the
+   store's own photograph sits in it as an inset at its native size. Nothing is
+   upscaled, every store looks deliberate, and when the client supplies real
+   store photography it drops into the inset without a redesign.
+
+   The band image is the same for every store on purpose. Faking six different
+   "store heroes" out of one farm photo would be worse than one honest one.
+   ============================================================================= */
+
+.nf-hero {
+  position: relative;
+  overflow: hidden;
+  background-color: #04263A;
+}
+
+/* -----------------------------------------------------------------------------
+   The store's own photograph, full bleed and deliberately subtle.
+
+   This replaces a framed inset. The inset existed because the photography is
+   uneven -- measured intrinsics:
+
+       New Britain   1920 x 1080
+       Attleboro     1080 x 1080
+       Framingham / Dracut / Woodbury / Greenville   800 x 305
+
+   Four of six are far too small to carry a sharp full-bleed band. Subtle is
+   what makes it work: behind an 86% navy scrim the image reads as atmosphere
+   rather than as a photograph, so the softness of an upscaled 800px source is
+   the intended effect instead of a defect. It also means every store gets its
+   OWN picture, which the inset could not give the four without usable art.
+
+   Sharper photography drops straight in -- only the URL changes.
+   -------------------------------------------------------------------------- */
+.nf-hero__bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('../in-pages/nova-rebrand-hero-nate-farm-1-scaled.webp');  /* fallback */
+  background-size: cover;
+  background-position: center 45%;
+  /* Slightly desaturated so a soft source does not read as a colour-noisy one. */
+  filter: saturate(.85);
+}
+
+.nf-hero[data-store="attleboro"]  .nf-hero__bg { background-image: url('../in-pages/new-attleboro-store-interior.webp'); }
+.nf-hero[data-store="newbritain"] .nf-hero__bg { background-image: url('../in-pages/newbritain-ct-rotator-hero-bg.webp'); }
+.nf-hero[data-store="framingham"] .nf-hero__bg { background-image: url('../in-pages/framingham-thumbnail.webp'); }
+.nf-hero[data-store="dracut"]     .nf-hero__bg { background-image: url('../in-pages/dracut-thumbnail.webp'); }
+.nf-hero[data-store="woodbury"]   .nf-hero__bg { background-image: url('../in-pages/woodbury-thumbnail.webp'); }
+.nf-hero[data-store="greenville"] .nf-hero__bg { background-image: url('../in-pages/greenville-thumbnail.webp'); }
+
+/* The scrim, weighted rather than flat -- owner asked for less blue.
+
+   A FLAT scrim cannot go much lighter. Measured against the worst case (scrim
+   over a pure white pixel in the photo), the binding colour is the brand green
+   at 11-12px, which needs 4.5:1:
+
+       alpha .86   green 5.61   white 10.21   meta 8.01
+       alpha .80   green 4.58   white  8.33   meta 6.53   <- the floor
+       alpha .75   green 3.86                              FAILS
+
+   So flat could only go .86 -> .80, which is not a visible change. Instead the
+   overlay is a horizontal gradient: it stays dark under the TEXT and lightens
+   across the empty right side, where nothing has to stay legible. The
+   photograph reads properly for the first time while the type keeps the same
+   backing it had.
+
+   The plateau runs to 76%, not 66%. At 1100px the container is narrower, so the
+   same text occupies MORE of the band -- its right edge reaches 71% there
+   against 61% at 1680. A shorter plateau put the 11px eyebrow at 4.23:1, just
+   under the 4.5 it needs. Every stop here is validated by measuring the real
+   elements at 390 / 860 / 1024 / 1100 / 1280 / 1440 / 1680 / 1920, not by
+   reading the gradient.
+   -------------------------------------------------------------------------- */
+.nf-hero__bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(4, 38, 58, .90) 0%,
+    rgba(4, 38, 58, .88) 58%,
+    rgba(4, 38, 58, .86) 76%,
+    rgba(4, 38, 58, .55) 90%,
+    rgba(4, 38, 58, .42) 100%
+  );
+}
+
+/* Below 1025px the text fills the width, so there is no empty side to lighten
+   and the gradient would put type over the pale end. Flat .86 there.
+
+   1024, not 860: measured at 900px the eyebrow's right edge reached 87% of the
+   band, landing at alpha .62 and 2.51:1. The gradient only earns its place once
+   the container is wide enough to leave the photo some room, which is from
+   1025 up -- at 1024 the worst element still holds 5.46:1. */
+@media (max-width: 1024px) {
+  .nf-hero__bg::after {
+    background: rgba(4, 38, 58, .86);
+  }
+}
+
+.nf-hero__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 52px 22px;
+}
+.nf-hero__text {
+  min-width: 0;
+  /* A measure, and the thing that makes the lighter overlay possible at all.
+     Without it the meta line (badge + address + hours) ran to 89% of a 1680px
+     band, so there was no empty side to lighten -- the first gradient attempt
+     put the 11px eyebrow at 2.15:1 and the 15px meta at 3.07:1. Constrained,
+     the text ends around 62% and the photo has the rest. */
+  max-width: 760px;
+}
+
+.nf-hero__eyebrow {
+  margin: 0 0 6px;
+  font-size: 11px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: #8FD338 !important;          /* 5.61:1 on the scrimmed worst case */
+}
+.nf-hero__name {
+  margin: 0 0 10px;
+  font-size: clamp(28px, 4.6vw, 44px);
+  line-height: 1.05;
+  color: #fff !important;
+}
+.nf-hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin: 0;
+  font-size: 15px;
+  color: #DDE5EA !important;
+}
+.nf-hero__badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border: 1px solid #8FD338;
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: .06em;
+  color: #8FD338 !important;
+}
+
+@media (max-width: 860px) {
+  .nf-hero__inner { padding: 34px 18px; }
+}
+
+/* -----------------------------------------------------------------------------
+   Section 7 — photos
+   -------------------------------------------------------------------------- */
+/* auto-FIT, not auto-fill. That one word is the whole bug the owner spotted:
+   auto-fill keeps the empty tracks it created, so two photos in a 1180px
+   container sat in the first two of five 210px slots and left three slots of
+   white to the right. auto-fit COLLAPSES the empty tracks, so the photos on
+   hand share the full width however many there are.
+
+   The min is 240px rather than 210 so a third photo never squeezes to a stamp
+   when the client supplies more. */
+.nf-photos {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* "adjust length if needed" -- it is needed, and the reason is the source
+   files, measured rather than guessed:
+
+       *-thumbnail.webp        800 x 305   (2.62:1, a wide strip)
+       newbritain-interior-2   800 x 800   (square)
+       *-interior-300px*.jpg   300 x 300   (square, and small)
+
+   At 16/10 a 2.62:1 strip lost 39% of its width to the crop. 3/2 is the ratio
+   that keeps the most of both the wide strips and the square interiors while
+   the pair still fills 1180px: each photo lands at 584 x 389. */
+.nf-photos li {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #D9E0E5;
+  background: #EFF0F1;
+  aspect-ratio: 3 / 2;
+}
+
+/* Dracut and Woodbury have exactly ONE photo each. Spanning 1180px at 3/2
+   would make that lone 800px-wide file a 787px-tall blow-up. A single photo
+   still fills the width, as asked -- it just does it as a 3/1 banner (1180 x
+   393), which is both the right shape for one image and much closer to the
+   2.62:1 the file actually is. */
+.nf-photos li:only-child { aspect-ratio: 3 / 1; }
+
+.nf-photos img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* One photo per row on a phone; 3/2 across ~340px is 227px tall, which reads
+   as a photo rather than a band. */
+@media (max-width: 600px) {
+  .nf-photos { grid-template-columns: 1fr; }
+  .nf-photos li, .nf-photos li:only-child { aspect-ratio: 3 / 2; }
+}
+
+/* "Only N images on file for <store>. More store photography would fill this
+   out." Hidden with the other reminders per the owner. The gap it named is
+   real and still open -- four of six stores have two photos, two have one, and
+   every source is 800px or smaller. That now lives in the handover log only. */
+.nf-photos__pending {
+  display: none;
+}
+
+
+/* =============================================================================
+   The hero CTAs — stacked on the right, equal length.        (owner request)
+   ============================================================================= */
+
+/* The inner becomes a two-column row: the store's name and details on the left
+   where they already were, the two CTAs on the right. align-items:end keeps the
+   buttons on the same baseline as the bottom of the text rather than floating
+   against a tall photo. */
+.nf-hero[data-nf-hero-cta="true"] .nf-hero__inner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 36px;
+}
+
+/* EQUAL LENGTH is the whole point of the request, and it does not happen by
+   itself: these two buttons are sized by their own labels, and "Shop the
+   Attleboro menu" is more than twice "Directions". A fixed-width column with
+   both children at 100% makes them identical whatever the store is called —
+   Greenville and New Britain have very different label lengths. */
+.nf-hero__cta {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  /* 330, not 268. At 268 the widths matched but the HEIGHTS did not — measured
+     78px against 58px, because "Shop the Attleboro menu" wrapped to two lines
+     while "Directions" stayed on one. Equal-length buttons that are visibly
+     different heights read as a mistake. 330 fits the longest label on every
+     store, including "Shop the New Britain menu". */
+  width: 330px;
+}
+/* Height as well as width. At equal widths the two still measured 54px and
+   58px — the ghost button carries a 2px border top and bottom and the filled
+   one does not. A shared min-height with the label centred inside makes them
+   identical whatever the border or the label does. */
+.nf-hero__cta > .nf-loc__cta {
+  width: 100%;
+  margin: 0;
+  min-height: 58px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* The ghost button cannot stay a transparent outline here. Over the hero
+   photograph its navy border and navy text land on whatever pixel happens to be
+   behind them, and the right-hand side of the scrim is the LIGHTEST part of the
+   gradient (rgba(4,38,58,.42)) — the one place a dark outline is least safe.
+   A solid navy fill with white text is 15.63:1 regardless of the photo. */
+.nf-hero__cta > .nf-loc__cta--ghost {
+  background: #04263A !important;
+  border-color: #04263A !important;
+  color: #FFFFFF !important;
+}
+.nf-hero__cta > .nf-loc__cta--ghost:hover {
+  background: #0A2C47 !important;
+  border-color: #FFFFFF !important;
+}
+
+/* The section the row came from is empty now — collapse it rather than leave a
+   band of padding with nothing in it. */
+.nf-loc__sec[data-nf-empty="true"] {
+  display: none;
+}
+
+/* Below the hero's two-column breakpoint the CTAs go full width under the text,
+   which is where a phone wants them anyway. */
+@media (max-width: 860px) {
+  .nf-hero[data-nf-hero-cta="true"] .nf-hero__inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 22px;
+  }
+  .nf-hero__cta { width: 100%; }
+}

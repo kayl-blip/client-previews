@@ -1,0 +1,213 @@
+/* =============================================================================
+   age-gate.css — matched sizing for the age-gate's two answers.
+
+   Measured before touching anything. The two buttons were built as separate
+   Elementor widgets and had drifted apart on every axis:
+
+       Yes I am        170.4 x 62    padding 16px 48px   border 3px
+       Nope, not me    178.3 x 50    padding 16px 32px   border 1px
+
+   Different width, different height, different padding, different border. Side
+   by side that reads as a mistake rather than a hierarchy.
+
+   They are now one box. The distinction between the two answers stays where it
+   belongs -- one is filled, one is outlined -- rather than being carried by
+   accidental geometry.
+
+   The 56px height also clears the 44px minimum for a touch target (2.5.5),
+   which neither reliably did at 50px once the border was counted.
+   ============================================================================= */
+
+#yesButton,
+#noButton {
+  /* inline-flex so the label is optically centred at any width, which
+     inline-block with symmetric padding does not guarantee once the two
+     labels differ in length as much as these do */
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  box-sizing: border-box !important;
+  min-width: 210px !important;
+  min-height: 56px !important;
+  height: 56px !important;
+
+  padding: 0 32px !important;
+  border-width: 2px !important;
+  border-style: solid !important;
+  border-radius: 5px !important;
+
+  font-size: 16px !important;
+  line-height: 1 !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+}
+
+/* Keep the two answers visually distinct by fill, not by size. The colours are
+   the ones already in use and already measured: the outlined answer is the
+   brand green on the gate's navy at 8.59:1, the filled answer is navy on cream
+   at 13.4:1. */
+#noButton  { border-color: currentColor !important; }
+#yesButton { border-color: transparent !important; }
+
+/* Narrow screens: stack, do not shrink.
+
+   Two 210px buttons cannot sit side by side below about 460px, and the row they
+   live in is flex-wrap:nowrap, so without this they simply overflowed the
+   viewport -- measured at both 430px and 360px.
+
+   Their flex row is elementor-element-be6208b, which is part of the age-gate
+   popup template and therefore identical on all 47 pages (verified). Letting it
+   wrap keeps both buttons at the same 210px rather than shrinking them to
+   different widths, which is what the first attempt did.
+
+   Two earlier attempts are worth recording so they are not retried:
+     width:100% below 520px  -> UNEQUAL again (136.4 vs 180.3 at 430px), because
+                                each Elementor wrapper shrink-wraps and "100%"
+                                resolved against a different width for each.
+     min-width alone         -> equal, but overflowed the viewport on mobile. */
+@media (max-width: 560px) {
+  .elementor-element-be6208b {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    row-gap: 12px !important;
+  }
+  .elementor-element-be6208b > * {
+    flex: 0 0 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+}
+
+/* =============================================================================
+   Order Pickup, where the destination is not confirmed.
+
+   The gate's store list is the FIRST thing a visitor touches: age, then state,
+   then store, then Order Pickup. On five of the six stores that button went to
+   novafarms.com/stores/<state>/<slug>, which returns 403 -- so the primary path
+   into the shop ended in an error page. 235 of these across the 47 pages; only
+   New Britain resolved, and its link is untouched.
+
+   They are no longer links. Each is a <span role="link" aria-disabled="true">
+   carrying data-nf-menu="pending" and data-nf-was="<original href>", so the
+   real URL can be restored with one selector-driven pass and nothing was lost.
+
+   Colours are the measured ones: #DDE5EA is 11.4:1 on the gate's navy and
+   #A9B8C2 is 7.4:1.
+   ============================================================================= */
+.nf-gate-pending {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 48px;
+  padding: 10px 22px !important;
+  /* currentColor, not a fixed grey. These 78 buttons are NOT all on the gate's
+     navy -- plenty sit in page content on white. Hard-coding #DDE5EA put light
+     text on a white ground at 1.28:1 in 43 places. Borrowing the inherited
+     colour means the contrast corrector's decision still holds wherever the
+     button happens to be. */
+  border: 2px dashed currentColor !important;
+  border-radius: 5px;
+  /* The background is deliberately left alone. Forcing it transparent stripped
+     these buttons' own dark fill and left their light theme text (#EFF0F1) on
+     white at 1.14:1 in 47 places -- a pairing the contrast corrector does not
+     touch, because near-white on white is not one of the measured brand cases.
+     The dashed border, the cursor and the note below already say "pending"; the
+     fill was never carrying that meaning. */
+  cursor: not-allowed !important;
+  text-decoration: none !important;
+  opacity: 1 !important;
+}
+
+/* Says why, rather than leaving a dead-looking button unexplained. Inherits
+   colour for the same reason as the border. */
+.nf-gate-pending::after {
+  content: "menu link pending";
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: .04em;
+  text-transform: none;
+  color: inherit;
+}
+
+.nf-inline-pending {
+  cursor: not-allowed !important;
+  text-decoration: underline dotted !important;
+  text-underline-offset: 2px;
+}
+
+/* Nav items that became pending spans lose the theme's LINK colour.
+   `.elementor-kit-7 a` and the sub-menu rules colour <a> white; these are now
+   <span>, match none of it, and fall back to the body's #333. On the navy
+   sub-menu that measured 1.14:1 -- rgb(51,51,51) on rgb(10,44,71) -- across the
+   176 NJ/ME Sign Up items.
+
+   It escaped every contrast sweep for the same reason the accessibility panel
+   did: a closed dropdown has zero-size children, and a zero-size element has no
+   box to measure. Verified by forcing the sub-menu open. Anything that is
+   revealed by hover, focus or a toggle has to be measured OPEN.
+
+   Scoped to the nav's own item classes so prose pending links, which sit on
+   white, keep inheriting their surrounding colour. */
+.nf-inline-pending.elementor-item,
+.nf-inline-pending.elementor-sub-item,
+.elementor-nav-menu .nf-inline-pending,
+.sub-menu .nf-inline-pending {
+  color: #FFFFFF !important;        /* 14.34:1 on the sub-menu's rgb(10,44,71) */
+}
+/* No opacity dimming here on purpose. It reads as a nice "inactive" cue and it
+   silently lowers the effective contrast of every one of these 218 links --
+   which the contrast pass would not catch, because it measures the computed
+   colour, not the colour after the layer is composited. The dotted underline
+   and the cursor carry the meaning instead, and neither costs any contrast. */
+
+/* =============================================================================
+   THE GATE'S "GO TO MAIN SITE" BAR WAS SITTING ON TOP OF THE LAST STORE.
+
+   Found by the 7-lens responsive audit and re-measured here. On the store-list
+   step (step 3, after Yes -> Massachusetts), the gate renders a "Go to Main
+   Site" bar as `position: fixed; bottom: 0; z-index: 1`, 62px tall — and it is
+   duplicated, two identical bars stacked at the same coordinates.
+
+   At 320x568 (iPhone SE) the bar occupies y 507..569 and the Dracut row sits at
+   y 514..530, directly underneath it. Measured with elementFromPoint at each
+   control's centre, FOUR controls were unreachable:
+
+     1274 Merrimack Ave      covered by .elementor-button-wrapper "Go to Main Site"
+     (351) 500 - 6467        covered by the same
+     Order Pickup            covered by the same
+     Go to Main Site         (see below — this one is an artifact)
+
+   So on an iPhone SE, one of the three Massachusetts stores could not be
+   selected from the age gate. The gate is the first thing every visitor sees.
+
+   The list could not be scrolled clear either: its scrollport had only 13px of
+   range, against a 62px bar.
+
+   Reserving the bar's height at the end of the scrollport is the whole fix —
+   the standard treatment for a fixed bottom bar over scrollable content. It
+   takes the scroll range 13 -> 38 and the blocked count 4 -> 0 at 320x568,
+   360x640, 390x844 and 1440x900.
+
+   76px, not more, and that is measured rather than chosen. At 120px the extra
+   room pushes the step's own "Select a State" control above the top of the
+   scrollport when fully scrolled, so 320x568 REGRESSES from 0 blocked to 1.
+   More padding is not better here.
+
+   THE "Go to Main Site" SELF-REPORT IS A MEASUREMENT ARTIFACT, not a defect:
+   because the bar is duplicated, elementFromPoint over one copy returns the
+   other copy's text span. Both probes return landsOnGTMS: true, so a real tap
+   always lands on a Go-to-Main-Site control. Left alone.
+
+   RESIDUAL, STATED: at 320x480 the last store is still partly under the bar
+   (2-4 controls depending on padding). That viewport is shorter than any
+   mainstream phone in portrait — the iPhone SE is 320x568 — and closing it
+   needs the gate's bar to flow in the document instead of being fixed, which
+   is a change to the client's own popup markup rather than a stylesheet.
+   ============================================================================= */
+.elementor-popup-modal .dialog-message.dialog-lightbox-message {
+  padding-bottom: 76px !important;
+}

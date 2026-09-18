@@ -1,0 +1,104 @@
+/* =============================================================================
+   ⚠ SUPERSEDED 2026-09-09 AND NO LONGER LINKED. The owner picked direction B
+   ("Quiet column") from the four options, which deletes the review card
+   entirely — so the padding question this file settled has nothing left to
+   apply to. The live rules are in reviews-quiet.css.
+
+   Kept rather than deleted because the measurements below are still the record
+   of WHY 28px was the right padding, and restoring this direction is a matter
+   of swapping the one <link> line inside the `oso-reviews:css` sentinel back.
+
+   reviews-compact.css — tighten "The Stars of New England" cards.
+
+   Owner call: the band read as bulky and should be more compact and sleek.
+   This is a deliberate departure from the client's current sizing, applied to
+   the 7 pages that carry the reviews loop.
+
+   MEASURED BEFORE, at 1440 wide, so the reductions are aimed at what actually
+   made the cards tall rather than at whatever looked big:
+
+     card (every slide)           244.8px
+     inner container padding      27.8px on all four sides
+     inner container min-height   180px          <- a floor, not content
+     inner row gap                10px
+     border radius                30px
+     star glyphs                  24 x 24, in a 30px row
+     review text                  16px / 24px
+     "Google" label               12.8px / 19.2px
+
+   Content in that card was only 97.2px of it. The rest was padding and the
+   180px floor. Swiper then equalises every slide to the tallest, so the floor
+   and the padding were being paid on all of them at once -- which is why the
+   short cards had so much empty space under the text.
+
+   The radius comes down with the box on purpose: 30px on a card half as tall
+   reads bulbous rather than soft.
+
+   NOT touched: the section heading, and the card's colour. Sizing and spacing
+   only, per the brief.
+   ============================================================================= */
+
+/* ---- the card box ---- */
+[class*="type-reviews"] .e-con-full.e-con {
+  /* 28px, NOT the 17/18/16 this first shipped with.
+
+     Padding was the wrong thing to cut. Measured from the owner's reference
+     against our own render, as a ratio of padding to card width so the two
+     compare at any zoom:
+
+         reference cards      0.0806
+         client's original    0.0800   (27.8px on a 347.5px card)
+         my first attempt     0.0518   (18px)  <- too tight, read as cramped
+
+     The reference and the client's original are the same value. What made the
+     cards bulky was the 180px min-height floor below, not the padding, and
+     removing that is what buys the height back. */
+  padding: 28px !important;
+  min-height: 0 !important;              /* the 180px floor, removed */
+  row-gap: 7px !important;
+  border-radius: 20px !important;
+}
+
+/* ---- stars ---- */
+/* The glyph size is set by width/height, not font-size: the character itself is
+   hidden at font-size 0 and the Nova star is a background image. Scale the box
+   and the row follows. See a11y-panel.js for why that box must not be scaled by
+   the text-size setting. */
+[class*="type-reviews"] .elementor-star-rating i {
+  width: 17px !important;
+  height: 17px !important;
+}
+[class*="type-reviews"] .elementor-star-rating {
+  font-size: 14px !important;
+  line-height: 1 !important;
+}
+[class*="type-reviews"] .elementor-star-rating__wrapper {
+  margin: 0 !important;
+}
+
+/* ---- review copy ---- */
+[class*="type-reviews"] .elementor-widget-text-editor,
+[class*="type-reviews"] .elementor-widget-text-editor p {
+  font-size: 14.5px !important;
+  line-height: 1.45 !important;
+  margin: 0 !important;
+}
+
+/* ---- the source label ("Google"), last child of the card ---- */
+[class*="type-reviews"] .elementor-widget-text-editor:last-child,
+[class*="type-reviews"] .elementor-widget-text-editor:last-child p {
+  font-size: 11.5px !important;
+  line-height: 1.4 !important;
+  letter-spacing: .02em;
+}
+
+/* The card is near full width on a phone, so 28px holds the same ratio there
+   (28 / ~358 = 0.078) and needs no reduction. Only the radius comes in.
+
+   Type is deliberately NOT reduced further here either -- shrinking body copy
+   on a phone is the opposite of what the accessibility layer exists for. */
+@media (max-width: 767px) {
+  [class*="type-reviews"] .e-con-full.e-con {
+    border-radius: 18px !important;
+  }
+}

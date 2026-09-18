@@ -1,0 +1,176 @@
+/* =============================================================================
+   deals.css — the mockup deals carousel.
+
+   THESE ARE MOCKUPS. No deal content exists anywhere in the bundle, so the four
+   offers here were written to demonstrate the layout and are labelled as
+   examples in the UI itself, not just in this comment. Cannabis retail offers
+   carry regulatory weight per state; nothing here should reach a live site
+   without the client's compliance review.
+
+   The imagery is generated (fal.ai / FLUX), deliberately with NO text in the
+   picture. That is revision 2's locked decision 4: structured HTML deal cards,
+   not banner images with the offer baked in, so every word stays selectable,
+   readable by a screen reader, and scales with the text-size setting. The image
+   is background; the offer is text on top of it.
+
+   No auto-advance. A carousel that moves on its own needs a pause control to
+   satisfy WCAG 2.2.2, and an auto-advancing promo is a well-known accessibility
+   and usability problem. This one moves only when the reader asks it to.
+   ============================================================================= */
+
+.nf-deals {
+  position: relative;
+  margin: 0;
+}
+
+/* The mockup label is gone per the owner ("remove reminders"). Its rule goes
+   with it rather than lingering as dead CSS -- deals.js no longer builds the
+   element, so nothing here would ever match. */
+
+/* --- the rail ------------------------------------------------------------ */
+.nf-deals__rail {
+  display: flex;
+  gap: 14px;
+  margin: 0;
+  padding: 0 2px 12px;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.nf-deals__rail:focus-visible {
+  outline: 3px solid #8FD338;
+  outline-offset: 3px;
+  border-radius: 12px;
+}
+.nf-deals__rail::-webkit-scrollbar { height: 6px; }
+.nf-deals__rail::-webkit-scrollbar-thumb { background: #C7D2DA; border-radius: 999px; }
+.nf-deals__rail::-webkit-scrollbar-track { background: transparent; }
+
+.nf-deals__slide {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  min-width: 0;
+}
+@media (min-width: 900px) {
+  /* Two at a time on a wide screen: a single 1180px-wide banner is a billboard,
+     and the four offers are meant to be compared. */
+  .nf-deals__slide { flex-basis: calc(50% - 7px); }
+}
+
+/* --- the banner ---------------------------------------------------------- */
+.nf-deal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 210px;
+  padding: 20px 22px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #04263A;
+  isolation: isolate;
+}
+.nf-deal__img {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: -2;
+}
+/* Bottom-weighted scrim: the copy sits low, so the picture stays readable at
+   the top of the card. Measured over a pure-white pixel at the copy's end of
+   the gradient (.88): white 10.7:1, #DDE5EA 8.4:1, brand green 5.9:1. */
+.nf-deal__img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(4, 38, 58, .45) 0%,
+    rgba(4, 38, 58, .70) 45%,
+    rgba(4, 38, 58, .88) 100%
+  );
+}
+
+.nf-deal__tag {
+  align-self: flex-start;
+  margin: 0 0 10px;
+  padding: 4px 10px;
+  border: 1px solid #8FD338;
+  border-radius: 999px;
+  color: #8FD338 !important;
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.nf-deal__title {
+  margin: 0 0 6px;
+  /* !important on the SIZE too, not just the colour. The theme ships
+     `.elementor-kit-7 h3 { font-size: 18px }` at (0,1,1), which beat this
+     single class and silently rendered the title at 18px. Measured, not
+     assumed -- the same specificity trap as the location headings. */
+  font-size: 21px !important;
+  line-height: 1.15 !important;
+  color: #FFFFFF !important;
+}
+.nf-deal__offer {
+  margin: 0 0 6px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: #DDE5EA !important;
+}
+.nf-deal__terms {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #C6D3DA !important;         /* 7.6:1 on the scrim's dark end */
+}
+
+/* --- controls ------------------------------------------------------------ */
+.nf-deals__controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+.nf-deals__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;                       /* 2.5.5 */
+  height: 44px;
+  border: 2px solid #0A2C47;
+  border-radius: 8px;
+  background: #FFFFFF !important;
+  color: #0A2C47 !important;         /* 14.34:1 */
+  font-size: 17px;
+  line-height: 1;
+  cursor: pointer;
+}
+.nf-deals__btn:hover:not(:disabled) { background: #0A2C47 !important; color: #FFFFFF !important; }
+/* #5A6B76, not #6B7D89. The lighter grey measured 4.27:1 on white and the
+   sweep caught it. WCAG exempts inactive controls from 1.4.3, but a disabled
+   arrow still has to be readable to be understood as "there is nothing that
+   way", and the standard on this build is zero measured failures. 5.53:1. */
+.nf-deals__btn:disabled {
+  opacity: 1;                        /* never opacity: it is invisible to the
+                                        contrast pass, which reads the computed
+                                        colour and not the composited result */
+  border-color: #A9B4BC;
+  color: #5A6B76 !important;
+  cursor: default;
+}
+.nf-deals__btn:focus-visible {
+  outline: 3px solid #8FD338; outline-offset: 2px; box-shadow: 0 0 0 5px #04263A;
+}
+.nf-deals__count {
+  font-size: 13px;
+  color: #4A5B66;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nf-deals__rail { scroll-behavior: auto; }
+}

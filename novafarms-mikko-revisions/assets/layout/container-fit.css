@@ -1,0 +1,9 @@
+/* Companion to container-fit.js — see that file for the measurements and for
+   why the blanket stylesheet version was measured and rejected. Only elements
+   the script has proven to be over-wide AND not full-bleed are capped. */
+.site-main .e-con[data-nf-overwide],
+.site-main .e-con-inner[data-nf-overwide] {
+  max-width: 1140px !important;
+  margin-inline: auto !important;
+}
+

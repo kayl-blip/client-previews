@@ -1,0 +1,285 @@
+{
+  "_provenance": {
+    "generated_for": "novafarms-revisions preview -> production novafarms.com",
+    "rules": "Every value below was extracted from the site's own pages, the live novafarms.com, or a resolved Google Maps redirect. NOTHING is invented. See _seo/PROVENANCE.md.",
+    "geo_source": "maps.app.goo.gl short links on locations.html, resolved via HTTP redirect to google.com/maps/place/...@lat,lng",
+    "hours_source": "locations.html store cards (canonical listing). ATTLEBORO additionally CONFIRMED against the Google Business Profile listing supplied by the operator 2026-09-16: 8 AM-11 PM all seven days, which matches the emitted Mo-Su 08:00-23:00. A stale FAQ answer on attleboro-ma.html that claimed Sun-Wed 8 PM closing was corrected on-page to match.",
+    "nap_source": "per-location pages + locations.html + Google Business Profile screenshots supplied by operator",
+    "og_image_source": "live novafarms.com og:image (identical brand image on all location pages)",
+    "excluded_deliberately": "aggregateRating/reviewCount. Google prohibits self-serving review markup on LocalBusiness sourced from third-party (Google) reviews. GBP ratings were supplied but are NOT emitted.",
+    "sameas_source": "Workflow novafarms-sameas-research: parallel multi-modal discovery then per-URL ADVERSARIAL verification (each verifier instructed to REFUTE and to default to refuted when uncertain). Only URLs that were actually loaded and confirmed are included. Ambiguous map/OSM links were resolved by following the redirect / querying the OSM API to confirm WHICH store they are."
+  },
+  "org": {
+    "name": "Nova Farms",
+    "legalName": "Nova Farms",
+    "url": "https://novafarms.com/",
+    "email": "info@novafarms.com",
+    "logo": "https://novafarms.com/wp-content/uploads/2020/09/nova-favicon-navy-25-512x512-1-300x300.png",
+    "image": "https://novafarms.com/wp-content/uploads/2025/10/nova-updated-metaimage-1080p-copy.webp",
+    "description": "Nova Farms is a craft cannabis cultivator and dispensary group operating recreational and medical dispensaries across Massachusetts, Connecticut, New Jersey and Maine.",
+    "sameAs": [
+      "https://www.facebook.com/novafarmsretail/",
+      "https://www.instagram.com/novafarms.ma/",
+      "https://www.instagram.com/novafarms.nj/",
+      "https://www.instagram.com/novafarmsct/",
+      "https://x.com/novafarmsretail",
+      "https://www.linkedin.com/company/nova-farms",
+      "https://www.youtube.com/@NovaFarms",
+      "https://www.leafly.com/brands/nova-farms",
+      "https://www.leafly.com/dispensary-info/nova-farms",
+      "https://apps.apple.com/us/app/nova-farms/id6762457013",
+      "https://www.bbb.org/us/ma/attleboro/profile/cannabis/nova-farms-llc-0021-549072",
+      "https://www.zoominfo.com/c/nova-farms-llc/465628997"
+    ]
+  },
+  "shareImage": {
+    "url": "https://novafarms.com/wp-content/uploads/2025/10/nova-updated-metaimage-1080p-copy.webp",
+    "width": 1080,
+    "height": 1080
+  },
+  "offerCategories": [
+    "Flower",
+    "Pre-Rolls",
+    "Edibles",
+    "Vapes",
+    "Concentrates",
+    "Tinctures",
+    "Topicals",
+    "Beverages",
+    "Accessories"
+  ],
+  "stores": {
+    "attleboro-ma": {
+      "name": "Nova Farms Recreational Weed Dispensary Attleboro",
+      "url": "https://novafarms.com/locations/attleboro-ma/",
+      "street": "1000 Washington St",
+      "city": "Attleboro",
+      "region": "MA",
+      "zip": "02703",
+      "country": "US",
+      "phone": "+1-833-420-6682",
+      "email": "Attleboro@novafarms.com",
+      "lat": 41.9088374,
+      "lng": -71.3567437,
+      "maps": "https://maps.app.goo.gl/dACNdVfMZV6JDrE69",
+      "hours": [
+        {
+          "days": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+          ],
+          "opens": "08:00",
+          "closes": "23:00"
+        }
+      ],
+      "medical": false,
+      "sameAs": [
+        "https://cannabisshop.com/stores/nova-farms-dispensary-attleboro/"
+      ]
+    },
+    "dracut-ma": {
+      "name": "Nova Farms Recreational Weed Dispensary Dracut",
+      "url": "https://novafarms.com/locations/dracut-ma/",
+      "street": "1274 Merrimack Ave",
+      "city": "Dracut",
+      "region": "MA",
+      "zip": "01827",
+      "country": "US",
+      "phone": "+1-351-500-6467",
+      "email": "Dracut@novafarms.com",
+      "lat": 42.6678032,
+      "lng": -71.2441956,
+      "maps": "https://maps.app.goo.gl/CKRA42UgwNiRkkhs6",
+      "hours": [
+        {
+          "days": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday"
+          ],
+          "opens": "08:00",
+          "closes": "22:00"
+        },
+        {
+          "days": [
+            "Sunday"
+          ],
+          "opens": "08:00",
+          "closes": "20:00"
+        }
+      ],
+      "medical": false,
+      "sameAs": [
+        "https://www.leafly.com/dispensary-info/nova-farms-dracut",
+        "https://herb.co/dispensaries/nova-farms-dracut",
+        "https://www.420portal.com/nova-farms-dracut-1",
+        "https://www.google.com/maps/place/Nova+Farms+Dracut/@42.6678032,-71.2441956,17z/data=!3m1!4b1!4m6!3m5!1s0x89e3a70c23dc34df:0x1a0ea111374f720f!8m2!3d42.6678032!4d-71.2416207!16s%2Fg%2F11smdzwt4l"
+      ]
+    },
+    "framingham-ma": {
+      "name": "Nova Farms Recreational Weed Dispensary Framingham",
+      "url": "https://novafarms.com/locations/framingham-ma/",
+      "street": "1137 Worcester Rd",
+      "city": "Framingham",
+      "region": "MA",
+      "zip": "01701",
+      "country": "US",
+      "phone": "+1-508-424-5858",
+      "email": "Framingham@novafarms.com",
+      "lat": 42.2994368,
+      "lng": -71.4438924,
+      "maps": "https://maps.app.goo.gl/bXsGy4RMbhLp531j8",
+      "hours": [
+        {
+          "days": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday"
+          ],
+          "opens": "08:00",
+          "closes": "22:00"
+        },
+        {
+          "days": [
+            "Sunday"
+          ],
+          "opens": "10:00",
+          "closes": "20:00"
+        }
+      ],
+      "medical": false,
+      "sameAs": [
+        "https://www.leafly.com/dispensary-info/nova-farms---framingham-",
+        "https://www.framingham.com/info/cannabis_dispensaries/nova_farms_framingham.htm",
+        "https://www.google.com/maps/place/Nova+Farms+Framingham/@42.2994345,-71.4487759,1159m/data=!3m2!1e3!4b1!4m6!3m5!1s0x89e3897eeb148b39:0x18e78710e517a60!8m2!3d42.2994346!4d-71.443905!16s%2Fg%2F11lg7y905k",
+        "https://www.waze.com/live-map/directions/us/ma/framingham/nova-farms-recreational-weed-dispensary-framingham?to=place.ChIJOYsU636J44kRYHpRDnF4jgE"
+      ]
+    },
+    "newbritain-ct": {
+      "name": "Nova Farms Medical & Recreational Weed Dispensary New Britain",
+      "url": "https://novafarms.com/locations/newbritain-ct/",
+      "street": "623 Hartford Rd",
+      "city": "New Britain",
+      "region": "CT",
+      "zip": "06053",
+      "country": "US",
+      "phone": "+1-959-208-3344",
+      "email": "newbritain@novafarms.com",
+      "lat": 41.7148541,
+      "lng": -72.765349,
+      "maps": "https://maps.app.goo.gl/GgkpSoVCazHiRPmR9",
+      "hours": [
+        {
+          "days": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday"
+          ],
+          "opens": "10:00",
+          "closes": "21:00"
+        },
+        {
+          "days": [
+            "Sunday"
+          ],
+          "opens": "10:00",
+          "closes": "18:00"
+        }
+      ],
+      "medical": true,
+      "sameAs": [
+        "https://dutchie.com/dispensary/nova-farms-new-britain-rec",
+        "https://maps.app.goo.gl/ZMbwFeMi643TVFet9",
+        "https://www.openstreetmap.org/node/13863499670"
+      ]
+    },
+    "woodbury-nj": {
+      "name": "Nova Farms Weed Dispensary & Drive-Thru Woodbury",
+      "url": "https://novafarms.com/locations/woodbury-nj/",
+      "street": "642 Mantua Pike",
+      "city": "Woodbury",
+      "region": "NJ",
+      "zip": "08096",
+      "country": "US",
+      "phone": "+1-856-202-7273",
+      "email": "Woodbury@novafarms.com",
+      "lat": 39.8262842,
+      "lng": -75.161804,
+      "maps": "https://maps.app.goo.gl/Vugm93GwwyKdwiR37",
+      "hours": [
+        {
+          "days": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+          ],
+          "opens": "08:00",
+          "closes": "22:00"
+        }
+      ],
+      "medical": false,
+      "sameAs": [
+        "https://www.leafly.com/dispensary-info/nova-farms-woodbury",
+        "https://business.chambersnj.com/directory/Details/nova-farms-nj-3296441",
+        "https://maps.app.goo.gl/2w2P1aUYriGnPyAD7",
+        "https://www.openstreetmap.org/node/2351603381"
+      ]
+    },
+    "greenville-me": {
+      "name": "Nova Farms Dispensary Maine",
+      "url": "https://novafarms.com/locations/greenville-me/",
+      "street": "22 Rockwood Rd",
+      "city": "Greenville",
+      "region": "ME",
+      "zip": "04442",
+      "country": "US",
+      "phone": "+1-207-695-2967",
+      "email": "Maine@novafarms.com",
+      "lat": 45.4620285,
+      "lng": -69.6250731,
+      "maps": "https://maps.app.goo.gl/d6wYcWcHjFKV5CgS8",
+      "hours": [
+        {
+          "days": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+          ],
+          "opens": "10:00",
+          "closes": "19:00"
+        }
+      ],
+      "medical": false,
+      "sameAs": [
+        "https://www.leafly.com/dispensary-info/nova-farms-greenville-junction",
+        "https://cannapages.com/dispensaries/nova-farms-greenville/",
+        "https://nationwidedispensaries.com/maine/greenville-junction-nova-farms/",
+        "https://wheresweed.com/maine/greenville-junction/marijuana-dispensaries/nova-farms-maine",
+        "https://www.bbb.org/us/me/greenvlle-jct/profile/cannabis/nova-farms-llc-0021-549072/addressId/728129",
+        "https://maps.app.goo.gl/wnekTTJ3sh2JQNty6"
+      ]
+    }
+  }
+}

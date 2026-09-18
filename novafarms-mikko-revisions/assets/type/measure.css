@@ -1,0 +1,88 @@
+/* =============================================================================
+   measure.css — a reading measure that stops growing with the monitor.
+
+   OWNER ASK 2026-09-10: "optimize adaptability to any screen size."
+
+   THIS CORRECTS AN EARLIER CALL OF MY OWN. I checked line length on
+   privacy-policy.html, found it identical at 1440 and 1920 (its column is
+   capped at 1008px), and concluded the whole family was a static typography
+   choice rather than a screen-size failure. That was the wrong page. The SEO
+   landing pages have no cap at all.
+
+   Exact chars-per-line on recreational-cannabis-dispensary-near-camden-nj.html,
+   counted per character with Range.getClientRects and grouped into real line
+   boxes -- not chars/lines, which flatters ragged text:
+
+     viewport   375   768   1440   1920   2560
+     column     355   636    923   1235   1651
+     longest     60   105    150    196    266   chars/line
+
+   266 characters on a line is roughly three times the top of the comfortable
+   band, and it gets worse with every extra pixel of screen. A reader on a
+   2560 monitor loses their place returning to the start of the next line --
+   which is the specific thing a measure cap exists to prevent.
+
+   75ch caps it at 98 and holds there: 60 / 98 / 98 / 98 / 98.
+
+   WHY ch AND NOT px: the cap has to track the font, not the layout. These
+   paragraphs compute 14px; a px cap would drift the moment the type scale
+   changes or a reader zooms.
+
+   WHY NO `margin-inline: auto`: without it the box narrows from its right edge
+   and every left edge stays exactly where it was, so prose stays aligned with
+   the headings above it. Measured: leftEdgeMoved = 0 on camden, index, brands,
+   privacy-policy and wholesale, and 2 blocks on attleboro-ma.
+
+   PHONES ARE UNTOUCHED, and that is measured rather than assumed: at 375 the
+   cap narrows 0 blocks on any of the six pages checked, because 75ch is wider
+   than a phone column already is. It only ever bites on desktop.
+
+   KNOWN COSMETIC COST, stated: three CENTRED blocks across those six pages
+   (one each on attleboro-ma, privacy-policy and wholesale) narrow, so their
+   centred text sits in a narrower box and reads slightly left of where it did.
+   A 266-character centred line was the worse of the two.
+   ============================================================================= */
+.site-main p,
+.site-main li {
+  max-width: 75ch;
+}
+
+/* =============================================================================
+   THE FOOTER'S TYPE SCALE WAS UPSIDE DOWN.
+
+   Type was SMALLEST on the smallest screen -- the opposite of what a phone
+   needs. Measured on attleboro-ma.html (identical at 320, 375, 414 and 767):
+
+     element            <=767    768      1440
+     footer h2          12.8     16       20.8
+     footer links       12.8     15       15
+     footer paragraphs   9.6     11.2     11.2
+
+   Two things wrong at once. 9.6px body text on a phone is barely legible at
+   arm's length, and the heading and the links are the SAME 12.8px, so the
+   footer's hierarchy collapses entirely -- on mobile there is no visible
+   difference between a column heading and the links under it.
+
+   A floor rather than a rescale: 16 / 14 / 12 restores the ranking (heading >
+   link > body) without exceeding what the tablet breakpoint already uses, so
+   nothing gets bigger than the design already sanctions somewhere.
+
+   The cost is measured and it is small: footer height goes 582 -> 589 at 375,
+   414 and 767 -- seven pixels. At 320 it is 582 -> 634, because the wider type
+   wraps one more line in the narrowest column. Above 767 nothing changes at all.
+
+   For contrast, the 44px touch-target tier that was proposed for these same
+   footer links during the audit measured +140px of footer at 375, and was
+   rejected for that. This is a twentieth of that cost for a defect that affects
+   every reader rather than only touch accuracy.
+   ============================================================================= */
+@media (max-width: 767px) {
+  [data-elementor-type="footer"] h2,
+  footer h2 { font-size: 16px !important; }
+
+  [data-elementor-type="footer"] .elementor-button-text,
+  footer .elementor-button-text { font-size: 14px !important; }
+
+  [data-elementor-type="footer"] p,
+  footer p { font-size: 12px !important; }
+}

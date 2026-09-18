@@ -1,0 +1,108 @@
+/* =============================================================================
+   nav-current.css — the top nav's highlight tells you WHERE YOU ARE.
+
+   OWNER REPORT 2026-09-10: "fix the Nav, highlight stuck on shop" — with a
+   screenshot of the header showing SHOP in green and every other item white.
+
+   ROOT CAUSE, measured in the source rather than guessed at:
+
+   SHOP is not a menu item. It is an Elementor BUTTON widget sitting inside the
+   same header row (`924c64e` on 43 pages, `c366860` on index.html) whose text
+   colour is the brand accent #8FD338, permanently, on every page. Its
+   font-family, size and weight are IDENTICAL to the real menu links — GillSans
+   300 at 0.8em — so the only thing separating it from them is its colour, and
+   colour in this row is what a visitor reads as "you are here".
+
+   Meanwhile the real menu already behaves correctly on hover: Elementor sets
+   `.elementor-item:hover/:focus` to #9ED154. What it does NOT do is mark the
+   current page — the client's own nav config re-states
+   `.elementor-item.elementor-item-active { color: #FFFFFF }`, the same white as
+   the resting state, so the active class (which the clone carries on only 2 of
+   47 pages anyway) paints nothing.
+
+   So the highlight was not stuck on SHOP because something failed to move it.
+   There was never a moving highlight — there was a green button that looked
+   like one.
+
+   THIS FILE DOES TWO THINGS
+   1. SHOP rests white like its siblings and greens on hover, using the nav's
+      OWN hover green (#9ED154) so the whole row behaves as one control set.
+   2. Gives the nav a real current-page state — #8FD338 plus a 2px underline —
+      set by nav-current.js. Colour AND underline, never colour alone (1.4.1),
+      and the underline is also what separates "current" from "hovered", since
+      the two greens are a near match.
+
+      NOTE FOR THE OWNER: point 2 overrides a deliberate client setting (active
+      colour: white). Deleting this file's `[data-nf-current]` rules reverts to
+      a nav that never marks the current page; the SHOP fix above is
+      independent of it.
+
+   WHY `!important`, AND WHY NO ELEMENT IDS
+   Elementor scopes its header CSS by generated element id at (0,4,0) —
+   `.elementor-45 .elementor-element.elementor-element-924c64e .elementor-button`.
+   Those ids DIFFER PER PAGE (index.html alone uses c366860/6aea4ae, and the
+   three pages with a bespoke header use neither), so matching them would mean
+   enumerating ids per page — the exact mistake the framingham inline-container
+   fix was written to avoid. Everything here is scoped by STRUCTURE and wins on
+   `!important` instead.
+   ============================================================================= */
+
+/* ---------------------------------------------------------------- the SHOP CTA
+   Scoped with :has() to headers that actually contain a main nav. Three pages —
+   employee.html, med-portal.html and newbritain.html — ship a bespoke header
+   whose only control is a green "Join Loyalty" button and which has NO nav
+   beside it. Nothing there can be mistaken for a nav highlight, so that button
+   keeps its accent colour. Where a browser lacks :has(), the button simply
+   keeps today's green: the degrade is the current behaviour, not a broken one. */
+[data-elementor-type="header"]:has(.elementor-nav-menu--main)
+  .elementor-widget-button .elementor-button {
+  color: #FFFFFF !important;
+  fill: #FFFFFF !important;
+}
+
+[data-elementor-type="header"]:has(.elementor-nav-menu--main)
+  .elementor-widget-button .elementor-button:hover,
+[data-elementor-type="header"]:has(.elementor-nav-menu--main)
+  .elementor-widget-button .elementor-button:focus {
+  color: #9ED154 !important;   /* the nav's own hover green — 8.71:1 on #04263A */
+  fill: #9ED154 !important;
+}
+
+/* The button's BOX — its target size, and the header's fit at the narrow end —
+   is a separate concern and lives in header-fit.css. This file is colour. */
+
+/* -------------------------------------------------------- the current page
+   `data-nf-current` is set by nav-current.js:
+     "page"    — this link IS the page you are on
+     "section" — this top-level link OWNS the page you are on, i.e. the page is
+                 one of its dropdown children (every store page is a child of
+                 LOCATIONS, so LOCATIONS lights up on all six)
+
+   box-shadow rather than border-bottom or text-decoration, deliberately:
+   a border would shift the row by 2px, and text-decoration is already spoken
+   for — the accessibility panel's "underline links" cue sets
+   `text-decoration: underline !important` on every `li a`, which would put an
+   underline under ALL five items and erase this one as a distinguishing mark. */
+[data-elementor-type="header"] .elementor-nav-menu--main .elementor-item[data-nf-current] {
+  color: #8FD338 !important;   /* 8.59:1 on #04263A */
+  fill: #8FD338 !important;
+  box-shadow: inset 0 -2px 0 0 #8FD338;
+}
+
+/* Hover still reads as hover on the item you are already on: the underline
+   stays, the text moves to the hover green like every other item. */
+[data-elementor-type="header"] .elementor-nav-menu--main .elementor-item[data-nf-current]:hover,
+[data-elementor-type="header"] .elementor-nav-menu--main .elementor-item[data-nf-current]:focus {
+  color: #9ED154 !important;
+  fill: #9ED154 !important;
+}
+
+/* Dropdown children — Attleboro under LOCATIONS, MA Sign Up under JOIN LOYALTY.
+   The dropdown supplies its own active background (#0E2A48); only the colour
+   and weight are needed here, and no underline, because a dropdown row is a
+   list item rather than part of the horizontal rail. */
+[data-elementor-type="header"] .elementor-nav-menu--dropdown a[data-nf-current],
+[data-elementor-type="header"] .elementor-sub-item[data-nf-current] {
+  color: #8FD338 !important;
+  font-weight: 700;
+}

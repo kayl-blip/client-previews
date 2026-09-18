@@ -1,0 +1,172 @@
+/* =============================================================================
+   statement-trim.css — take the empty height out of the statement panel.
+
+   OWNER PICK. Of the three levers measured for getting reviews higher up the
+   homepage, this was the only one that reaches the brief's target on its own.
+
+   ⚠ NO COPY IS CUT. The star and all three lines — BUILT FROM FRIENDSHIP /
+   ROOTED IN THE EARTH / SHARED WITH PURPOSE — stay exactly as they are, at the
+   same size. What goes is empty space, and there is a lot of it:
+
+       MOBILE (390 x 844)          DESKTOP (1440 x 900)
+         panel      717.4px          panel      765px
+         content    233px            content    406px
+         EMPTY      484px            EMPTY      359px
+
+   The panel is not sized by its content at all. It carries `--min-height: 85vh`
+   and Elementor applies that as `min-height: var(--min-height)`, so the box is
+   85% of the viewport whatever is inside it. On a phone that is 717px to show
+   a star and three short lines.
+
+   Same shape as the About block and the review cards before it: the height was
+   never the padding or the type, it was a floor. So the floor is removed —
+   BOTH the custom property and the property, because Elementor reads one into
+   the other and zeroing either alone changes nothing — and the panel then
+   measures what it actually holds.
+   ============================================================================= */
+
+/* The floor, at every level it is applied. */
+.elementor-element-0747d94,
+.elementor-element-0747d94 .e-con,
+.elementor-element-0747d94 .e-con-inner,
+.elementor-element-0747d94 > .elementor-element {
+  --min-height: 0px !important;
+  min-height: 0 !important;
+}
+
+/* Padding on the block that HOLDS something, not on every child.
+
+   The first attempt used `> .elementor-element`, which also matched an empty
+   sibling container and gave it 30px top and bottom — 60px of pure nothing
+   added while trying to remove nothing. `:has(img, p)` restricts it to the
+   block with the star and the statement in it. */
+.elementor-element-0747d94 > .elementor-element:has(img, p) {
+  padding-top: 20px !important;
+  padding-bottom: 20px !important;
+}
+/* and the empty one collapses */
+.elementor-element-0747d94 > .elementor-element:not(:has(img, p)) {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Leading. The first attempt set 1.25 and made the panel TALLER — measured
+   54px per statement before, 68px after.
+
+   The reason: I read 54px for 27.2px text as one line at a line-height of
+   nearly 2. It is not. Each statement WRAPS to two lines on a phone, so 54px
+   was two lines at a line-height of 1.0, and 1.25 turned that into two lines of
+   34. The space was never in the leading; it was all in the 85vh floor above.
+
+   So leading goes back to where it was, and the TYPE SIZE is untouched — the
+   three lines look exactly as the client set them. */
+.elementor-element-0747d94 p {
+  line-height: 1 !important;
+  margin: 0 !important;
+}
+
+/* The accessibility text-size setting must still win here — a visitor who has
+   asked for larger text gets it, and the panel grows again. Nothing above
+   defends against that on purpose. */
+
+
+/* =============================================================================
+   The About row is removed; Learn More lives here now.       (owner request)
+
+   Measured on the live page before this, with reviews' scroll depth as the
+   test that mattered:
+
+       as it is now                       2.03 screens mobile,  2.41 desktop
+       hide the About paragraph only      1.65 mobile,          2.08 desktop
+       remove the About row entirely      1.50 mobile,          1.73 desktop
+
+   Only the last clears BOTH targets (2.0 and 1.9), which is why the row goes
+   rather than being collapsed again.
+
+   ⚠ ONE PHRASE IS LOST FROM THE SITE. The row's closing clause — "nurtured by
+   sunlight, sustained by healthy soil, and shared with purpose" — appears only
+   there. visit-us.html and team.html carry the same story but their version
+   stops at "set the standards for products". The panel this link now sits in
+   does still say ROOTED IN THE EARTH and SHARED WITH PURPOSE, so the idea
+   survives where the link does.
+   ============================================================================= */
+.elementor-element-a968cca {
+  display: none !important;
+}
+
+/* The button sits under SHARED WITH PURPOSE, centred with the lines above it.
+   Same treatment as the View Menu button it was matched to when it lived in
+   the About row — colours read off the real button rather than eyeballed:
+   #EFF0F1 on #0A2C47 is 13.7:1, so it holds on the panel's cream ground and
+   would hold on a dark one too. */
+.nf-statement-more {
+  /* OWNER 2026-09-10: "learn more from this section can be a bit closer to the
+     texts." 22 -> 8. Measured before, the gap from the last line's box to the
+     button was 42px: 22 of margin plus 20 of slack in the paragraph's own line
+     box. 8 brings it to ~28 and returns 14px to the top of the panel. */
+  margin-top: 8px !important;
+  align-self: center;
+}
+
+/* The panel's content block centres its children, so the button follows the
+   lines rather than sitting off to one side. */
+.elementor-element-0747d94 > .elementor-element:has(.nf-statement-more) {
+  align-items: center;
+}
+
+@media (max-width: 767px) {
+  .nf-statement-more {
+    margin-top: 8px !important;
+    width: auto !important;   /* not full-bleed: it is one button under three
+                                 short centred lines, not a form action */
+  }
+}
+
+
+
+/* =============================================================================
+   BREATHING SPACE AT THE TOP OF THE PANEL.                    (owner, 2026-09-10)
+
+   "we can decrease size of these elements just so we can have enough breathing
+   space at the top."
+
+   Scoped to 1100 and up, and that number is measured rather than picked. The
+   statement type is 27.2px everywhere below 1100 and 48px from 1100 up, and the
+   panel is worst exactly where the big type starts:
+
+     width   line size   line height   panel
+      375     27.2px        54          377
+      768     27.2px        54          406
+     1024     27.2px        54          428
+     1100     48px         144  (3 lines!)  686   <- worst
+     1280     48px          96/144           603
+     1440     48px          96               566
+     1920     48px          96               600
+
+   At 1100 every line wraps to THREE, which is what fills the panel and crops the
+   star's points. A first attempt scoped this to `min-width: 768` and made things
+   worse, not better: it forced 40px onto the 27.2px band, so 768 went from 54px
+   lines to 120px lines and the panel from 406 to 715. Measured, reverted, and
+   re-cut at the breakpoint where the 48px actually lives.
+
+   The star shrinks with it. It is sized as a PERCENTAGE (20% below 768, 28%
+   above), which is why my first attempt at "max-width: 78%" enlarged it from
+   128px to 357px instead of shrinking it -- the existing cap was already far
+   tighter than the number I reached for. 28% -> 22% takes it from 128 to ~100
+   at 1440 and keeps it proportional at every width above.
+
+   ⚠ THIS REVERSES A DECISION RECORDED EARLIER IN THIS FILE. The trim pass states
+   "the TYPE SIZE is untouched -- the three lines look exactly as the client set
+   them". The owner has now asked for the scale to come down, which supersedes
+   that. The COPY is still untouched; only the size changes.
+   ============================================================================= */
+@media (min-width: 1100px) {
+  .elementor-element-0747d94 p {
+    font-size: 38px !important;
+  }
+
+  .elementor-element-0747d94 img {
+    max-width: 22% !important;
+    height: auto !important;
+  }
+}

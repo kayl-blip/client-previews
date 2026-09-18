@@ -1,0 +1,115 @@
+/* =============================================================================
+   brand-cards.css — bigger artwork, rounded, and a tighter grid.
+
+   Owner: the brand tiles should have rounded corners, be a bit larger, and sit
+   more tightly together.
+
+   MEASURED BEFORE, at 1440:
+       grid        3 x 365px, 20px gap
+       logo strip  132px tall, 18px padding, #EFF0F1
+       artwork     capped at 96px tall by that strip
+
+   The artwork was the problem: these are square-ish brand tiles being shown in
+   a 132px letterbox, so `object-fit: contain` scaled each one down to about a
+   third of the card's width. Nothing was wrong with the images — they were
+   being given a strip to sit in rather than a tile.
+   ============================================================================= */
+
+/* Tighter: 20px of gutter between cards was reading as three separate objects
+   rather than one set of nine. 14 pulls them together without touching. */
+.nf-b-grid {
+  /* History, all owner-driven: 20 -> 14 -> 10. 20 read as "three separate
+     objects rather than one set of nine"; 10 made them read as a wall.
+
+     OWNER 2026-09-11, "fix spacing": 10 was measured consistent (9-10px at
+     1440/768/375, matching the declared value -- nothing was broken) but it is
+     ~2% of a 523-556px card, so full-bleed artwork on adjacent rows very nearly
+     touches. 18 restores a visible seam between cards while staying under the
+     20 that previously read as separated objects.
+
+     THIS IS THE ONE NUMBER TO CHANGE if the owner wants it tighter or looser --
+     it is set in exactly two places, here and in the <=600px rule below, and
+     they are kept equal on purpose. */
+  gap: 18px !important;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+}
+
+/* Bigger: 132 -> 220px gives the artwork 192px to fill instead of 96 — double,
+   which is the "a bit larger" the tiles needed to read as artwork rather than
+   as a logo dropped into a band.
+
+   220 AT EVERY WIDTH, not 200 desktop / 220 phone as it was. The split made the
+   artwork SHRINK as the screen grew: with a 300x300 source and object-fit
+   contain, the painted logo measured
+
+     320  375  414  600 | 601  768  1024  1440  1920
+     192  192  192  192 |[172] 172   172   172   172
+
+   — 11.6% smaller on a 1920 desktop than on a 320 phone, at the exact width
+   where the grid goes multi-column.
+
+   Card-proportional sizing cannot fix that, and I measured three variants to
+   be sure: aspect-ratio 16/10 gives 192,192,207,300,300,193,192,202,202 and
+   4/3 gives 192,225,254,300,300,237,208,247,247 — both still invert, because
+   the CARD itself shrinks at 601 (557px in one column becomes 369px in two),
+   so anything keyed to card width has to shrink with it. A flat height is the
+   only monotonic answer: 192 at every width, 0 inversions.
+
+   Phones are unchanged (they were already 220); desktop artwork goes 172 -> 192. */
+.nf-b-card__logo {
+  /* OWNER 2026-09-10: "ensure images here are occupying the whole image areas in
+     each cards" + "make these images a bit larger to make tighter spacing".
+
+     The strip was 367x220 (1.67:1) holding a 1:1 source, so object-fit: contain
+     letterboxed it to 192x192 and left 48% of the strip width empty -- the grey
+     bars either side of every tile.
+
+     object-fit: cover was the obvious answer and is WRONG here. All nine sources
+     are exactly 300x300 (measured, every one), so cover would crop to the middle
+     220/367 = 60% of each square and cut the brand text off the artwork: "THE
+     GUMMY OF YOUR DREAMS", "WORLD FAMOUS FEELS", "EXTRA FINE", "SHINE (R)
+     BRIGHT". The container shape was wrong, not the fit.
+
+     A square strip lets a square source fill it edge to edge with nothing
+     cropped and nothing letterboxed. */
+  aspect-ratio: 1;
+  height: auto !important;
+  padding: 0 !important;
+}
+
+/* Rounded. The card already clips to a 12px radius, but the artwork sits inside
+   a padded strip, so its own corners stayed square — the rounding has to be on
+   the image itself. 10px against the card's 12 keeps the two concentric rather
+   than fighting. */
+.nf-b-card__logo img {
+  /* Fills the square strip completely. The radius moves to the strip's top
+     corners now that the image is flush to the card edge -- the card already
+     clips to 12px, so the image inherits that corner and meets the body square,
+     which is the standard media-top card shape. */
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 0;
+  display: block;
+}
+
+/* The body comes in with the grid so the card reads as one object rather than
+   artwork with a caption underneath. */
+.nf-b-card__body {
+  padding: 16px 16px 18px !important;
+  gap: 7px !important;
+}
+
+@media (max-width: 600px) {
+  /* One per row on a phone, so the artwork can be larger still. The strip
+     height that used to live here is now the single value above. */
+  /* Same 18 as the desktop rule: on one column the gap is purely the vertical
+     seam between stacked cards, which is exactly the spacing being corrected. */
+  .nf-b-grid { grid-template-columns: 1fr !important; gap: 18px !important; }
+}
+
+/* brands.html's card grid carries NO drift. The owner's note was explicit:
+   "these cards ... should be perfectly aligned in a grid. You might have
+   mistaken these to have the animation." Offsetting alternate columns is what
+   knocked them out of alignment, so nothing here transforms. The wall the
+   animation belongs to is on the homepage; see brand-parallax.js. */

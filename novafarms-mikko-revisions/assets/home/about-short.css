@@ -1,0 +1,170 @@
+/* =============================================================================
+   about-short.css — the shortened homepage About block.
+
+   Pairs with about-short.js, which marks the detail paragraphs and appends the
+   Learn More link. This file only has to hide what was marked and style the
+   link; the panel's own height then collapses to its content.
+   ============================================================================= */
+
+/* The detail paragraphs. display:none rather than a clipped max-height: this
+   copy is NOT being teased, it is being moved -- it lives on visit-us.html and
+   Learn More goes there. A fade-out fold would imply the rest is one click of
+   an expander away, which is the pattern that shipped an empty box last time. */
+.elementor-element-a968cca [data-nf-short-hidden] {
+  display: none !important;
+}
+
+/* The panel was sized for three blocks of copy; with one it does not need the
+   765px it was holding. min-height is the Elementor container's own floor. */
+.elementor-element-a968cca[data-nf-short="true"] {
+  padding-top: 40px !important;
+  padding-bottom: 40px !important;
+}
+
+/* The height is a CHAIN of Elementor floors, not one value, and zeroing only
+   the outer panel moves nothing. Measured on this block:
+   panel --min-height 85vh, its .e-con-inner 275px, and that inner's own child
+   464.2px -- while the surviving content needs 464.2px total once the two
+   paragraphs are hidden. Elementor applies these as `min-height:
+   var(--min-height)`, so the custom property has to be zeroed as well as the
+   property. Same shape as the review cards' 180px floor. */
+.elementor-element-a968cca[data-nf-short="true"],
+.elementor-element-a968cca[data-nf-short="true"] .e-con,
+.elementor-element-a968cca[data-nf-short="true"] .e-con-inner,
+.elementor-element-a968cca[data-nf-short="true"] .elementor-element {
+  --min-height: 0px !important;
+  min-height: 0 !important;
+}
+
+/* With the floors gone the height is padding plus content. Measured at 1440:
+   the inner block carries 57px top AND bottom, which is sized for a panel that
+   held three blocks of copy. It now holds one statement, a star and a button.
+
+       star            55.8px
+       statement      274.6px
+       Learn More      51px + 22 margin
+       padding        114px on that block alone
+
+   Trimming that block's padding is what actually shortens the section; hiding
+   the paragraphs alone only bought 61px, because the container floors absorbed
+   the space they freed. */
+.elementor-element-a968cca[data-nf-short="true"] .elementor-element-ba94abe {
+  padding-top: 20px !important;
+  padding-bottom: 20px !important;
+}
+.elementor-element-a968cca[data-nf-short="true"] {
+  padding-top: 30px !important;
+  padding-bottom: 30px !important;
+}
+
+/* --- Learn More ----------------------------------------------------------
+   Matched to the site's own "View Menu" button, read off the rendered page
+   rather than eyeballed from a screenshot:
+
+       background      rgb(10,44,71)      #0A2C47
+       color           rgb(239,240,241)   #EFF0F1
+       border          3px solid #EFF0F1
+       border-radius   7px
+       font            14.4px GillSans, weight 400, uppercase
+       height          50.4px
+
+   #EFF0F1 on #0A2C47 is 13.7:1. That button uses `padding: 15px 0` because its
+   width comes from an Elementor wrapper; this one sizes to its own label, so it
+   carries horizontal padding instead.
+
+   Centred per the owner: display:flex + width:fit-content + margin auto, which
+   centres it whether its parent is block or flex. */
+.nf-about-more {
+  display: flex;
+  width: fit-content;
+  margin: 22px auto 0;              /* auto l/r = centred */
+  align-items: center;
+  justify-content: center;
+  /* 12px vertical, not 15: with the 3px borders this lands at ~50px, matching
+     the View Menu button's measured 50.4px. At 15px it came out 57.6px. */
+  min-height: 48px;                 /* clears 2.5.5 */
+  padding: 12px 34px;
+
+  border: 3px solid #EFF0F1;
+  border-radius: 7px;
+
+  /* !important on both: the theme paints every <a> brand green at (0,1,1),
+     which on this white panel would be 1.79:1. */
+  background: #0A2C47 !important;
+  color: #EFF0F1 !important;
+
+  font-family: GillSans, sans-serif;
+  font-size: 14.4px;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: uppercase;
+  text-decoration: none !important;
+}
+.nf-about-more:hover,
+.nf-about-more:focus-visible {
+  background: #04263A !important;   /* brand navy — 14.6:1 with #EFF0F1 */
+  color: #EFF0F1 !important;
+}
+.nf-about-more:focus-visible {
+  outline: 3px solid #8FD338;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px #04263A;
+}
+
+@media (max-width: 600px) {
+  .nf-about-more { width: 100%; }   /* full-width on a phone, still centred */
+  .elementor-element-a968cca[data-nf-short="true"] {
+    padding-top: 30px !important;
+    padding-bottom: 30px !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Phones: the block was still 676px because of whitespace, not words.
+
+   Measured at 390x844 before this rule:
+
+       panel padding                 60px
+       ba94abe margin-top/bottom    160px   <- the single biggest term
+       ba94abe padding               40px
+       star                          54.6px
+       statement container          341.5px  (its text is only 215px of that)
+       Learn More + margin           73px
+
+   The 160px of margin and the ~126px of slack inside the statement's own
+   container are pure space. Those go first, and only then does the type come
+   down a step -- 16/24 to 15/1.35 -- which reflows the statement from 9 lines
+   to fewer without touching a word of it.
+
+   The type rule deliberately carries no defence against the accessibility text
+   scale: that scale sets font-size inline with !important and SHOULD win here.
+   A visitor who has asked for larger text gets it, and the block grows again.
+   -------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  .elementor-element-a968cca[data-nf-short="true"] {
+    padding-top: 22px !important;
+    padding-bottom: 22px !important;
+  }
+  .elementor-element-a968cca[data-nf-short="true"] .elementor-element-ba94abe {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 14px !important;
+    padding-bottom: 14px !important;
+  }
+  /* the statement's own container carried ~126px more than its text needed */
+  .elementor-element-a968cca[data-nf-short="true"] .elementor-element-a93f3a4,
+  .elementor-element-a968cca[data-nf-short="true"] .elementor-element-a93f3a4 > * {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  .elementor-element-a968cca[data-nf-short="true"] .elementor-element-a93f3a4 p,
+  .elementor-element-a968cca[data-nf-short="true"] .elementor-element-a93f3a4 strong {
+    font-size: 15px !important;
+    line-height: 1.35 !important;
+  }
+  .elementor-element-a968cca[data-nf-short="true"] .nf-about-more {
+    margin-top: 16px !important;
+  }
+}

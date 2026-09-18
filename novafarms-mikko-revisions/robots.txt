@@ -1,0 +1,3 @@
+# Internal client preview. Not the live site. Do not index.
+User-agent: *
+Disallow: /

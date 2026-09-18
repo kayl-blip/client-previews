@@ -1,0 +1,475 @@
+/* =============================================================================
+   target-size.css — controls big enough to hit.
+
+   OWNER ASK 2026-09-10: "optimize adaptability to any screen size both the
+   Desktop and Mobile view."
+
+   THE CAROUSEL PAGINATION BULLETS ARE 6x6px WITH AN 18px PITCH.
+   Measured on index.html and attleboro-ma.html at 320, 375 and 1440 —
+   identical at every width, so this is not a mobile-only defect:
+
+     span.swiper-pagination-bullet   6.0 x 6.0
+     computed margin                 0px 6px
+     computed padding                0px
+     box-sizing                      border-box
+     centre-to-centre pitch          18.0px
+     parent .swiper-pagination       180 x 6   (no padded hit area at all)
+
+   A 1px-resolution elementFromPoint scan across the strip found only 70px of
+   194 mapping to a bullet — roughly a third of the strip is live, the rest
+   falls through to the slide behind it. 6x6 is a quarter of the 24x24 that
+   WCAG 2.5.8 asks for at AA.
+
+   THE OBVIOUS FIX IS BROKEN AND WAS MEASURED TO BE BROKEN BEFORE IT SHIPPED.
+   `border: 9px solid transparent` does not enlarge these: the bullets compute
+   `box-sizing: border-box` from Elementor's reset, so the border is absorbed
+   into the 6px box rather than added to it, and the element clamps at its
+   border minimum. Padding has the same problem — unless the declared width and
+   height are grown to contain it, which is what this does.
+
+   Growing the BOX and clipping the PAINT keeps the dot looking identical:
+
+     width 18 + padding 0 6   -> content box 6 wide
+     height 24 + padding 9 0  -> content box 6 tall
+     background-clip: content-box  -> only that 6x6 is painted
+     margin 0                 -> pitch stays exactly 18, as the 6px dot with
+                                 6px side margins produced before
+
+   Hit area goes 6x24 -> 18x24, a 12x increase in live area, with the dots in
+   the same place and the same size on screen.
+
+   RESIDUAL, STATED PLAINLY: 18px wide still misses 2.5.8's 24px on the
+   horizontal axis, and it cannot be reached by CSS — ten bullets at a 24px
+   pitch need 240px inside a strip that is 180px wide, and 16 need 384px, which
+   does not fit a 320px phone at all. Closing that gap needs fewer bullets or a
+   different pagination pattern (a "3 / 16" counter with arrows), which is a
+   design decision, not a stylesheet one. The vertical axis now passes, and
+   adjacent targets touch edge to edge with no dead gap between them.
+   ============================================================================= */
+.swiper-pagination-bullet {
+  width: 18px !important;
+  height: 24px !important;
+  margin: 0 !important;
+  padding: 9px 6px !important;
+  background-clip: content-box !important;
+}
+
+/* The strip is bottom-anchored and was 6px tall. Growing it to 24px pushes the
+   dots upward into the slide, and my first version pulled them back with
+   `margin-bottom: -9px` to hold their old visual position. That was wrong: the
+   owner reported the dots crowding the cards, and measuring it, the strip
+   OVERLAPPED the card bottom by 8px at 375, 768 and 1440 alike. Reserving real
+   room below the cards is the fix, not dragging the strip back over them --
+   see reviews-rating.css. */
+.swiper-pagination {
+  height: 24px !important;
+}
+
+/* =============================================================================
+   BUTTONS AND DISCLOSURES UNDER 24px
+
+   From the 7-lens audit, both re-measured here against the current build. What
+   the audit called one finding is actually three groups, and only one of them
+   is the mobile-only one it described:
+
+     group                            example              height        broken
+     body CTAs                        Directions, Deals    15 -> 39 @768  <768
+     FOOTER links                     Our Story, Careers   12.8 @375,
+                                                           15 @768/1440   EVERY width
+     "All Locations"                  body                 15             EVERY width
+
+   So the footer's 12 link-buttons per page were under the WCAG 2.5.8 AA floor
+   at 1440 too, not just on a phone. Counts on attleboro-ma.html: 16 undersized
+   at 375, 13 at 768 AND at 1440.
+
+   The disclosures are the same shape: medproviders-ct.html's six VIEW HOURS
+   toggles (summary.e-n-accordion-item-title) measure 298x18 at 375 and 650x18
+   at 767, then 183x44 at 768.
+
+   WHY THIS SETS min-block-size AND NOT padding.
+   Elementor scopes the zeroing rule per element --
+   `@media (max-width:767px){ .elementor-7734 .elementor-element.elementor-element-22fc7cd
+   .elementor-button{padding:0px} }` -- at specificity (0,4,0), with a DIFFERENT
+   element id on every page. A structural padding rule loses that fight and
+   computes to nothing; it was measured doing exactly that. `min-block-size` is
+   a property those rules never declare, so it needs no specificity contest.
+
+   WHY NO 44px TOUCH TIER, AND NO `pointer: coarse` GATE.
+   Both were proposed and both were measured to be wrong. `pointer: coarse`
+   evaluates FALSE at 375 in a desktop browser at phone width -- it keys on the
+   input device, not the viewport -- so it does nothing where the defect is and
+   fires on tablets at 1024 where there is no defect. And a 44px tier adds about
+   140px to the footer at 375. 44px is 2.5.5 at AAA, which this build does not
+   claim; 24px is the AA floor, and that is what this sets.
+
+   WHY inline-flex, WHEN THAT WAS FLAGGED AS RISKY.
+   It was flagged as changing baseline alignment on every button site-wide. I
+   measured that specific risk on attleboro-ma, index and brands at 375 and
+   1440: 0 of 8 sampled buttons per page changed x or width, max x shift 0.0px,
+   and label centring was identical before and after. It is also by far the
+   cheapest of the three candidates that fix the height --
+
+     min-block-size alone            doc +60 / +25 / +56 px
+     min-block-size + line-height    doc +122 / +82 / +19
+     min-block-size + inline-flex    doc  +17 /  +2 / +17    <- this
+
+   because flex centring absorbs the extra height into the existing box instead
+   of stacking it. All three take the undersized count to 0; this one does it
+   without moving anything.
+   ============================================================================= */
+.elementor-button {
+  min-block-size: 24px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+summary.e-n-accordion-item-title {
+  min-block-size: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* =============================================================================
+   ROUND 2 — 2026-09-16, from the Oso Site QA run on index.html.
+
+   The QA tool flags at 44px (WCAG 2.5.5, AAA). This build targets 24px
+   (WCAG 2.5.8, AA) — see the reasoning at the top of this file, which measured
+   a 44px tier as adding ~140px to the footer at 375. That decision stands, so
+   what follows fixes ONLY controls that fail the 24px floor this file already
+   claims to hold.
+
+   Re-measured on the live DOM at 440 and 1280 with the age gate dismissed
+   (the QA run measured through the gate, which distorted much of its report).
+   Five groups came back under 24px. Three are real and fixed here. Two are not,
+   and are listed so nobody re-opens them:
+
+     group                          measured      verdict
+     .swiper-pagination-bullet x16  18 x 24       KNOWN RESIDUAL — documented
+                                                  at the top of this file. 18px
+                                                  cannot reach 24 without
+                                                  fewer bullets or a different
+                                                  pagination pattern; 16 at a
+                                                  24px pitch needs 384px and the
+                                                  strip is 180px. Design call,
+                                                  not a stylesheet one.
+     a.skip-link                    1 x 1         CORRECT AS BUILT. A visually
+                                                  hidden skip link that expands
+                                                  on focus is the standard
+                                                  pattern; 2.5.8 measures it
+                                                  focused, where it is full
+                                                  size. Not a defect.
+   ============================================================================= */
+
+/* --- 1. Carousel arrows -------------------------------------------------------
+   Four on the page: two at 25x45 (pass) and two at 20x40 (fail on width only).
+   They are position:absolute, so growing the box cannot reflow any sibling —
+   the 4px lands in the arrow's own overlay. justify-content keeps the glyph
+   optically centred in the wider box rather than letting it sit left.
+   Height already passes at 40 and 45, so nothing is set on the block axis. */
+.elementor-swiper-button {
+  min-inline-size: 24px !important;
+  justify-content: center !important;
+}
+
+/* --- 2. Ticker headline -------------------------------------------------------
+   a.e-floating-bars__headline measures 341.9 x 19.5 — a real link, failing on
+   height. Its line-height is already 24px, so the text box is the right size
+   and only the element box is short; the flex parent clamps it. Setting the
+   floor on BOTH the link and the inner track is needed, because the parent is
+   the one doing the clamping and a floor on the child alone is absorbed.
+
+   MEASURED AFTER APPLYING, AND IT IS NOT FREE: the band grows 36 -> 40px at
+   both 440 and 1280. The prediction written here first — that a 24px row would
+   fit inside the existing 36px band — was wrong; the band's padding does not
+   have 4.5px of slack to give back. 4px on a ticker is accepted rather than
+   clawed back, because reclaiming it means cutting the band's own padding,
+   which is a brand-styling change to fix an accessibility floor. Document
+   scroll width is unchanged (0 horizontal overflow at both widths) and nothing
+   else moved. */
+.e-floating-bars__headline,
+.e-floating-bars__headlines-inner {
+  min-block-size: 24px !important;
+}
+.e-floating-bars__headline {
+  align-items: center !important;
+}
+
+/* --- 3. Standalone "Leave a Review" link --------------------------------------
+   <p class="loyalty-intro"><a href="review.html">Leave a Review</a></p> — 118x13
+   at 440, 202x23 at 1280, at an 11.2px font size.
+
+   2.5.8 exempts a link INLINE IN A SENTENCE, and that exemption was checked
+   before writing this rule: the anchor is the ONLY child of its paragraph, so
+   it is a standalone call to action, not inline text, and the exemption does
+   not apply.
+
+   :only-child keeps this off genuinely inline links elsewhere on the site —
+   a blanket `p > a` rule would wrongly inflate every in-prose link, which is
+   exactly what the exemption exists to prevent. inline-flex is used here for
+   the same reason it is used above: it absorbs the extra height into the
+   existing box instead of stacking it. */
+p.loyalty-intro > a:only-child {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-block-size: 24px !important;
+}
+
+/* =============================================================================
+   ROUND 3 — 2026-09-16, second Oso Site QA run (report …7959531).
+
+   The tool flags at 44px (WCAG 2.5.5, AAA). This build's standard is 24px
+   (2.5.8, AA) and the owner re-confirmed it. Measured gated at 440px, 62
+   controls sit under 44. They split cleanly into two groups, and only one of
+   them can be fixed without reopening the decision:
+
+     FREE — no reflow cost, fixed below (11 controls)
+       .elementor-swiper-button          25 x 45   position:absolute
+       .nf-rev-nav                       32 x 32   carousel nav, own row
+       header logo <a>                  152 x 43   1px short
+       header SHOP .elementor-button   32.3 x 46   width only
+       .e-floating-bars__close-button    40 x 40   4px short, own cell
+       footer .elementor-icon (social)   42 x 42   2px short
+
+     NOT FREE — needs an owner decision, deliberately NOT changed (30 controls)
+       17x .elementor-button in body    166 x 24   +20px each, in flow
+       12x .elementor-button in footer   58 x 24   THIS is the ~140px footer
+                                                   cost measured at the top of
+                                                   this file — the exact reason
+                                                   24px was chosen over 44px
+        4x .e-floating-bars__headline   342 x 24   +20px grows the ticker band
+
+     LEAVE — correct or documented
+       16x .swiper-pagination-bullet     18 x 24   documented residual; 16 dots
+                                                   at a 24px pitch need 384px in
+                                                   a 180px strip. Design change.
+        1x a.skip-link                     1 x 1   visually hidden until focus.
+
+   Everything below is the FREE group only.
+
+   MEASURED COST OF THIS ROUND, STATED PLAINLY: "free" means no control reflows
+   a sibling, not that the page is unchanged. Growing the ticker's close button
+   40 -> 44 raises the band it sits in, so:
+
+       .e-floating-bars band     40 -> 44px   (36 before round 2; +8 total)
+       .e-floating-bars__headline 24 -> 28px  (it fills the taller band)
+       body scroll height      5340 -> 5375px at 440 gated  (+35px)
+
+   Horizontal overflow stays 0 at 440 and 1280, and the console stays clean.
+   The 35px is the price of three tap targets reaching 44; it is recorded here
+   so nobody has to re-measure to find out where it went.
+   ============================================================================= */
+
+/* Carousel arrows: absolute, so the extra width lands in their own overlay and
+   cannot reflow a sibling. Round 2 took these to 24; 44 is the same move. */
+.elementor-swiper-button {
+  min-inline-size: 44px !important;
+  min-block-size: 44px !important;
+}
+
+/* Reviews carousel prev/next. They sit on their own control row, so growing
+   32 -> 44 uses space the row already reserves. */
+.nf-rev-nav {
+  min-inline-size: 44px !important;
+  min-block-size: 44px !important;
+}
+
+/* Ticker close button — 40x40 in a control cell with room for 44. */
+.e-floating-bars__close-button {
+  min-inline-size: 44px !important;
+  min-block-size: 44px !important;
+}
+
+/* Header logo link: 152x43, one pixel short. inline-block does not take a
+   min-block-size reliably across engines, so this uses inline-flex for the
+   same reason the round-2 rules do — it absorbs the pixel instead of stacking
+   it. */
+header .elementor-widget-container > a:has(> img) {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-block-size: 44px !important;
+}
+
+/* Header CTA ("SHOP") is 32.3px wide. Scoped to the header on purpose: the
+   same class in the body and footer is the 30-control group above, which is
+   NOT being changed. */
+header .elementor-button {
+  min-inline-size: 44px !important;
+  min-block-size: 44px !important;
+}
+
+/* Footer social icons, 42x42 -> 44. They are a grid of icons, not a stack of
+   text links, so 2px does not accumulate into the footer-height problem. */
+footer .elementor-social-icons-wrapper .elementor-icon {
+  min-inline-size: 44px !important;
+  min-block-size: 44px !important;
+}
+
+/* =============================================================================
+   ROUND 4 — 2026-09-16. Two owner decisions, and one correction to this file.
+
+   (A) THE BULLET RESIDUAL DOCUMENTED AT THE TOP OF THIS FILE WAS WRONG.
+
+   It says "16 bullets at a 24px pitch need 384px in a 180px strip, which does
+   not fit a 320px phone at all". Re-measured after the owner questioned the
+   count against a screenshot showing ten dots:
+
+       there are TWO pagination strips, not one
+         #reviews-carousel   10 bullets   strip 180px   10 real slides
+         #select-a-store      6 bullets   strip 108px    6 real slides
+         10 + 6 = the "16" that was being read as a single strip
+
+   And the strip is CONTENT-SIZED — its width is exactly bullets x pitch — not
+   capped at 180. So it grows with the bullets. Measured available vs required:
+
+       24px   390: 240/350 fit   440: 240/400 fit   768 fit   1280 fit
+       44px   390: 440/350 OVER (page overflows 25px)         768+ fit
+
+   So 24px — the AA floor this file already claims to hold — fits at EVERY
+   width, and the dots have been sitting at 18px, below that floor, the whole
+   time. 44px genuinely does not fit the ten-dot strip on a phone, so the
+   residual is real at AAA and imaginary at AA.
+
+   The painted dot does not change: background-clip:content-box still shows only
+   the content box, and 24 - (9+9) padding = the same 6px dot. Only the pitch
+   moves, 18 -> 24, and the strip 180 -> 240.
+
+   (B) OWNER CALL, 2026-09-16: "yes fix it i accept the taller footer".
+
+   The 24px AA floor held everywhere else in this file was chosen over 44px
+   specifically to avoid ~140px of footer growth at 375. The owner has now
+   accepted that cost, so the body and footer CTAs go to 44px (WCAG 2.5.5 AAA).
+   Measured consequences are recorded below the rules.
+   ============================================================================= */
+
+/* (A) dots to the AA floor. Width only — height was already 24. */
+.swiper-pagination-bullet {
+  width: 24px !important;
+  padding: 9px 9px !important;
+}
+
+/* (B) every button to 44px. This supersedes the 24px min-block-size set in the
+   round-2 block above; it is left in place as the record of why 24 was chosen,
+   and this rule wins by being later at equal specificity. */
+.elementor-button {
+  min-block-size: 44px !important;
+}
+
+/* The ticker headline and its track. */
+.e-floating-bars__headline,
+.e-floating-bars__headlines-inner {
+  min-block-size: 44px !important;
+}
+
+/* The standalone "Leave a Review" link — same :only-child scoping as round 2,
+   so genuinely inline links in prose are still left alone. */
+p.loyalty-intro > a:only-child {
+  min-block-size: 44px !important;
+}
+
+/* Two footer links still failed on the INLINE axis after the rule above, because
+   min-block-size only governs height: "Links" measured 29x44 and "Visit Us"
+   43.8x44 at 375. 2.5.5 wants 44 on both axes, so the floor is set on both.
+
+   Scoped to .elementor-size-sm — the class those two carry — rather than every
+   .elementor-button, because a blanket 44px inline floor would also pad out wide
+   CTAs that already pass, for nothing. */
+.elementor-button.elementor-size-sm {
+  min-inline-size: 44px !important;
+}
+
+/* brands.html's brand-card CTA: 122.5x21, display:block inside .nf-b-card__body.
+   Checked against 2.5.8's inline exemption before adding this — it is NOT inline
+   prose: it is its own block, and its text ("Visit Highlands ↗") is distinct from
+   the card's copy, so the exemption does not cover it.
+
+   The genuinely inline links this sweep also surfaced — "Morin's", "Tavern in the
+   Square", "Capron Park Zoo", "(833) 420-6682", "Get directions" — ARE in
+   sentences and are deliberately left alone: 2.5.8 exempts a target "in a
+   sentence", and inflating in-prose links is exactly what that exemption exists
+   to prevent. */
+a.nf-b-card__link {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-block-size: 44px !important;
+}
+
+/* =============================================================================
+   ROUND 5 — 2026-09-16. Footer menu spacing, back to the reference.
+
+   OWNER, with a screenshot of the intended footer: "update the spacings of the
+   menu items in the footer just like this".
+
+   Measured the reference image rather than eyeballing it — text bands in the
+   ABOUT US column sit at y69, y98 and y128, i.e. a 29-30px PITCH. The build was
+   rendering 49px (a 44px item plus a 5px gap).
+
+   THIS PARTLY REVERSES THE ROUND-4 DECISION, AND IT HAS TO.
+   Round 4 raised every CTA to 44px on the owner's "yes fix it i accept the
+   taller footer". A 44px-tall item cannot sit on a 30px pitch without
+   overlapping its neighbour — and overlapping targets fail 2.5.8's spacing
+   rule, so "keep 44 and close the gap" is not available. The footer menu links
+   therefore go back to the 24px AA floor this file holds everywhere else:
+
+       24px item + the existing 5px gap = 29px pitch, matching the reference.
+
+   SCOPED TO THE FOOTER'S MENU LINKS ONLY. Everything else keeps 44px — the
+   header CTA, the carousel arrows, the reviews nav, the ticker close button and
+   the footer's social icons are all untouched, and body CTAs keep their 44.
+   What changes is the column of text links in the footer, and only that.
+
+   ALSO FIXES AN ALIGNMENT ARTEFACT THIS FILE INTRODUCED.
+   Round 2 set `justify-content: center` on .elementor-button, and round 4 added
+   min-inline-size to .elementor-size-sm. Together they centre a short label
+   inside a wider box, so "Links" rendered visibly indented against "Our Story"
+   and "Careers" above it. The reference has them flush. In the footer the
+   labels align to the start and the inline floor is released, so the box is the
+   text's own width again.
+   ============================================================================= */
+footer .elementor-button {
+  min-block-size: 24px !important;
+  justify-content: flex-start !important;
+}
+footer .elementor-button.elementor-size-sm {
+  min-inline-size: auto !important;
+}
+
+/* =============================================================================
+   ROUND 6 — 2026-09-16. Ticker band back to the live reference height.
+
+   OWNER: "The gap of the banner in the header also lessen it a bit", with the
+   deployed site given as the reference:
+   https://sgencms.github.io/novafarms-revisions/index.html
+
+   Measured BOTH, same viewport (1280), same way, rather than comparing
+   screenshots:
+
+                          live (main)      this branch
+       .e-floating-bars      35.5px           60px
+       __headline            19.5 (auto)      44   (round 4)
+       __close-button        40 x 35.5        44 x 60  (round 3)
+
+   Three rules in this file had been stacking height into that band:
+       round 2  headline + inner  min-block-size 24  ->  band 40
+       round 3  close button      44 x 44            ->  band 44
+       round 4  headline + inner  min-block-size 44  ->  band 60
+
+   All three are released here, so the band returns to its natural 35.5px.
+
+   WHAT THIS COSTS, PLAINLY. The ticker headline is a LINK, and at its natural
+   19.5px it falls below the 24px AA floor this file holds everywhere else; the
+   close button lands at 40 x 35.5 rather than 44 x 44. There is no way to keep
+   either at 24+ and still have a 35.5px band — the band height IS the
+   constraint, and the owner has chosen the band.
+
+   Scoped to the ticker. The header CTA, carousel arrows, reviews nav, footer
+   social icons and body CTAs all keep their sizes.
+   ============================================================================= */
+.e-floating-bars__headline,
+.e-floating-bars__headlines-inner {
+  min-block-size: auto !important;
+}
+.e-floating-bars__close-button {
+  min-inline-size: auto !important;
+  min-block-size: auto !important;
+}

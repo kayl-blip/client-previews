@@ -1,0 +1,24 @@
+/* =============================================================================
+   state-buttons.css — the "SELECT YOUR STATE" loyalty buttons.
+
+   Scoped to [data-nf-state], stamped on the state anchors themselves, because
+   `.elementor-button` is far too broad: join-vip.html alone carries 40+ of them
+   and blog.html carries 44. Styling the class would repaint the whole site.
+
+   Lives on the two pages that actually have these buttons (join-vip, blog) via
+   the oso-loyalty:css sentinel, the same way oso-brands:cards is brands-only.
+   ============================================================================= */
+
+/* OWNER 2026-09-11: "image card corners should be rounded a little bit."
+
+   MEASURED BEFORE: the radius was NOT consistent -- 3px at 1440 but 5px at 375,
+   because the desktop and mobile Elementor variants carry different button
+   sizes (3px border / 46px tall vs 1px border / 42px tall) and inherited
+   different kit values. So the corner changed as the screen did.
+
+   8px at EVERY width: visibly rounded against a 42-46px tall button without
+   going pill-shaped, and monotonic -- the same corner on a phone and a desktop.
+   THIS IS THE ONE NUMBER TO CHANGE if it wants to be softer or sharper. */
+a.elementor-button[data-nf-state] {
+  border-radius: 8px !important;
+}

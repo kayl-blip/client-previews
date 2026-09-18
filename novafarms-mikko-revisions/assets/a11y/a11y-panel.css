@@ -1,0 +1,454 @@
+/* =============================================================================
+   a11y-panel.css — revision 1 Phase C: the accessibility panel.
+
+   The accommodation layer. a11y-base.css already fixed the default rendering
+   for everyone; this is what a visitor reaches for when the default still is
+   not enough for them.
+
+   Cookie consent lives INSIDE this panel rather than in its own popup, per the
+   client's brief, so a visitor meets one dialog on arrival instead of two.
+
+   Every colour is from the measured set in a11y-base.css. The panel's own
+   surface is the brand navy, so the brand green sits on it at 8.59:1.
+
+   Fonts: Atkinson Hyperlegible, SIL Open Font License 1.1, Braille Institute
+   of America. Licence text ships alongside the files in assets/a11y/fonts/.
+   ============================================================================= */
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('fonts/atkinson-hyperlegible-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('fonts/atkinson-hyperlegible-700.woff2') format('woff2');
+}
+
+/* -----------------------------------------------------------------------------
+   The trigger
+
+   Bottom-RIGHT. The drawer's floating fallback takes bottom-left.
+
+   The Pressidium consent box is ALSO bottom-right (measured: right 17.5px,
+   bottom 17.5px -- an earlier version of this comment said top-right, which was
+   wrong), so it overlapped this button and hid "Accept necessary" behind it.
+   The consent box is lifted clear of this button further down instead of moving
+   this one, because a visitor who needs the accessibility settings should find
+   them in the same corner on every page whether or not consent is pending. z-index is above
+   the age gate, deliberately: the owner's locked decision is that a visitor can
+   reach this BEFORE passing the gate, because someone who needs bigger text or
+   a dyslexia-friendly face needs it to read the gate itself.
+   -------------------------------------------------------------------------- */
+.a11y-trigger {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 100001;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 2px solid #8FD338 !important;
+  border-radius: 999px;
+  background: #04263A !important;
+  color: #fff !important;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, .4);
+}
+.a11y-trigger__icon { font-size: 18px; line-height: 1; }
+@media (max-width: 480px) {
+  .a11y-trigger__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .a11y-trigger { padding: 12px; }
+}
+
+/* ---------------------------------------------------------------------------
+   Every colour below carries !important, for the same reason mobile-nav.css
+   does: the theme sets colour on bare element selectors scoped by
+   .elementor-kit-7 -- h2, h3, p, button -- at specificity (0,1,1), and a single
+   class here is (0,1,0) and loses whatever the source order.
+
+   This was not theoretical. Shipped without it, the panel's own group headings
+   computed to rgb(10,44,71) against the panel's navy rgb(4,38,58): about
+   1.1:1, effectively invisible. In the accessibility panel.
+
+   It also escaped the contrast sweep, because the panel is hidden by default
+   and hidden elements have no box to measure. The panel has to be verified
+   OPEN, which is now how it is checked.
+   -------------------------------------------------------------------------- */
+
+/* ------------------------------------------------------------------- panel */
+.a11y-panel[hidden] { display: none !important; }
+
+.a11y-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 100002;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+.a11y-panel__scrim { position: absolute; inset: 0; background: rgba(4, 38, 58, .6); }
+
+.a11y-panel__box {
+  position: relative;
+  width: min(94vw, 400px);
+  max-height: min(88vh, 720px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin: 0 16px 16px;
+  padding: 20px 22px 26px;
+  border: 2px solid #8FD338;
+  border-radius: 12px;
+  background: #04263A;
+  color: #fff;
+  box-shadow: 0 6px 28px rgba(0, 0, 0, .5);
+}
+
+.a11y-panel__head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; margin: 0 0 4px;
+}
+.a11y-panel__title { margin: 0; font-size: 19px; line-height: 1.2; color: #fff !important; }
+.a11y-panel__close {
+  min-width: 44px; min-height: 44px;
+  border: 0; border-radius: 6px;
+  background: transparent !important; color: #fff !important;
+  font-size: 22px; line-height: 1; cursor: pointer;
+}
+.a11y-panel__intro { margin: 0 0 16px; font-size: 13px; line-height: 1.5; color: #DDE5EA !important; }
+
+.a11y-group { margin: 0 0 20px; }
+.a11y-group__h {
+  margin: 0 0 10px; font-size: 11px; letter-spacing: .14em;
+  text-transform: uppercase; color: #8FD338 !important;   /* 8.59:1 on the panel navy */
+}
+
+/* --------------------------------------------------------------- switches */
+.a11y-switch {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  width: 100%; min-height: 52px; padding: 11px 0;
+  border: 0; border-bottom: 1px solid rgba(255,255,255,.14);
+  background: transparent !important; color: #fff !important;
+  font: inherit; font-size: 15px; text-align: left; cursor: pointer;
+}
+.a11y-switch__text { display: block; }
+
+/* -----------------------------------------------------------------------------
+   The ON/OFF pill was pushed off the panel, and the switches were unreachable.
+
+   `.a11y-switch` is a <button>, so the cloned theme's `button{white-space:nowrap}`
+   applies to it, and nothing in this file overrode it -- the only `white-space`
+   here is the `nowrap !important` on line ~289, scoped to `#cc--main .c-bn`,
+   which is the Pressidium plugin's buttons and a different selector entirely.
+
+   A nowrap text column cannot shrink below its min-content, so the flex row's
+   track was shoved past the panel's right edge. Measured on index.html with the
+   panel open, track right edge minus panel right edge:
+
+     width   High contrast   Dyslexia   Colour-independent   Stop animations
+     320        +154.8        +64.5          +306.8              +81.7
+     390         +84.8         -5.5          +236.8              +11.7
+     1440        +42.8        -40.0          +194.8             -30.3
+
+   `document.elementFromPoint()` at each track's centre returned **null** for
+   4 of 4 switches at 320 and 2 of 4 at 1440. The controls were not merely ugly,
+   they could not be hit -- and NOT only on phones: two of them fail on a
+   1440px desktop.
+
+   That is the accessibility panel's own switches, in a layer this build ships
+   on every page under demand-letter pressure.
+
+   Letting the label wrap is the whole fix. `min-width: 0` is required with it:
+   a flex item's default `min-width: auto` floors it at min-content, so
+   `white-space: normal` alone would not let the column actually give ground.
+   -------------------------------------------------------------------------- */
+.a11y-switch { white-space: normal !important; }
+.a11y-switch > *:not(.a11y-switch__track) { min-width: 0; }
+.a11y-switch__track { flex: 0 0 auto; }
+.a11y-switch__hint { display: block; margin-top: 2px; font-size: 12px; color: #A9B8C2 !important; }
+
+/* The state is carried by aria-checked; this is only its picture. It is never
+   the sole cue -- the track also shows ON/OFF as text. */
+.a11y-switch__track {
+  flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px;
+  min-width: 62px; padding: 5px 9px;
+  border: 2px solid rgba(255,255,255,.5); border-radius: 999px;
+  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+}
+.a11y-switch[aria-checked="true"] .a11y-switch__track {
+  border-color: #8FD338; background: #8FD338 !important; color: #04263A !important;   /* 8.59:1 */
+}
+.a11y-switch__dot { width: 10px; height: 10px; border-radius: 50%; background: currentColor; }
+
+/* --------------------------------------------------------- text-size steps */
+.a11y-steps { display: flex; gap: 8px; margin-top: 10px; }
+.a11y-step {
+  flex: 1; min-height: 48px; padding: 10px 6px;
+  border: 2px solid rgba(255,255,255,.5); border-radius: 8px;
+  background: transparent !important; color: #fff !important;
+  font: inherit; font-weight: 700; cursor: pointer;
+}
+.a11y-step[aria-pressed="true"] {
+  border-color: #8FD338; background: #8FD338 !important; color: #04263A !important;
+}
+
+/* ------------------------------------------------------------ consent bit */
+.a11y-consent__state {
+  margin: 0 0 10px; padding: 9px 12px;
+  border-left: 3px solid #8FD338; background: rgba(255,255,255,.06);
+  font-size: 13px; color: #DDE5EA !important;
+}
+.a11y-consent__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.a11y-btn {
+  min-height: 48px; padding: 12px 16px;
+  border: 2px solid #8FD338; border-radius: 8px;
+  background: transparent !important; color: #fff !important;
+  font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+}
+.a11y-btn--primary { background: #8FD338 !important; color: #04263A !important; }
+.a11y-note { margin: 12px 0 0; font-size: 12px; line-height: 1.5; color: #A9B8C2 !important; }
+
+/* Pressidium's own box is suppressed once the panel owns consent. Done from
+   CSS as well as JS so it never flashes before the script runs. */
+[data-a11y-consent-owned] #cc--main,
+[data-a11y-consent-owned] #cc_div { display: none !important; }
+
+/* -----------------------------------------------------------------------------
+   Pressidium's consent dialog.
+
+   ITS STYLESHEET IS NOT IN THIS BUNDLE. The plugin's JavaScript ships
+   (wp-content/plugins/pressidium-cookie-consent/public/bundle.client.js, loaded
+   on all 47 pages) but nothing links its CSS, so the dialog it builds has NO
+   styling of its own. Everything fell back to theme defaults: block-level
+   buttons stacked one per line, body-size text, no box, no button fill. That is
+   the "chunky" dialog -- it was never a spacing tweak, the sheet is simply
+   absent and these rules are the dialog's entire appearance.
+
+   Structure, read from the bundle rather than guessed:
+       #cc--main > #cc_div > #cm > #c-inr > #c-inr-i > #c-ttl , #c-txt
+                                          > #c-bns > button#c-p-bn.c-bn > span
+                                                   > button#c-s-bn.c-bn > span
+       #cm-ov is the overlay. The description carries an inline
+       <button class="cc-link"> for "Cookie Settings".
+   The bundle also stamps has-background / has-text-color onto every button,
+   which is why these declarations carry !important.
+
+   Not scoped under [data-a11y-consent-owned]: that attribute means the panel
+   owns consent and hides this box, so these rules are for the states where it
+   shows anyway -- before the panel builds, and on the client's live WordPress.
+   -------------------------------------------------------------------------- */
+#cc--main{ position: fixed; z-index: 99997; }
+
+#cc--main #cm{
+  box-sizing: border-box;
+  max-width: 420px;                    /* was full-width theme flow */
+  padding: 15px 16px 14px !important;
+  background: #FFFFFF !important;
+  color: #04263A !important;
+  border-radius: 10px;
+  box-shadow: 0 12px 38px rgba(4, 38, 58, .30);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+#cc--main #c-ttl{
+  margin: 0 0 5px !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+  color: #0A2C47 !important;           /* the site's heading navy, 14.34:1 */
+}
+
+#cc--main #c-txt{
+  margin: 0 !important;
+  font-size: 13.5px !important;
+  line-height: 1.5 !important;
+  color: #3B4A55 !important;           /* 8.6:1 on white */
+}
+
+/* The inline "Cookie Settings" control is a <button>, so without this it takes
+   the theme's button styling mid-sentence and breaks the paragraph. */
+#cc--main .cc-link{
+  display: inline !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: none !important;
+  font: inherit !important;
+  color: #4A7019 !important;           /* the on-light green, 5.81:1 */
+  text-decoration: underline !important;
+  cursor: pointer !important;
+}
+
+/* Side by side and content-sized. Stacking these full-width was most of the
+   height in the report. */
+#cc--main #c-bns{
+  display: flex !important;
+  flex-direction: column !important;   /* center-stacked, per owner */
+  align-items: stretch !important;
+  gap: 8px !important;
+  margin: 12px 0 0 !important;
+}
+
+#cc--main .c-bn{
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+
+  /* Full width, so both CTAs are the SAME length whatever the label -- the
+     owner asked for equal-length, center-stacked buttons, and this is also what
+     the plugin's own sheet does below 688px (#cm .c-bn{width:100%}).
+
+     An earlier revision here set `width:auto; flex:0 0 auto`, which overrode
+     that and produced two different widths (measured 102px vs 155px at 433px
+     wide). Sizing to content is the wrong instinct for a two-button consent
+     row -- do not reintroduce it. */
+  width: 100% !important;
+  flex: 0 0 auto !important;
+  overflow: visible !important;
+  white-space: nowrap !important;
+
+  min-height: 44px !important;         /* 2.5.5, without the earlier bulk */
+  padding: 9px 14px !important;
+  margin: 0 !important;
+  border: 2px solid #04263A !important;
+  border-radius: 7px !important;
+  background: transparent !important;
+  color: #04263A !important;           /* 15.63:1 on white */
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  cursor: pointer !important;
+}
+#cc--main .c-bn > span{ display: inline !important; }
+
+/* Hierarchy by fill, not by size — the same rule the age gate uses. */
+#cc--main #c-p-bn.c-bn{
+  background: #8FD338 !important;
+  border-color: #8FD338 !important;
+  color: #04263A !important;           /* 8.59:1 — never green ON white */
+}
+
+#cc--main .c-bn:focus-visible,
+#cc--main .cc-link:focus-visible{
+  outline: 3px solid #8FD338 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 5px #04263A !important;
+}
+
+#cc--main #cm-ov{ background: rgba(4, 38, 58, .55); }
+
+/* Clearance from the accessibility button, which owns the bottom-right corner.
+
+   :not(.top) MATTERS. This site configures the dialog as position "top right"
+   (gui_options.consent_modal.position), so the plugin sets `#cm.top{bottom:auto;
+   top:1em}`. An unscoped `bottom:78px !important` overrode that auto, pinning
+   the box at BOTH edges -- a fixed element with top and bottom set stretches
+   between them. Measured at 422x860: 768px tall with 560px of empty white below
+   the last button. Scoped, it is 221.8px with 14px of padding under the button.
+
+   The earlier note here claiming this box is bottom-right and overlapped the
+   accessibility button was wrong. It came from a stand-in built without the
+   plugin's layout classes, which fell back to the default bottom-right. With
+   "top right" configured there is no collision at all -- but the rule is kept,
+   scoped, so the clearance still applies if the position is ever moved to the
+   bottom. */
+#cc--main #cm:not(.top){ bottom: 78px !important; }
+
+@media (max-width: 480px){
+  #cc--main #cm{ max-width: none; padding: 14px !important; }
+}
+
+/* =============================================================================
+   The settings themselves. Applied from data-* on <html> so a preference is in
+   force before first paint (set by the inline head snippet), not after.
+   ============================================================================= */
+
+/* Dyslexia-friendly face.
+
+   Two things went wrong on the first attempt and are worth recording.
+
+   1. A :not() exclusion chain listing the icon families did not hold -- it was
+      written against `span[class*="eicon"]` and friends, so icons on other
+      elements slipped through and rendered in Atkinson.
+   2. The repair rule used `font-family: revert`, which rolls back to the USER
+      or UA origin and therefore discards the theme's own `font-family: eicons`
+      as well. That does not restore the icon font, it removes it -- the same
+      tofu, by a different route.
+
+   So the face is set broadly and each icon family is then restored BY NAME.
+   Between them these are declared 5,682 times across the bundle; getting this
+   wrong turns every icon on the site into a box.
+   -------------------------------------------------------------------------- */
+[data-a11y-font="atkinson"] body,
+[data-a11y-font="atkinson"] body * {
+  font-family: 'Atkinson Hyperlegible', Verdana, sans-serif !important;
+  letter-spacing: .012em;
+  word-spacing: .05em;
+}
+
+[data-a11y-font="atkinson"] [class*="eicon"],
+[data-a11y-font="atkinson"] [class*="eicon"]::before {
+  font-family: eicons !important;
+  letter-spacing: normal !important;
+}
+[data-a11y-font="atkinson"] .fa, [data-a11y-font="atkinson"] .fas,
+[data-a11y-font="atkinson"] .far, [data-a11y-font="atkinson"] .fal,
+[data-a11y-font="atkinson"] [class*="fa-"],
+[data-a11y-font="atkinson"] [class*="fa-"]::before {
+  font-family: "Font Awesome 5 Free" !important;
+  letter-spacing: normal !important;
+}
+[data-a11y-font="atkinson"] .fab,
+[data-a11y-font="atkinson"] [class*="fa-brands"],
+[data-a11y-font="atkinson"] .fab::before {
+  font-family: "Font Awesome 5 Brands" !important;
+}
+[data-a11y-font="atkinson"] [class*="amelia"],
+[data-a11y-font="atkinson"] [class*="am-icon"],
+[data-a11y-font="atkinson"] [class*="amelia"]::before {
+  font-family: amelia-icons !important;
+  letter-spacing: normal !important;
+}
+[data-a11y-font="atkinson"] .swiper-button-prev,
+[data-a11y-font="atkinson"] .swiper-button-next,
+[data-a11y-font="atkinson"] .swiper-button-prev::after,
+[data-a11y-font="atkinson"] .swiper-button-next::after {
+  font-family: swiper-icons !important;
+}
+
+/* Underline every inline link. Colour alone is not an affordance (1.4.1), and
+   this is the part of "colourblind-friendly" that actually helps here: the
+   brand is green on navy, which is not a problematic pair for the common
+   deficiencies, but colour-only links are a problem for everyone. */
+[data-a11y-cues="on"] p a,
+[data-a11y-cues="on"] li a,
+[data-a11y-cues="on"] .nf-loc__fact a,
+[data-a11y-cues="on"] td a {
+  text-decoration: underline !important;
+  text-underline-offset: 2px;
+}
+/* Give the licence badges a text cue rather than relying on their colour. */
+[data-a11y-cues="on"] .nf-loc__badge::before { content: "Licence: "; }
+
+/* The panel itself must never be restyled by the settings it applies. */
+.a11y-panel, .a11y-panel *, .a11y-trigger, .a11y-trigger * {
+  font-family: inherit;
+}
+[data-a11y-font="atkinson"] .a11y-panel,
+[data-a11y-font="atkinson"] .a11y-panel * {
+  font-family: 'Atkinson Hyperlegible', 'Verdana', sans-serif !important;
+}

@@ -1,0 +1,180 @@
+/* =============================================================================
+   ⚠ SUPERSEDED 2026-09-09 AND NO LONGER LINKED. The owner moved from
+   direction B to direction A ("apply A across all sections"). A keeps the
+   review card, so the hairline this file existed to draw has nothing to
+   separate. The live rules are in reviews-rating.css / reviews-rating.js.
+
+   Kept rather than deleted: the measurements below are the record of what
+   B actually cost and where its edge-rule trap was, and relinking is one
+   line inside the `oso-reviews:css` sentinel.
+   ============================================================================= */
+
+/* =============================================================================
+   reviews-quiet.css — "The Stars of New England", direction B (Quiet column).
+
+   OWNER PICK, from the four directions shown at
+   claude.ai/code/artifact/34815f1c-2848-404c-836d-286b9bb11457 — "go with B".
+
+   SUPERSEDES reviews-compact.css. That file spent its effort getting the CARD
+   right (28px padding, 20px radius, the 180px floor removed). B deletes the
+   card, so the padding argument it settled no longer has anything to apply to.
+   reviews-compact.css is left on disk with its measurements intact — the notes
+   in it are still the record of why 28px was correct — but it is no longer
+   linked. Swapping the two <link> lines back reverses this whole direction.
+
+   WHAT B IS
+   No boxes. The quote sits straight on the navy, and a hairline in the gutter
+   separates one review from the next. Nothing was removed except decoration.
+
+   WHY IT FIXES THE RAGGED BOTTOM
+   Swiper equalises every slide to the tallest in the loop. With ten reviews
+   ranging from 5 words to 40, a two-line review was being shown in a box sized
+   for a five-line one, and the leftover space read as a mistake. Take the box
+   away and the same leftover space is just the end of a paragraph.
+
+   MEASURED BEFORE (index.html, 1440 wide, the live carousel):
+     slide             348px wide, margin-right 10px
+     card              330px wide, 28px padding, 20px radius, #1F5277
+     visible slides    4 at 1440 · 2 at 768 · 1 at 390
+     loop              true, autoplay true, 10 real reviews
+     band              375px of content
+
+   CONTRAST, measured rather than eyeballed — every value here is on the navy
+   #0A2C47 ground, since the card that used to sit between is gone:
+     quote     #FFFFFF   14.34:1
+     stars     #CCD6DF    9.73:1   (image asset, unchanged)
+     source    #B8C9D6    8.44:1
+     the separator is decorative and carries no meaning; the star row and the
+     column break both signal "new review", so 1.4.11 does not bind on it.
+   ============================================================================= */
+
+/* ---- the card, dissolved --------------------------------------------------
+   !important throughout: the Elementor background sits on
+   `.elementor-6796 .elementor-element-41cf1a46` at (0,3,0), and
+   reviews-compact.css used !important for the padding and radius it set. An
+   author !important beats an author normal declaration at any specificity, and
+   this file loads after, so it wins both. */
+[class*="type-reviews"] .e-con-full.e-con {
+  position: relative;                    /* the separator anchors to this */
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  min-height: 0 !important;
+
+  /* 22px of left padding is the gutter the hairline lives in. Vertical padding
+     drops to 4px: the 28px the card carried was there to hold text off a
+     coloured edge, and there is no edge any more. */
+  padding: 4px 0 4px 22px !important;
+  row-gap: 11px !important;
+}
+
+/* ---- the hairline ---------------------------------------------------------
+   A pseudo-element in the gutter rather than a border-left, because in a
+   looping carousel there is no "first child" that stays leftmost — the wrapper
+   translates, so whichever slide is at the left edge changes as it rotates,
+   and a border-left would put a rule hard against the band's edge.
+
+   -14px puts it in the middle of the ~28px visual gutter.
+
+   ⚠ THE CLIPPING THEORY WAS WRONG. This first shipped on the assumption that
+   the leftmost card's rule would fall outside `.swiper` (overflow:hidden) and
+   be clipped for free. Measured across all ten resting positions at 1440,
+   1200 and 900: a rule sits 2-5px INSIDE the left edge at 8 of 10. The card is
+   inset ~19px from the container, not the 9px the slide geometry suggested, so
+   -14px lands at +5. A single screenshot had caught one of the two clean
+   positions and looked correct, which is why it needed the sweep and not the
+   eye. The edge case is handled by reviews-quiet.js — see the rule below. */
+[class*="type-reviews"] .e-con-full.e-con::before {
+  content: "";
+  position: absolute;
+  left: -14px;
+  top: 2px;
+  bottom: 2px;
+  width: 1px;
+  background: #2C6491;
+  pointer-events: none;
+}
+
+/* The edge case, set by reviews-quiet.js. A looping carousel has no CSS
+   selector for "leftmost currently visible" — the wrapper translates, so the
+   first child is not the first on screen. Measured: without this, a rule sits
+   2-5px inside the band's left edge at 8 of 10 resting positions. */
+[class*="type-reviews"] .e-con-full.e-con[data-nf-rule="off"]::before {
+  display: none;
+}
+
+/* ---- stars ----------------------------------------------------------------
+   16px, up from the 17px reviews-compact.css set. The glyph is hidden at
+   font-size 0 and the star is a background image on the <i>, so the box is
+   what sizes it -- see a11y-panel.js for why that box must not be scaled by
+   the text-size setting. */
+[class*="type-reviews"] .elementor-star-rating i {
+  width: 16px !important;
+  height: 16px !important;
+}
+[class*="type-reviews"] .elementor-star-rating {
+  font-size: 14px !important;
+  line-height: 1 !important;
+}
+[class*="type-reviews"] .elementor-star-rating__wrapper {
+  margin: 0 !important;
+}
+
+/* ---- the quote ------------------------------------------------------------
+   15px, UP from 14.5px. Counter-intuitive on a brief about making the band
+   smaller, but the height came out of the box, not the type: with 28px of
+   padding and a 20px radius gone there is room to let the words be the thing
+   that is actually read. */
+[class*="type-reviews"] .elementor-widget-text-editor,
+[class*="type-reviews"] .elementor-widget-text-editor p {
+  font-size: 15px !important;
+  line-height: 1.55 !important;
+  margin: 0 !important;
+  color: #FFFFFF !important;
+}
+
+/* ---- the source label -----------------------------------------------------
+   Was white at weight 800, which gave "Google" the same visual weight as the
+   review itself. It is an attribution, not a claim: smaller, uppercase, and
+   stepped back to #B8C9D6 — still 8.44:1, so stepping it back costs nothing
+   in readability. */
+[class*="type-reviews"] .elementor-widget-text-editor:last-child,
+[class*="type-reviews"] .elementor-widget-text-editor:last-child p {
+  font-size: 11.5px !important;
+  line-height: 1.4 !important;
+  font-weight: 600 !important;
+  letter-spacing: .07em !important;
+  text-transform: uppercase !important;
+  color: #B8C9D6 !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Phones and small tablets.
+
+   Below 768 the carousel shows ONE slide at a time, so there is no neighbour
+   to separate from — the hairline and the gutter it lives in are both removed
+   rather than left drawing a rule next to nothing. Measured: 1 visible slide
+   at 390, 2 at 768.
+
+   The type is deliberately NOT reduced here. Shrinking body copy on a phone is
+   the opposite of what the accessibility layer exists for, and the space this
+   direction saves comes from the box, not from the words.
+   -------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  [class*="type-reviews"] .e-con-full.e-con {
+    padding: 2px 0 !important;
+  }
+  [class*="type-reviews"] .e-con-full.e-con::before {
+    display: none;
+  }
+}
+
+/* Two slides across: the gutter still applies, and so does the rule. */
+@media (min-width: 768px) and (max-width: 1024px) {
+  [class*="type-reviews"] .e-con-full.e-con {
+    padding: 4px 0 4px 18px !important;
+  }
+  [class*="type-reviews"] .e-con-full.e-con::before { left: -11px; }
+}

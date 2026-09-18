@@ -1,0 +1,326 @@
+/* =============================================================================
+   a11y-base.css — the baked-in accessibility layer.
+
+   Ships on every page whether or not the accessibility panel is ever opened.
+   The panel is an accommodation on top; this file is the part that makes the
+   default rendering usable.
+
+   Every colour below was measured, not chosen by eye. Baseline audit over all
+   46 pages, computed foreground against painted background:
+
+     361 contrast failures        #9ED154 x251 · #8FD338 x69 · #6B818F x24 · #fff x17
+     107 broken focus suppressions (of 457 raw outline:none/0 declarations;
+         247 are harmless resets, 56 use the correct :not(:focus-visible)
+         idiom, and 46 target a:not([href]):not([tabindex]), which is not
+         focusable in the first place)
+       0 flashing risks           741 animation declarations, none faster than 3Hz
+
+   Both brand greens sit at mid-luminance, so they fail against white in BOTH
+   directions: green text on white (1.79 / 1.82) and white text on a green
+   button (1.79 / 1.82). No single colour clears 4.5:1 on white AND on the
+   brand navy — white needs luminance <= 0.1833, navy needs >= 0.2523 — so the
+   green cannot simply be redefined. It is paired differently instead:
+
+       never pair green with white; pair green with navy.
+
+   The brand green itself is never altered. On dark grounds it already measures
+   8.59:1 and is left exactly as the owner asked.
+   ============================================================================= */
+
+:root {
+  /* Brand ink. On white 15.63, on brand green 8.59, on light green 8.71. */
+  --a11y-ink: #04263A;
+
+  /* The brand green darkened along its own hue for use as TEXT on light
+     grounds. On white 5.81, on cream #F2EEE4 5.01, on #F6F6F6 5.37.
+     Applied only where the measured pair actually fails — see a11y-base.js. */
+  --a11y-green-on-light: #4A7019;
+
+  /* Replaces #6B818F (4.07 on white, fails AA for body text) on the store
+     address / opening-hours paragraphs. On white 5.53. */
+  --a11y-muted: #5A6B76;
+
+  /* Two-tone focus ring. Green is visible against the navy grounds (8.59),
+     navy is visible against the light grounds (15.63). One of the two always
+     reads, so the ring survives on any background on the site. */
+  --a11y-ring-inner: #8FD338;
+  --a11y-ring-outer: #04263A;
+}
+
+/* -----------------------------------------------------------------------------
+   1. Focus visibility
+
+   457 declarations remove an outline; 107 of them genuinely remove a keyboard
+   focus ring. Rather than chase each one, a single high-specificity rule
+   restores a ring for every keyboard-focused element, then the known offenders
+   are named explicitly because some of them set outline inside a more specific
+   selector.
+
+   :focus-visible only matches keyboard/programmatic focus, so mouse users see
+   no change — which is why the 56 rules already using :not(:focus-visible) are
+   correct and are left alone.
+   -------------------------------------------------------------------------- */
+:focus-visible {
+  outline: 3px solid var(--a11y-ring-inner) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 6px var(--a11y-ring-outer) !important;
+}
+
+/* The measured offenders. Each of these strips the ring in a selector specific
+   enough to matter, and each is reachable by keyboard. */
+.elementor-field-group .elementor-field-textual:focus-visible,
+.e-floating-bars:focus-visible,
+.e-floating-bars__cta-button:focus-visible,
+.el-input__inner:focus-visible,
+.el-textarea__inner:focus-visible,
+.el-input-group__append:focus-visible,
+.el-input-group__prepend:focus-visible,
+.el-dialog:focus-visible,
+.amelia-v2-booking #amelia-container .am-fs-sb__menu:focus-visible,
+.elementor-button:focus-visible,
+.elementor-item:focus-visible,
+.e-n-tab-title:focus-visible {
+  outline: 3px solid var(--a11y-ring-inner) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 6px var(--a11y-ring-outer) !important;
+}
+
+/* Skip link — present in the markup but visually hidden with no way back.
+   Give it a real appearance when focused. */
+.skip-link:focus,
+a[href="#content"]:focus-visible {
+  position: fixed !important;
+  top: 8px !important;
+  left: 8px !important;
+  z-index: 100001 !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 12px 20px !important;
+  background: var(--a11y-ink) !important;
+  color: #fff !important;
+  clip: auto !important;
+  clip-path: none !important;
+}
+
+/* -----------------------------------------------------------------------------
+   2. Contrast — the cases that can be fixed statically
+
+   The green cases are context-dependent (the same declaration passes on navy
+   and fails on white) and are handled at runtime by a11y-base.js. What follows
+   is only what is safe to assert without knowing the painted background.
+   -------------------------------------------------------------------------- */
+
+/* #6B818F was measured on white in all 24 occurrences — store addresses and
+   opening hours. 4.07 -> 5.53. */
+[style*="color:#6B818F" i],
+[style*="color: #6B818F" i] {
+  color: var(--a11y-muted) !important;
+}
+
+/* White label on a green tab or button: 1.79-1.82. The green is kept; the
+   label becomes navy, which measures 8.59 on brand green and 8.71 on light. */
+.e-n-tab-title[aria-selected="true"] .e-n-tab-title-text,
+.e-n-accordion-item[open] .e-n-accordion-item-title-text {
+  color: var(--a11y-ink) !important;
+}
+
+/* -----------------------------------------------------------------------------
+   3. Reduced motion
+
+   154 prefers-reduced-motion blocks already exist and cover generic
+   animation/transition, but the audit found they cover Slider Revolution: 0,
+   Swiper: 0, ticker/floating bar: 0. Those three are what actually moves on
+   this site. The CSS half is here; the JS half (autoplay, which CSS cannot
+   stop) lives in a11y-base.js.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .sr7-module, .sr7-module *,
+  [class*="sr7"], [class*="sr7"] *,
+  .swiper-container, .swiper-container *,
+  .swiper-wrapper, .swiper-slide,
+  .e-floating-bars, .e-floating-bars *,
+  [class*="ticker"], [class*="ticker"] * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  /* Swiper drives position with a transform transition; freezing the
+     transition alone leaves it mid-slide, so pin the track too. */
+  .swiper-wrapper {
+    transform: none !important;
+  }
+}
+
+/* The same, on demand, for the panel's "stop animations" toggle. Kept in step
+   with the media query above deliberately: one behaviour, two triggers. */
+[data-a11y-motion="off"] .sr7-module,
+[data-a11y-motion="off"] .sr7-module *,
+[data-a11y-motion="off"] [class*="sr7"],
+[data-a11y-motion="off"] [class*="sr7"] *,
+[data-a11y-motion="off"] .swiper-container,
+[data-a11y-motion="off"] .swiper-container *,
+[data-a11y-motion="off"] .swiper-wrapper,
+[data-a11y-motion="off"] .swiper-slide,
+[data-a11y-motion="off"] .e-floating-bars,
+[data-a11y-motion="off"] .e-floating-bars *,
+[data-a11y-motion="off"] [class*="ticker"],
+[data-a11y-motion="off"] [class*="ticker"] *,
+[data-a11y-motion="off"] .animated,
+[data-a11y-motion="off"] * {
+  animation: none !important;
+  transition: none !important;
+}
+[data-a11y-motion="off"] .swiper-wrapper {
+  transform: none !important;
+}
+
+/* -----------------------------------------------------------------------------
+   4. Runtime contrast correction hooks
+
+   a11y-base.js measures each text element the way the audit did and tags only
+   the ones that actually fail. Nothing here applies without that measurement,
+   so green on a dark ground — which passes at 8.59 — is never touched.
+   -------------------------------------------------------------------------- */
+[data-a11y-fix="green-on-light"],
+[data-a11y-fix="green-on-light"] * {
+  color: var(--a11y-green-on-light) !important;
+}
+
+[data-a11y-fix="ink-on-green"],
+[data-a11y-fix="ink-on-green"] * {
+  color: var(--a11y-ink) !important;
+}
+
+[data-a11y-fix="muted-on-light"] {
+  color: var(--a11y-muted) !important;
+}
+
+/* An inline link that is only distinguishable by colour fails 1.4.1 regardless
+   of its contrast ratio. Where the corrector has had to restyle a link inside
+   prose, give it a non-colour affordance as well. */
+p a[data-a11y-fix], li a[data-a11y-fix] {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* -----------------------------------------------------------------------------
+   5. Header scrim
+
+   The header paints nothing of its own; on the homepage the white nav sits
+   directly over the Slider Revolution hero. Over a bright slide — the Attleboro
+   storefront under blue sky — the nav is close to unreadable, and because the
+   hero paints on its own layer there is no backdrop to measure at all.
+
+   A flat navy wash makes the result guaranteed rather than dependent on which
+   slide is showing. The alpha is set by the harder of the two things sitting on
+   it: the header carries white links AND a green "SHOP" label, and green needs
+   a darker backdrop than white does. Worst case is a pure-white slide, which at
+   82% composites to rgb(49,77,93):
+
+       white nav links   8.92:1
+       green SHOP label  4.90:1
+
+   Both clear 4.5 with headroom, and any real photograph is darker than white,
+   so both ratios can only improve. 70% was tried first and left the green at
+   3.26 — the white text passed, which is exactly the kind of partial fix that
+   looks finished and is not.
+
+   Applied by a11y-base.js only where the header currently paints nothing, so
+   the inner pages that already have a solid navy header are never doubled up.
+
+   Implemented as an overlay rather than a background on the header itself.
+   The theme deliberately forces the sticky header transparent -- the rule
+   .scroll-header.elementor-sticky--active sets background transparent with
+   !important at specificity 0-2-0 -- and beating that would mean out-specifying
+   a rule the theme means to hold. A layer underneath the header's own content
+   collides with nothing.
+   -------------------------------------------------------------------------- */
+[data-a11y-scrim="header"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(4, 38, 58, 0.82);
+  pointer-events: none;
+  z-index: 0;
+}
+/* Keep the logo and nav above the scrim. */
+[data-a11y-scrim="header"] > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* =============================================================================
+   Contrast corrections found by axe on 2026-09-16, once the age gate stopped
+   blocking it from running at all.
+
+   CLIENT-NOTES §7 records "361 measured contrast failures -> 0". These sixteen
+   were not part of that count and are not a regression against it — that sweep
+   measured computed colours, and every scan since has been taken through a
+   closed age gate, so axe's own colour-contrast rule had never executed on this
+   bundle. It ran for the first time here and found three colour pairs.
+
+   Each replacement below is the MINIMUM change that reaches the threshold, so
+   the design moves as little as possible. The excerpt grey moves by one unit.
+
+     used          on          was      now       lifted to
+     #adadad       #ffffff     2.24     #767676   4.54    post meta ("No Comments")
+     #777777       #ffffff     4.47     #767676   4.54    post excerpts
+     #6b818f       #04263a     3.84     #778d9b   4.52    footer legal text
+
+   The third group is the footer's corporate address, phone number, copyright
+   and the "please consume responsibly" notice. Legal text a reader cannot read
+   is the worst place on the page to be 0.66 short of the threshold.
+   ============================================================================= */
+
+/* Blog card meta and excerpts — Elementor's defaults, greys on white. */
+.elementor-post__meta-data,
+.elementor-post__meta-data .elementor-post-avatar,
+.elementor-post__meta-data span {
+  color: #767676 !important;
+}
+.elementor-post__excerpt,
+.elementor-post__excerpt p {
+  color: #767676 !important;
+}
+
+/* Footer legal text on brand navy. Scoped to the three containers axe named
+   rather than every footer paragraph, so footer text that already passes is
+   left at its designed colour. */
+footer .elementor-element-f8e2780 p,
+footer .elementor-element-f8e2780 span,
+footer .elementor-element-d41ba46 p,
+footer .elementor-element-d41ba46 span,
+footer .elementor-element-721ef1d p,
+footer .elementor-element-721ef1d span {
+  color: #778d9b !important;
+}
+
+/* ---------------------------------------------------------------------------
+   The ticker's focus ring was showing on every page load.
+
+   Elementor Pro focuses the floating bar itself when the page loads —
+   FloatingBarsHandler.focusOnLoad(), confirmed by instrumenting
+   HTMLElement.prototype.focus and reading the call stack. The bar carries
+   tabindex="0", so it takes focus, and PROGRAMMATIC focus matches
+   :focus-visible just as keyboard focus does. The ring above then paints a 3px
+   green outline at a 2px offset around a 1280x36 element, and its bottom edge
+   lands just below the band — the green line the owner reported, which vanished
+   as soon as they clicked anything.
+
+   Elementor does this deliberately, so a screen reader announces the banner. It
+   should not be disabled. What is wrong is only that a MOUSE user sees a ring
+   they never asked for, on load, before touching anything.
+
+   So the ring is suppressed only while the visitor has not yet used Tab.
+   aria-repair.js sets data-nf-kbd on <html> at the first Tab keydown, after
+   which this rule stops matching and the ring behaves normally for anyone
+   navigating by keyboard — including when they Tab to this very bar.
+
+   Specificity: html:not([data-nf-kbd]) .e-floating-bars:focus-visible is
+   (0,3,1) against the (0,2,0) rule above, and both are !important, so this
+   wins without needing a louder declaration.
+   -------------------------------------------------------------------------- */
+html:not([data-nf-kbd]) .e-floating-bars:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}

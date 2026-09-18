@@ -1,0 +1,46 @@
+/* =============================================================================
+   embed-fit.css — embeds that adapt to the screen they are on.
+
+   OWNER ASK 2026-09-10: "optimize adaptability to any screen size both the
+   Desktop and Mobile view."
+
+   THE GOOGLE MAPS EMBED IS PINNED TO 450px TALL AT EVERY WIDTH.
+   It ships with `width="600" height="450"` from the Maps embed snippet, and the
+   height never changes. Its width does, so the aspect ratio swings wildly.
+   Measured on all six store pages:
+
+     width   rendered        aspect
+     320     256 x 450       0.57   ← nearly twice as tall as it is wide
+     375     311 x 450       0.69
+     1440    553 x 450       1.23
+     1440    1140 x 450      2.53   (framingham-ma, greenville-me)
+
+   A 4.4x aspect swing across the range, and on a phone the map is a narrow
+   vertical strip — the worst shape for a map, which needs horizontal context to
+   show where a store sits relative to its road. This is on 24 of 47 pages: the
+   six store pages plus the SEO landing pages that embed the nearest store.
+
+   The fix gives it a ratio instead of a height, capped at the 450px it uses
+   today so nothing on desktop changes:
+
+     320     256 x 192   (1.33)     was 450
+     375     311 x 233   (1.33)     was 450
+     768     704 x 450   (1.56)     unchanged — the cap bites
+     1440    553 x 415   (1.33)     was 450
+     1440   1140 x 450   (2.53)     unchanged — the cap bites
+
+   min-height keeps it a usable map rather than a sliver if a container ever
+   gets very narrow. Width is deliberately NOT set: the embed already fills its
+   container (256 of a 256 column at 320), so touching it would change a layout
+   that is already correct.
+
+   Selected by src, which is the only stable handle: the Elementor element ids
+   differ per page, and WP Rocket rewrites the live src to about:blank while
+   holding the real one in data-lazy-src, so both are matched. */
+iframe[src*="google.com/maps/embed"],
+iframe[data-lazy-src*="google.com/maps/embed"] {
+  height: auto !important;
+  aspect-ratio: 4 / 3;
+  max-height: 450px;
+  min-height: 180px;
+}

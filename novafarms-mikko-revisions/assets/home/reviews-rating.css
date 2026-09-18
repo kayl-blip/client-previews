@@ -1,0 +1,552 @@
+/* =============================================================================
+   reviews-rating.css — direction A, "Rating first". Owner pick.
+
+   Pairs with reviews-rating.js, which injects the score lockup and marks the
+   carousel widget `data-nf-reviews="rating"`. Every selector here hangs off
+   that attribute rather than an Elementor element id, because the ids DIFFER
+   across the six pages that carry this section.
+
+   SUPERSEDES reviews-quiet.css/.js (direction B) and, before it,
+   reviews-compact.css. B dissolved the review card; A brings it back, so the
+   card treatment lives here and there is exactly one live stylesheet for this
+   section again. Both earlier files stay on disk, unlinked, with their
+   measurements intact.
+
+   CONTRAST — measured, on the band navy #0A2C47 and the card #1F5277:
+     score 5.0        #FFFFFF on navy   14.34:1
+     stars            image asset, unchanged
+     meta copy        #B8C9D6 on navy    8.44:1
+     pending chip     #B8C9D6 on navy    8.44:1
+     quote            #FFFFFF on card    8.30:1
+     source label     #B8C9D6 on card    6.10:1
+   ============================================================================= */
+
+/* The band's content shared the page's width problem: measured 976 wide at
+   left 232 against every other section's 1140 at 150, because an Elementor
+   width setting on this inner element beat the container. reviews-rating.js
+   marks it structurally (the ids differ per page); this puts it back on the
+   canonical container. */
+/* width:100%, NOT the container formula. These are nested inside the theme's
+   own .e-con-inner, which is already the 1140 container — re-applying the
+   gutter here just narrowed it again (measured 1100 instead of 1140 on the
+   first attempt). They only need to stop shrinking. */
+[data-nf-reviews-box] {
+  width: 100% !important;
+  max-width: none !important;
+  margin-inline: auto !important;
+}
+/* ...and the band's SIBLING branches. The heading and the carousel are not on
+   one chain — they are siblings under the section, each with its own Elementor
+   width. Walking up from the carousel therefore never reached the heading,
+   which stayed at 976 while the carousel widened. Measured, not deduced: the
+   heading sat at left 232 while everything else moved to 150. */
+[data-nf-reviews-box] > .elementor-element {
+  width: 100% !important;
+  max-width: none !important;
+}
+/* The last 10px: the theme puts 10px of horizontal padding on every .e-con, so
+   even at width:100% the content landed at 1120/left 160 rather than
+   1140/left 150. Vertical padding is left alone — only the side gutter is
+   being unified.
+
+   ⚠ Zeroing it outright was right for the desktop container and WRONG on a
+   phone: measured, the band then sat flush at left 0 while every other section
+   kept an 18px gutter. On mobile the container is the full viewport, so the
+   gutter has to come from here instead. Only the OUTERMOST marked element
+   carries it — the chain is nested, and padding on each link would compound. */
+[data-nf-reviews-box] {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+/* 1180px, not 600. The gutter was only restored below 600, so between 601 and
+   the container width the band had nothing but the theme's 10px — measured, the
+   whole band including the heading sat at left 10 at 768, 900 and 1100, against
+   150 at 1440. 1180 is the container (1140) plus a gutter either side, which is
+   exactly the width below which the container stops being the thing that insets
+   the content. */
+@media (max-width: 1180px) {
+  [data-nf-reviews-box]:not([data-nf-reviews-box] [data-nf-reviews-box]) {
+    padding-left: var(--nf-gutter, 20px) !important;
+    padding-right: var(--nf-gutter, 20px) !important;
+  }
+}
+
+/* =============================================================================
+   ⚠ THE REVIEW CARDS RENDERED AS 20px SLIVERS on framingham-ma and
+   greenville-me, and the band had no background at all.
+
+   Cause: those two pages compute `display: inline` on eleven Elementor
+   containers — the band's section and its ten review cards. An inline box
+   cannot take a width or a height and paints only around its own text, which
+   is exactly the sliver; and an inline section paints no background band.
+
+   Measured, .e-con display tally at 1440:
+       attleboro-ma (working)   67 flex,  0 inline
+       framingham-ma            24 flex, 11 inline
+       greenville-me            24 flex, 11 inline
+   Everything else about them is already correct — flex-direction: column and
+   the gaps are set. Only `display` is wrong, because those two stub pages were
+   emitted without the rule that supplies it.
+
+   Scoped by STRUCTURE, not by the two page ids: any page whose containers come
+   out inline gets the same correction, and on the 45 pages that are already
+   flex this asserts what is true anyway.
+
+   Note this is NOT applied to `.e-con` broadly — twelve containers on a working
+   page compute `display: none`, and a blanket rule would un-hide them.
+   ============================================================================= */
+[data-nf-reviews-sec],
+[class*="type-reviews"] .e-con-full.e-con {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* The band's own ground, where the page does not supply one. Set by
+   reviews-rating.js only when the composited backdrop behind the lockup comes
+   out light — so the four pages that already have their navy are untouched.
+   Full-bleed to match them: the band runs edge to edge and the content sits in
+   the shared container inside it. */
+[data-nf-band="paint"] {
+  background-color: #0A2C47 !important;
+  padding-top: 44px !important;
+  padding-bottom: 44px !important;
+}
+
+/* And the palette that goes with it, asserted rather than detected.
+
+   The first attempt left this to the runtime ground check and produced NAVY
+   TYPE ON THE NAVY BAND — 1:1, invisible. The check had already stamped
+   data-nf-ground="light" from the white ground it saw, and re-running it after
+   the paint was a race I kept losing.
+
+   There is no need to detect anything here: if this build painted the band, it
+   KNOWS the ground is #0A2C47. So the dark-ground palette is stated outright
+   and overrides the light one whatever the detector decided.
+   White 14.34:1, #B8C9D6 8.44:1. */
+[data-nf-band="paint"] .nf-score__num { color: #FFFFFF !important; }
+[data-nf-band="paint"] .nf-score__meta,
+[data-nf-band="paint"] .nf-score__pending { color: #B8C9D6 !important; }
+[data-nf-band="paint"] .nf-score__pending { border-color: #7FA3BE !important; }
+/* the star asset is white, so the light-ground filter has to come back off */
+[data-nf-band="paint"] .nf-score__stars .elementor-star-rating i { filter: none !important; }
+/* the heading is the brand green, which is 7.88:1 on this navy */
+[data-nf-band="paint"] h2 { color: #8FD338 !important; }
+
+/* ---- the row --------------------------------------------------------------
+   The widget that already wrapped the carousel becomes the row. The swiper is
+   never re-parented — see reviews-rating.js for why that matters. */
+[data-nf-reviews="rating"] {
+  display: flex !important;
+  align-items: center;
+  gap: 44px;
+}
+[data-nf-reviews="rating"] .nf-reviews__rail {
+  flex: 1 1 auto;
+  min-width: 0;            /* without this the flex item refuses to shrink and
+                              the carousel pushes the lockup off the row */
+}
+
+/* ---------------------------------------------------------------------------
+   THE REVIEW CARDS WERE NOT PAINTING AT ALL on the four store pages.
+
+   Reported by the owner ("how come testimonial cards are not showing?") and
+   reproduced: attleboro, dracut, newbritain and woodbury rendered the heading,
+   the lockup and the pagination dots, and nothing between them.
+
+   Cause: `.swiper-wrapper` computes `overflow-x: auto` on those four pages
+   (index computes `visible`). Swiper positions the track with a transform —
+   measured translateX(-822px) — so the slides sit at wrapper-local x well
+   beyond the wrapper's own 812px box. A wrapper that clips therefore clips
+   away every slide. Swiper expects `.swiper` to do the clipping, which it
+   does at overflow:hidden, and the wrapper not to.
+
+   Measured, painted slides inside the rail:
+       as shipped                     0
+       with my lockup removed         0   <- so this is NOT the lockup's doing
+       with the wrapper not clipping  3   <- the fix
+
+   That middle row matters: this is PRE-EXISTING on those four pages, not
+   something direction A introduced. I missed it because the verification
+   counted slide GEOMETRY — boxes were 264x224 at valid coordinates the whole
+   time — instead of what actually paints. A contrast sweep cannot catch it
+   either: vanished content has no text to measure, so it passes clean. Both
+   sweeps now have a paint check alongside them.
+
+   `:has()` so the rule finds the reviews carousel by its own content and does
+   not depend on the injection having run; the data-attribute form is kept
+   alongside it for browsers without :has(). Scoped to this carousel — other
+   Swipers on the page are left alone. */
+.swiper:has(.swiper-slide[class*="type-reviews"]) > .swiper-wrapper,
+[data-nf-reviews="rating"] .swiper > .swiper-wrapper {
+  overflow: visible !important;
+}
+
+/* The pages with no .e-con-inner to work with — index.html, framingham-ma and
+   greenville-me. The row takes the shared container itself so the lockup is
+   inset like every other section instead of sitting against the window edge. */
+[data-nf-reviews-fallback] {
+  width: min(100% - (var(--nf-gutter, 20px) * 2), var(--nf-container, 1140px)) !important;
+  max-width: none !important;
+  margin-inline: auto !important;
+}
+
+/* ---- the score lockup ---------------------------------------------------- */
+.nf-score {
+  flex: 0 0 264px;
+  text-align: left;
+}
+.nf-score__num {
+  margin: 0 0 12px;
+  font-size: 72px;
+  line-height: .9;
+  font-weight: 800;
+  color: #FFFFFF;
+  font-variant-numeric: tabular-nums;
+}
+.nf-score__stars { margin: 0 0 14px; }
+.nf-score__stars .elementor-star-rating {
+  display: flex;
+  gap: 7px;
+  font-size: 14px !important;
+  line-height: 1 !important;
+}
+/* The star is painted HERE, not inherited from the page.
+
+   The theme's rule (`.custom-star-icon .elementor-star-rating i`) is inlined
+   per page by Elementor, and it is NOT present on framingham-ma or
+   greenville-me — measured: backgroundImage computed to `none` on both, so the
+   lockup showed five blank boxes. Those two pages are the stubs, and their
+   reviews widget was never emitted with its CSS.
+
+   Declaring the asset here makes the lockup self-contained on all six pages.
+   Sized at 22px because this row is the headline of the lockup: the glyph is
+   hidden at font-size 0, so the BOX is what sizes it. */
+.nf-score__stars .elementor-star-rating i {
+  width: 22px !important;
+  height: 22px !important;
+  display: inline-block;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  background-image: url('../in-pages/WHITE-NOVA-STAR.webp');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.nf-score__stars .elementor-star-rating i::before { display: none; }
+.nf-score__meta {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: #B8C9D6;
+}
+
+/* The total is not in the bundle and is not invented. Marked, not blank. */
+.nf-score__pending {
+  display: inline-block;
+  border: 1px dashed #7FA3BE;
+  border-radius: 6px;
+  padding: 0 7px;
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: #B8C9D6;
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------------------
+   The lockup on a LIGHT ground.
+
+   The band is navy on index, attleboro, dracut and newbritain. It is NOT on
+   framingham-ma and greenville-me — measured, the composited ground behind the
+   lockup there is pure white — because those two stub pages never got the
+   section's background. White-on-navy type became white-on-white: the "5.0"
+   measured 1:1, invisible.
+
+   So the lockup asks what it is sitting on rather than assuming. reviews-
+   rating.js composites the real backdrop and sets data-nf-ground="light" when
+   it is light; these rules answer it. Nothing paints a navy band that was not
+   there — the surrounding page is left as the client's own design, which is
+   also how a11y-base.css already handles the green heading on these pages.
+
+   Measured on white: 14.34:1, 7.29:1, and the star filtered to near-black 21:1.
+   The brand-green star asset was considered for this and rejected — 1.98:1. */
+.nf-score[data-nf-ground="light"] .nf-score__num { color: #0A2C47; }
+.nf-score[data-nf-ground="light"] .nf-score__meta { color: #43596B; }
+.nf-score[data-nf-ground="light"] .nf-score__pending {
+  color: #43596B;
+  border-color: #8FA3B4;
+}
+/* The asset is a white silhouette, so on white it is invisible. brightness(0)
+   collapses it to black through its own alpha, keeping the star shape exactly.
+   A CSS mask would allow a navy tint, but its failure mode is a solid navy
+   SQUARE where the mask is unsupported; a filter degrades to the unfiltered
+   white star instead, which is no worse than not having the rule. */
+.nf-score[data-nf-ground="light"] .nf-score__stars .elementor-star-rating i {
+  filter: brightness(0) opacity(.86);
+}
+
+/* ---- the cards, restored --------------------------------------------------
+   Direction B had dissolved these. A keeps them, so the padding question that
+   reviews-compact.css settled applies again — but at 22/24 rather than 28,
+   because the card is now one of two or three on a narrower rail instead of
+   one of four across the full width.
+
+   min-height stays zeroed: the 180px floor was never content, and Swiper
+   equalising slides to the tallest is enough on its own. */
+[data-nf-reviews="rating"] [class*="type-reviews"] .e-con-full.e-con {
+  background-color: #1F5277 !important;
+  border-radius: 14px !important;
+  padding: 22px 24px !important;
+  row-gap: 9px !important;
+  min-height: 0 !important;
+}
+
+/* Self-contained, for the same reason as the lockup star above and then some.
+
+   The theme's `.custom-star-icon` rule — which sets font-size:0 and paints the
+   star as a background image — is inlined per page and is ABSENT on
+   framingham-ma and greenville-me. Without it the literal ★ character rendered
+   at 13px in the inherited #333, on the #1F5277 card: measured 1.52:1, eighteen
+   failures per page. The card is #1F5277 on all six pages, so the white star is
+   right here whatever the band behind it is doing. */
+[data-nf-reviews="rating"] [class*="type-reviews"] .elementor-star-rating i {
+  width: 15px !important;
+  height: 15px !important;
+  display: inline-block;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  background-image: url('../in-pages/WHITE-NOVA-STAR.webp');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+[data-nf-reviews="rating"] [class*="type-reviews"] .elementor-star-rating i::before {
+  display: none;
+}
+[data-nf-reviews="rating"] [class*="type-reviews"] .elementor-star-rating {
+  font-size: 13px !important;
+  line-height: 1 !important;
+}
+[data-nf-reviews="rating"] [class*="type-reviews"] .elementor-star-rating__wrapper {
+  margin: 0 !important;
+}
+
+[data-nf-reviews="rating"] [class*="type-reviews"] .elementor-widget-text-editor,
+[data-nf-reviews="rating"] [class*="type-reviews"] .elementor-widget-text-editor p {
+  font-size: 14.5px !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
+  color: #FFFFFF !important;
+}
+
+/* "Google" is an attribution, not a claim — it had the same weight as the
+   review itself at 800 white. 6.10:1 on the card, so stepping it back costs
+   nothing in readability. */
+[data-nf-reviews="rating"] [class*="type-reviews"] .elementor-widget-text-editor:last-child,
+[data-nf-reviews="rating"] [class*="type-reviews"] .elementor-widget-text-editor:last-child p {
+  font-size: 11.5px !important;
+  line-height: 1.4 !important;
+  font-weight: 600 !important;
+  letter-spacing: .07em !important;
+  text-transform: uppercase !important;
+  color: #B8C9D6 !important;
+}
+
+/* ---------------------------------------------------------------------------
+   The two stub pages.
+
+   framingham-ma and greenville-me carry the reviews markup but Swiper NEVER
+   INITIALISES on them — measured: the rail keeps `swiper elementor-loop-
+   container elementor-grid` with no `swiper-initialized`, on both. This is
+   pre-existing and not caused by direction A (the revision 4 audit already had
+   both pages down as stubs with no working reviews carousel), but restoring
+   the card made it impossible to ignore: with no Swiper, all ten slides stack
+   in one column and the section measured 1779px against 484px on the pages
+   where the carousel works.
+
+   So when the rail is not initialised, lay it out as a grid instead of leaving
+   it as a stack, and show four rather than all ten. The remaining six are
+   hidden from assistive tech too, not just visually — a screen reader reading
+   ten reviews where four are shown is its own defect.
+   -------------------------------------------------------------------------- */
+[data-nf-reviews="rating"] .swiper:not(.swiper-initialized) {
+  display: grid;
+  /* THREE, in one row — matching what the initialised pages actually show, so
+     a visitor moving between stores sees the same section rather than a taller
+     variant. A 2x2 grid was the first attempt and measured 1046px against the
+     484px the working pages come out at; one row closes most of that. */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+[data-nf-reviews="rating"] .swiper:not(.swiper-initialized) .swiper-wrapper {
+  display: contents;
+}
+[data-nf-reviews="rating"] .swiper:not(.swiper-initialized) .swiper-slide:nth-child(n+4) {
+  display: none;
+}
+@media (max-width: 1024px) {
+  [data-nf-reviews="rating"] .swiper:not(.swiper-initialized) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  [data-nf-reviews="rating"] .swiper:not(.swiper-initialized) .swiper-slide:nth-child(n+3) {
+    display: none;
+  }
+}
+@media (max-width: 700px) {
+  [data-nf-reviews="rating"] .swiper:not(.swiper-initialized) {
+    grid-template-columns: 1fr;
+  }
+  [data-nf-reviews="rating"] .swiper:not(.swiper-initialized) .swiper-slide:nth-child(n+2) {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Stacking.
+
+   Below 1025 the lockup goes above the carousel and turns horizontal: the
+   number, the stars and the caption sit on one line so it costs a strip rather
+   than a block. Below 700 it centres and wraps, because at that width a
+   left-aligned 72px numeral next to wrapped caption text reads as debris.
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  [data-nf-reviews="rating"] {
+    flex-direction: column !important;
+    align-items: stretch;
+    gap: 24px;
+  }
+  .nf-score {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .nf-score__num { font-size: 52px; margin: 0; }
+  .nf-score__stars { margin: 0; }
+  .nf-score__stars .elementor-star-rating i { width: 18px !important; height: 18px !important; }
+  .nf-score__meta { flex: 1 1 240px; margin: 0; }
+}
+
+@media (max-width: 700px) {
+  .nf-score {
+    justify-content: center;
+    text-align: center;
+    gap: 12px;
+  }
+  .nf-score__num { font-size: 46px; }
+  .nf-score__meta { flex: 1 1 100%; text-align: center; }
+  [data-nf-reviews="rating"] [class*="type-reviews"] .e-con-full.e-con {
+    padding: 20px 20px !important;
+  }
+}
+
+/* =============================================================================
+   ROOM FOR THE PAGINATION, AND FOR THE CTA UNDER IT.
+
+   OWNER 2026-09-10: "ensure proper spacing between cards, texts and page
+   identifier", with a screenshot of the dots pressed against the card bottoms.
+
+   Measured before, identically at 375, 768 and 1440:
+
+     card bottom -> dots top    -8px   (the dots OVERLAP the cards)
+     dots bottom -> CTA top     20px
+
+   The overlap is mine. The dot strip is `position: absolute; bottom: 5px` inside
+   the rail, and when target-size.css grew the bullets from 6px to 24px for
+   WCAG 2.5.8, the extra 18px could only extend upward into the slides. My first
+   attempt held their old position with a negative margin, which kept the strip
+   sitting on top of the cards.
+
+   The strip needs 24px of height plus its 5px offset, so the rail needs about 40
+   to clear the cards with air. 16px of that already exists as the rail's own
+   bottom padding.
+
+   The CTA gap goes 20 -> 32 in the same pass: "LEAVE A REVIEW" is a separate
+   action from the carousel it follows, and 20px read as part of the same block.
+   ============================================================================= */
+[data-nf-reviews="rating"] .nf-reviews__rail .swiper {
+  padding-bottom: 44px !important;
+}
+
+[data-nf-reviews="rating"] .swiper-pagination {
+  bottom: 6px !important;
+}
+
+/* The CTA's own trailing space. `margin-bottom` on the band does NOT work here
+   and I measured it computing 0: the band's parent is `display: flex;
+   flex-direction: column; gap: 20px`, so the space under the band is a FLEX GAP
+   between siblings, not a margin the band can contribute to. The band is itself
+   one of those four siblings (heading, lockup, band, CTA), so the CTA is
+   reachable as the adjacent sibling and can carry the extra itself. */
+[data-nf-reviews="rating"] + * {
+  margin-top: 8px !important;
+}
+
+/* =============================================================================
+   NEXT / PREV FOR THE REVIEW CARDS.                          (owner, 2026-09-10)
+
+   See reviews-rating.js for why both buttons exist and why they are built to
+   the site's own control pattern.
+
+   OWNER: "do not make the buttons overlap the card, place them before and
+   after." The first version positioned them absolutely on the rail's edges,
+   because there is no spare width in the band -- it is a flex row of the rating
+   lockup (~264) plus a 44px gap plus the rail (832) inside 1140. Overlaying was
+   the wrong answer to that: the room has to be MADE, not borrowed from the
+   cards.
+
+   So the rail itself becomes a flex row -- [prev] [carousel] [next] -- and the
+   carousel shrinks to fit them. `min-width: 0` on the carousel is required, not
+   optional: without it a flex item refuses to shrink below its content and the
+   buttons would push the rail wider than its slot instead.
+   ============================================================================= */
+[data-nf-rev-nav] {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+}
+
+[data-nf-rev-nav] > .swiper {
+  flex: 1 1 auto;
+  min-width: 0;            /* or the carousel will not give ground */
+}
+
+.nf-rev-nav {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  /* #04263A at .82 over the band's navy keeps the white chevron well over
+     4.5:1. */
+  background: rgba(4, 38, 58, .82) !important;
+  color: #fff !important;
+  cursor: pointer;
+  transition: background-color .18s ease;
+}
+.nf-rev-nav svg { width: 18px; height: 18px; display: block; }
+
+.nf-rev-nav:hover { background: rgba(4, 38, 58, .95) !important; }
+.nf-rev-nav:focus-visible {
+  outline: 3px solid #8FD338 !important;
+  outline-offset: 2px !important;
+}
+
+/* On a phone the rail is narrow enough that two 40px controls plus their gaps
+   would take a third of it, so they come down a size. Still over the 24x24 the
+   target-size pass established as the floor for this build. */
+@media (max-width: 600px) {
+  [data-nf-rev-nav] { gap: 6px; }
+  .nf-rev-nav { flex-basis: 32px; width: 32px; height: 32px; }
+  .nf-rev-nav svg { width: 16px; height: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nf-rev-nav { transition: none; }
+}

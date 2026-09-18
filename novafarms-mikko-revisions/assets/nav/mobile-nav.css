@@ -1,0 +1,273 @@
+/* =============================================================================
+   mobile-nav.css — the store-first drawer (revision 5, option A).
+
+   Replaces BOTH nav systems the bundle currently ships. The audit found the
+   classic elementor-menu-toggle on 44 pages, the newer e-n-menu/off-canvas on
+   24, and twenty-three pages carrying both at once. One drawer replaces the lot.
+
+   Store context is pinned at the top rather than buried in a list, because the
+   whole journey in revision 2 turns on which store you are in. The disclosure
+   groups reuse revision 3's <button aria-expanded> pattern, so the site has one
+   expander component rather than three.
+
+   Colours come from a11y-base.css. Nothing here introduces a pair that the
+   contrast pass has not already measured.
+   ============================================================================= */
+
+/* Suppress the existing mobile navigation on the widths we take over. The
+   desktop nav is left completely alone -- revision 7 froze it apart from the
+   Our Brands swap. */
+@media (max-width: 1024px) {
+  .elementor-menu-toggle,
+  .elementor-nav-menu--dropdown,
+  .e-n-menu-toggle,
+  .elementor-nav-menu__container.elementor-nav-menu--dropdown {
+    display: none !important;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   Every colour and background below carries !important.
+
+   The theme ships `.elementor-kit-7 button { background-color:#FFFFFF;
+   color:#0A2C47 }` at specificity (0,1,1), and elementor-kit-7 is on every
+   <body> in the bundle. A single-class rule is (0,1,0) and loses regardless of
+   source order, so without this the drawer's trigger, close button, store card,
+   disclosures and pending CTA all rendered as white boxes with navy text --
+   the pending-menu note measured 1.28:1.
+   -------------------------------------------------------------------------- */
+
+/* The trigger. Sits in the header, above the scrim from a11y-base.css. */
+.nf-nav-trigger {
+  display: none;
+  position: relative;
+  z-index: 2;
+  align-items: center;
+  gap: 8px;
+  min-width: 48px;
+  min-height: 48px;              /* 2.5.5 target size */
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent !important;
+  color: #fff !important;
+  font: inherit;
+  font-size: 13px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+@media (max-width: 1024px) { .nf-nav-trigger { display: inline-flex; } }
+
+/* ...and it must SURVIVE above 1024 on the pages that have no desktop nav for
+   it to hand over to. employee.html, med-portal.html and newbritain.html ship a
+   bespoke header with no main nav; measured at 1025 and 1440 they had 0 visible
+   nav items AND no trigger, leaving 2 links in the entire header. The flag is
+   set by mobile-nav.js only when the HEADER carries no main nav, so the other
+   44 pages are untouched. */
+@media (min-width: 1025px) {
+  html[data-nf-no-desktop-nav] .nf-nav-trigger { display: inline-flex; }
+}
+
+/* employee.html and med-portal.html have no header anchor to sit beside, so the
+   trigger floats instead of not existing. Bottom-LEFT deliberately: the
+   accessibility panel's own button takes the bottom-right corner, and the
+   Pressidium consent box occupies the top-right. */
+.nf-nav-trigger--floating {
+  position: fixed !important;
+  left: 16px;
+  bottom: 16px;
+  z-index: 99998;
+  background: #04263A !important;
+  border: 2px solid #8FD338;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.35);
+}
+
+.nf-nav-trigger__bars { display: block; width: 22px; height: 2px; background: currentColor; position: relative; }
+.nf-nav-trigger__bars::before,
+.nf-nav-trigger__bars::after {
+  content: ""; position: absolute; left: 0; width: 22px; height: 2px; background: currentColor;
+}
+.nf-nav-trigger__bars::before { top: -7px; }
+.nf-nav-trigger__bars::after  { top:  7px; }
+
+/* ------------------------------------------------------------------ drawer */
+.nf-drawer[hidden] { display: none !important; }
+
+.nf-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;               /* above the age gate's own overlay */
+  display: flex;
+  justify-content: flex-end;
+}
+
+.nf-drawer__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 38, 58, .6);
+}
+
+.nf-drawer__panel {
+  position: relative;
+  width: min(92vw, 400px);
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: #04263A;
+  color: #fff;
+  padding: 16px 20px 40px;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* -----------------------------------------------------------------------------
+   The close button scrolled out of the drawer, and the corner it left behind
+   was live.
+
+   It was `position: absolute` inside the `overflow-y: auto` panel, so it left
+   the scrollport as soon as scrollTop passed its own height. Measured on
+   index.html with the Locations disclosure open:
+
+     viewport    panel scroll range    close button top at full scroll
+     320x568           763                     -753
+     390x844           487                     -477
+
+   Its bottom edge is above 0 at every phone size, i.e. gone. Worse, a real
+   touch at the corner the button occupies when unscrolled lands on whatever is
+   underneath -- the verification tapped it and navigated to a store page.
+
+   `sticky` keeps it in the scrollport without taking it out of flow the way
+   `fixed` would, so it stays inside the panel's rounded corner and scrolls with
+   nothing. `float: right` keeps it out of the content's way, which is what
+   `absolute` was doing before.
+   -------------------------------------------------------------------------- */
+.nf-drawer__close {
+  position: sticky !important;
+  top: 10px;
+  float: right;
+  z-index: 2;
+}
+
+.nf-drawer__close {
+  position: absolute;
+  top: 10px; right: 10px;
+  min-width: 48px; min-height: 48px;
+  border: 0; border-radius: 6px;
+  background: transparent !important; color: #fff !important;
+  font-size: 24px; line-height: 1; cursor: pointer;
+}
+
+/* ------------------------------------------------------- store context card */
+.nf-store {
+  margin: 44px 0 18px;
+}
+.nf-store__label {
+  margin: 0 0 8px;
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  /* #8FD338 on #04263A measures 8.59:1 */
+  color: #8FD338;
+}
+.nf-store__card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 14px 16px;
+  border: 1px solid rgba(143, 211, 56, .5);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .06) !important;
+  color: #fff !important;
+  font: inherit;
+  cursor: pointer;
+}
+.nf-store__name { display: block; font-size: 19px; font-weight: 700; }
+.nf-store__meta { display: block; margin-top: 4px; font-size: 13px; color: #DDE5EA; }
+.nf-store__change { color: #8FD338; font-weight: 700; }
+
+/* Nothing chosen yet: the card becomes the invitation to choose. */
+.nf-store--empty .nf-store__name { font-size: 17px; }
+
+/* ------------------------------------------------------------- primary CTA */
+.nf-cta {
+  display: block;
+  width: 100%;
+  margin: 0 0 22px;
+  padding: 15px 18px;
+  border: 0; border-radius: 8px;
+  background: #8FD338 !important;
+  /* navy on brand green = 8.59:1, per the pairing rule in a11y-base.css */
+  color: #04263A !important;
+  font: inherit; font-size: 15px; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase;
+  text-align: center; text-decoration: none;
+  cursor: pointer;
+}
+.nf-cta--pending {
+  background: transparent !important;
+  border: 1px dashed rgba(255, 255, 255, .5) !important;
+  color: #fff !important;
+  cursor: not-allowed !important;
+}
+.nf-cta__note {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #DDE5EA;
+}
+
+/* ----------------------------------------------------------------- sections */
+.nf-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(255,255,255,.16); }
+.nf-list > li { border-bottom: 1px solid rgba(255,255,255,.16); }
+
+.nf-row,
+.nf-disclosure {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 52px;
+  padding: 14px 2px;
+  border: 0;
+  background: transparent !important;
+  color: #fff !important;
+  font: inherit;
+  font-size: 16px;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.nf-disclosure__caret { transition: transform .18s ease; }
+.nf-disclosure[aria-expanded="true"] .nf-disclosure__caret { transform: rotate(180deg); }
+[data-a11y-motion="off"] .nf-disclosure__caret { transition: none; }
+
+.nf-sub { list-style: none; margin: 0 0 12px; padding: 0 0 0 4px; }
+.nf-sub a,
+.nf-sub span {
+  display: block;
+  min-height: 44px;
+  padding: 11px 2px;
+  color: #DDE5EA;                /* 11.4:1 on #04263A */
+  font-size: 15px;
+  text-decoration: none;
+}
+.nf-sub a[aria-current="true"] { color: #8FD338; font-weight: 700; }
+.nf-sub__meta { display: block; font-size: 12px; color: #A9B8C2; }
+.nf-sub__soon { color: #A9B8C2; font-style: italic; }
+
+.nf-external::after { content: " \2197"; }
+
+/* The accessibility entry is only rendered once the panel exists, so this
+   never shows as a dead row. */
+.nf-foot { margin-top: 22px; }
+
+/* The duplicate trigger Elementor's sticky clone creates. Marked by
+   dedupeTriggers() in mobile-nav.js, which recomputes on scroll because which
+   header copy is live changes as the sticky header activates. */
+.nf-nav-trigger[data-nf-dupe] { display: none !important; }

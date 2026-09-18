@@ -1,0 +1,117 @@
+/* =============================================================================
+   header-fit.css — the header's BOX: target sizes, and fitting on one row at
+   the narrow end. nav-current.css owns which item is current and what colour
+   it is; this file owns whether the header physically works at a given width.
+
+   OWNER ASK 2026-09-10: "optimize adaptability to any screen size both the
+   Desktop and Mobile view."
+
+   Everything here was measured across 47 pages x 27 widths (320-1920). That
+   sweep found ZERO horizontal document overflow anywhere, so the adaptability
+   defects on this site are the ones that do NOT overflow — a control too small
+   to hit, and a row that silently wraps. Both are below.
+
+   Scoped by STRUCTURE, never by element id: the header's Elementor ids differ
+   per page (the SHOP button is 924c64e on 43 pages and c366860 on index.html;
+   the nav is 7af51b2 on 44 and 6aea4ae on index), which is the trap the
+   framingham inline-container fix was written under.
+   ============================================================================= */
+
+/* =========================================================== 1. TARGET SIZE
+   The header's button widget was never built as a control. Measured identically
+   at 375, 768 and 1440:
+
+     Join Loyalty / Blog / Our Brands / Locations   131x46 · 125x46 · 116x46
+                                                    padding 13px 20px, flex
+     SHOP                                            32.3 x 12.8
+                                                    padding 0, inline-block
+
+   12.8px tall fails WCAG 2.5.8 (24x24, AA) on height and is barely a quarter
+   the height of every control beside it. It measured 32x13 on 1,188 of the
+   1,269 page-width cells swept — essentially the whole site. The three
+   bespoke-header pages (employee, med-portal, newbritain) carry a different
+   button, "Join Loyalty", which measured 81x22 at 320-375: also under the AA
+   floor. This rule is deliberately NOT scoped to headers that have a nav, so
+   it reaches those three too — target size is not a styling question.
+
+   A real box rather than an invisible hit-area overlay, deliberately: an
+   overlay leaves the FOCUS RING drawn around the 32x13 text while the clickable
+   area is 44px, and a focus indicator that does not match its target is worse
+   for keyboard users than the small target was. */
+[data-elementor-type="header"] .elementor-widget-button .elementor-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 46px !important;      /* copied from the measured nav item */
+  padding-top: 13px !important;
+  padding-bottom: 13px !important;
+  line-height: 1 !important;
+}
+
+/* Horizontal padding is DESKTOP-ONLY, and that is a measured correction, not a
+   preference. Applying `padding: 13px 20px` at every width widens SHOP from
+   32.3 to 72.3, and against the deployed build that wrapped the header:
+
+     width   header height BEFORE -> AFTER
+     320     79.4  ->  147     WRAPPED
+     360     83.9  ->  147     WRAPPED
+     375     85.6  ->  85.6    fine
+     1440    102.2 ->  102.2   fine
+
+   Below 1025 the logo, SHOP and the drawer trigger share one row and the extra
+   40px does not fit. So below that, vertical padding only: 32.3 x 46, which
+   still clears 2.5.8 and clears 2.5.5 on height, and changes the layout by
+   exactly nothing.
+
+   1025px is measured, not guessed: at 1024 the drawer trigger is visible and 0
+   of 8 nav items are; at 1025 all 8 nav items are visible and the trigger is
+   not. The two never overlap and there is never a gap, so the desktop nav row —
+   the only place where matching the siblings means anything — begins at exactly
+   1025. */
+@media (min-width: 1025px) {
+  [data-elementor-type="header"]:has(.elementor-nav-menu--main)
+    .elementor-widget-button .elementor-button {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+  /* The button widget's container carries `padding: 0 0 3px 0`, which in a
+     centre-aligned row seated SHOP 1.5px above the nav items (67.6 vs 69.1 at
+     1440). Zeroing it puts both boxes on the same line. */
+  [data-elementor-type="header"]:has(.elementor-nav-menu--main)
+    .elementor-widget-button > .elementor-widget-container {
+    padding-bottom: 0 !important;
+  }
+}
+
+/* ====================================================== 2. THE 320px WRAP
+   PRE-EXISTING, not introduced here — the deployed build measures 135px at 320
+   against 88px at 340, and this build's taller button made those wrapped rows
+   taller still (157). Found by sweeping, not by looking: 43 of 47 pages wrapped
+   their header at 320px and at no other width. index.html is one of the 4 that
+   did not; it uses the transparent-over-hero header and is untouched by this.
+
+   The cause is one level down from the header row, which does NOT wrap. Inside
+   the right-hand header cell the SHOP widget and the nav/trigger widget break
+   onto two lines: at 320 the trigger sits at top 89, at 340 it sits at top
+   20.5. The cell's own 10px side padding plus the nav widget's 1em right
+   padding cost ~26px, and at 320 that is exactly the margin it needs.
+
+   Reclaiming that padding puts them back on one row: attleboro-ma 157 -> 89 at
+   320, identical to every other width, with no overflow introduced. Verified on
+   attleboro-ma, locations-newbritain-ct and index.html at 320/340/360/375.
+
+   Capped at 480px deliberately. The wrap only ever occurs at <=339, and the nav
+   widget's right padding is real desktop spacing (2em at 1440) that must not be
+   touched. 480 leaves a wide margin below the drawer breakpoint and cannot
+   reach the desktop row. Verified as a no-op at 340, 360 and 375. */
+@media (max-width: 480px) {
+  [data-elementor-type="header"]
+    .e-con:has(> .elementor-widget-button):has(> .elementor-widget-nav-menu) {
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+  [data-elementor-type="header"]
+    .elementor-widget-nav-menu > .elementor-widget-container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}

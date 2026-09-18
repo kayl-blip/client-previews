@@ -1,0 +1,20 @@
+{
+  "_why": "FAQPage markup must mirror visible page copy AND must not amplify a claim we know to be contradicted or could not verify. Q&A listed here stay VISIBLE on the page but are held out of the emitted FAQPage schema. Fix the on-page copy, delete the entry, re-run apply-seo.mjs.",
+  "_resolved": [
+    {
+      "file": "attleboro-ma.html",
+      "question": "When is the Nova Farms Attleboro dispensary open?",
+      "was": "Claimed 'Sunday through Wednesday until 8 PM, Thursday/Friday/Saturday until 11 PM' - contradicted locations.html, the live novafarms.com hero, and the Store openingHoursSpecification.",
+      "resolution": "RESOLVED 2026-09-16. Operator supplied the Google Business Profile listing, which shows 8 AM-11 PM for ALL SEVEN days (Wed/Thu/Fri/Sat/Sun/Mon/Tue). GBP is authoritative for real store hours. The Store schema (Mo-Su 08:00-23:00) was already correct; the stale FAQ PROSE was corrected on-page to match, then included in the schema. No exclusion needed."
+    }
+  ],
+  "exclusions": [
+    {
+      "file": "dracut-ma.html",
+      "questionStartsWith": "How much cannabis can I buy at a Massachusetts dispensary",
+      "reason": "States 'up to two ounces of marijuana flower', which contradicts Nova Farms' OWN Attleboro page ('up to 1 ounce (28 g) of flower per visit'). Both describe the same Massachusetts limit, so one is wrong. Could not be authoritatively verified this session (mass.gov returned 403, masscannabiscontrol.com 404, web-search budget exhausted). A regulated purchase-limit claim is not something to publish as a rich result on an unverified basis.",
+      "conflicts_with": "attleboro-ma.html Q3 'up to 1 ounce (28 g) of flower per visit'",
+      "action_needed": "Confirm the MA per-transaction purchase limit with the Cannabis Control Commission, correct whichever page is wrong, then delete this entry and re-run apply-seo.mjs."
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+/* =============================================================================
+   hero-90.css — hold the homepage hero to 90vh.
+
+   OWNER PICK, the last lever for the reviews scroll-depth target.
+
+   ⚠ THE HERO WAS ALREADY SET TO 90vh AND IT WAS NOT BINDING. Measured before
+   any change:
+
+       mobile 390x844    hero 844px   min-height 759.6px   --min-height 90vh
+       desktop 1440x900  hero 855px   min-height 810px     --min-height 90vh
+
+   90vh is 759.6 on that phone, so the floor was never what made the hero a
+   full screen — the box renders TALLER than its own minimum. The height comes
+   from a chain of full-height containers inside it; the actual imagery is only
+   286px and 62px. So raising or lowering --min-height alone does nothing, which
+   is why this file sets a ceiling rather than adjusting the floor.
+
+   overflow:hidden is deliberate and load-bearing: the inner chain still wants
+   to be taller, so without it the content would simply overflow the shorter box
+   and nothing would be saved. With it the hero crops from the bottom, which is
+   where the empty space is.
+   ============================================================================= */
+
+.elementor-element-7f1ed67 {
+  max-height: 90vh !important;
+  overflow: hidden !important;
+}
+
+/* The inner chain has to accept the ceiling too, or it keeps its own height and
+   simply spills past the crop. Scoped to the hero, so no other section moves. */
+.elementor-element-7f1ed67 > .elementor-element,
+.elementor-element-7f1ed67 > .elementor-element > div {
+  max-height: 90vh !important;
+}
+
+
+/* ---------------------------------------------------------------------------
+   MOBILE: 95vh, not 90 — because 90 hides two real things.
+
+   Measured at 390x844 with a 90vh ceiling, the crop cut:
+
+       "5-Star Google Rating"   10px past the edge
+       "Open until 9pm"         36px past the edge
+
+   Hiding a store's rating and its opening hours to make a scroll-depth number
+   is not a trade worth making.
+
+   TWO ATTEMPTS TO MAKE THE CONTENT FIT INSTEAD, both measured, both failed:
+     - removed a 48px bottom margin from the block above: content moved DOWN,
+       clipping went 36px -> 84px and caught "Shop Now" too. Reverted.
+     - reduced a 208px top margin to 150px: clipping stayed at exactly 36px.
+       Those two headings are not positioned by that margin chain at all.
+
+   So the content genuinely needs about 796px on that phone, and no amount of
+   internal tightening moves it. 95vh is 802px there — it fits with 6px to
+   spare and nothing is hidden. Desktop keeps 90vh, where the same measurement
+   shows nothing cropped at all.
+
+   The cost is stated rather than hidden: this lands reviews at 2.03 screens
+   instead of 2.00. Three hundredths of a screen is not worth a store's opening
+   hours.
+   -------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  .elementor-element-7f1ed67,
+  .elementor-element-7f1ed67 > .elementor-element,
+  .elementor-element-7f1ed67 > .elementor-element > div {
+    max-height: 95vh !important;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   Hero carousel arrows — they were rendering, but invisible.
+
+   MEASURED on the shipped page before this rule, at 1440x900:
+
+       hero arrows   (.elementor-element-97f9db3)  44x45
+                     background  rgba(239, 240, 241, 0.45)   <- translucent WHITE
+                     glyph       rgb(255, 255, 255)          <- WHITE
+
+   A white chevron on a 45%-white pill, sitting over a bright sky-and-field
+   photograph. display:flex, visibility:visible, opacity:1 — nothing was hidden,
+   there was simply no contrast. That is why they read as faint pale rectangles
+   rather than controls.
+
+   The fix is not invented. The page's OTHER n-carousel, further down, already
+   ships the correct treatment and is plainly visible:
+
+       lower arrows  (.elementor-element-b3ef4e3)  44x44
+                     background  rgba(10, 44, 71, 0.41)      <- translucent NAVY
+                     glyph       rgba(238, 238, 238, 0.9)
+
+   So this applies the site's own existing pattern to the hero rather than
+   introducing a new one. #0A2C47 is the same navy, carried at a higher alpha
+   because the hero backdrop is markedly brighter than the lower carousel's —
+   sky at the right-hand arrow, sunlit foliage at the left.
+
+   Scoped to the hero carousel's own element id, which exists ONLY on index.html
+   (verified: grep -l elementor-element-97f9db3 *.html -> index.html). The lower
+   carousel is untouched and keeps its own styling.
+
+   Sizing is deliberately not restated here — target-size.css already holds these
+   at 44x44 for the tap-target floor, and duplicating that would put the same
+   rule in two files.
+   -------------------------------------------------------------------------- */
+.elementor-element-97f9db3 .elementor-swiper-button {
+  background-color: rgba(10, 44, 71, 0.72) !important;
+  color: #FFFFFF !important;
+}
+
+/* The chevron is an inline <svg> whose paths fill from currentColor, so the
+   colour above reaches it — but only if the svg is not carrying its own fill.
+   This makes that explicit rather than relying on inheritance. */
+.elementor-element-97f9db3 .elementor-swiper-button svg,
+.elementor-element-97f9db3 .elementor-swiper-button svg * {
+  fill: currentColor !important;
+}

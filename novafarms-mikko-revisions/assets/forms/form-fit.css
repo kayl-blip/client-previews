@@ -1,0 +1,65 @@
+/* =============================================================================
+   form-fit.css — form controls that behave on a phone.
+
+   OWNER ASK 2026-09-10: "optimize adaptability to any screen size both the
+   Desktop and Mobile view."
+
+   Only 4 of 47 pages carry a form control at all: joinloyalty.html (the loyalty
+   signup, 6 controls) and the store-finder <select> on employee.html,
+   med-portal.html and newbritain.html. All four had the same problem.
+
+   1. iOS ZOOMS THE PAGE WHEN YOU FOCUS AN INPUT UNDER 16px.
+      Safari on iPhone treats a sub-16px field as too small to read and zooms
+      the viewport to it on focus, which shifts the layout under the user's
+      thumb and does not zoom back out. Measured:
+
+        joinloyalty.html   5 text/tel/email inputs   15px at 375   16px at 1440
+        the store <select> on the other three        12.8px at 375  12px at 1440
+
+      The signup form gets SMALLER on the phone than on the desktop -- larger
+      where it costs nothing and smaller exactly where it triggers the zoom.
+      16px at the widths where the zoom applies is the whole fix; it is the
+      documented threshold, not a preference, and above 767px nothing changes.
+
+   2. THE CONSENT CHECKBOX IS 13x13.
+      Measured on joinloyalty.html at both 375 and 1440. That is under the 24x24
+      of WCAG 2.5.8 (AA) and is the control that gates the whole form. The nav
+      sweep never saw it because that pass only measured header, rail and drawer
+      controls -- this one is in the page body.
+
+   Selected by element and type, never by Elementor id: joinloyalty.html's form
+   ids are page-generated like every other id on this site. */
+
+/* -------------------------------------------------------- the iOS focus zoom
+   Capped at 1024, not 767. The first version of this rule used 767 and my own
+   re-measurement caught the gap: at 768 the inputs fell back to the client's
+   15px, and 768 is iPad portrait -- Safari zooms there too. 1024 covers iPad
+   Pro portrait as well and is the same line the drawer already switches on
+   (trigger to 1024, desktop nav from 1025). True desktop is untouched, and the
+   only band this actually changes is 768-1024, because the inputs already
+   compute 16px at 1440. */
+@media (max-width: 1024px) {
+  input[type="text"],
+  input[type="tel"],
+  input[type="email"],
+  input[type="number"],
+  input[type="password"],
+  input[type="search"],
+  input[type="url"],
+  input[type="date"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* ------------------------------------------------------------ target size
+   Applies at every width: the checkbox is 13x13 on desktop too. accent-color
+   keeps the brand green on the control itself rather than painting a box
+   around it, so the form's own styling is untouched. */
+input[type="checkbox"],
+input[type="radio"] {
+  min-width: 24px;
+  min-height: 24px;
+  accent-color: #8FD338;
+}

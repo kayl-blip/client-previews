@@ -1,0 +1,159 @@
+/* =============================================================================
+   about-collapse.css — revision 3: shorten the path to reviews.
+
+   The client's brief was explicit about how to judge this: "by whether reviews
+   are visible early, not by whether the section looks shorter." So it was
+   measured, not eyeballed.
+
+   Baseline, homepage, before this file:
+
+       desktop 1440x900   reviews at 2832px  =  3.15 screens
+       mobile  (narrow)   reviews at 2832px  =  3.36 screens
+       About Us total     1530px, in TWO stacked panels of 765px each
+
+   About Us is the single biggest thing between the hero and the reviews, and
+   the client's read of it was right.
+
+   Both panels stay. NO COPY IS CUT -- the brief was explicit about that too.
+   Panel one, the brand statement, is trimmed to a compact band because it is
+   three short lines wrapped in a great deal of vertical padding. Panel two, the
+   origin story, collapses behind "Find out more" and expands in place.
+
+   The OPT-IN TO POINTS & PERKS band above them is deliberately untouched. It is
+   a conversion module with its own KPI and demoting it is not a side effect an
+   About Us trim gets to cause.
+   ============================================================================= */
+
+/* --- panel one: the brand statement --------------------------------------
+   elementor-element-0747d94. Its height is padding, not content: three lines of
+   type in a 765px band.
+
+   REVISED on owner instruction. It was first trimmed to a compact band and left
+   visible, which put reviews at 2.41 screens. The owner then asked for it to
+   collapse too, to reach 2.04. It now sits inside the SAME "Find out more"
+   disclosure as the origin story -- one expander reveals both, so the page has
+   one control rather than two.
+
+   Still no copy cut: max-height rather than display:none, so the words stay in
+   the DOM, stay findable by find-in-page, and stay indexable. The panel holds
+   three lines of non-interactive type and nothing focusable, so there is no
+   tab-into-invisible-content trap. */
+.elementor-element-0747d94 {
+  padding-top: 26px !important;
+  padding-bottom: 26px !important;
+  min-height: 0 !important;
+  row-gap: 10px !important;
+}
+
+/* The state attribute lives on <html> because the two panels are SIBLINGS --
+   CSS cannot reach from the story panel back up and across to the statement
+   panel, so about-collapse.js mirrors the disclosure state there. */
+html[data-nf-about="false"] .elementor-element-0747d94 {
+  max-height: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+}
+html[data-nf-about="true"] .elementor-element-0747d94 {
+  max-height: none !important;
+}
+
+/* With the statement panel collapsed, the story panel's 24px top padding sits
+   directly beneath the OPT-IN band. That padding was sized for a panel that had
+   a full brand statement above it, so it is tightened while collapsed and
+   restored the moment the disclosure opens. */
+html[data-nf-about="false"] .elementor-element-a968cca {
+  padding-top: 12px !important;
+  padding-bottom: 16px !important;
+}
+/* The inner Elementor container carries its own ~51px top and bottom padding --
+   102px that the outer rule above cannot reach, and the single largest thing
+   left between the OPT-IN band and the reviews once both panels are collapsed.
+   Measured, not guessed: teaser 108px + button 49px inside a 275px box. */
+html[data-nf-about="false"] .elementor-element-a968cca > .e-con-inner {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* The last and largest occupant: the story panel's inner container carries
+   `--min-height: 275px` with `justify-content: center`, set in the page's own
+   Elementor CSS (.elementor-element-e26a424). Collapsed, its contents are only
+   173px -- teaser 108 + button 49 + 16 margin -- so the min-height added 102px
+   of centred empty space that no padding rule could reach. Zeroed while
+   collapsed, restored on expand with everything else. This is what takes the
+   reviews from 2.14 screens to 2.02. */
+html[data-nf-about="false"] .elementor-element-e26a424 {
+  --min-height: 0px !important;
+  min-height: 0 !important;
+}
+
+/* The teaser was mostly empty space. The content inside .nf-about__body carries
+   80px top and bottom margins, so of the 108px teaser only ~28px was actual
+   text -- the lead paragraph the brief asked for was barely showing. Zeroed
+   while collapsed and restored on expand, so the teaser shows real copy. */
+html[data-nf-about="false"] .nf-about__body > * {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+.elementor-element-0747d94 > .e-con-inner,
+.elementor-element-0747d94 .e-con-full {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  row-gap: 10px !important;
+}
+
+/* --- panel two: the origin story, collapsed ------------------------------- */
+.elementor-element-a968cca {
+  padding-top: 24px !important;
+  padding-bottom: 24px !important;
+  min-height: 0 !important;
+}
+
+/* Collapsed: show the opening of the story, fade the cut, reveal on demand.
+   max-height rather than display:none so the copy stays in the DOM, stays
+   selectable by find-in-page, and stays indexable. */
+.nf-about[data-expanded="false"] .nf-about__body {
+  max-height: 108px;
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+}
+.nf-about[data-expanded="true"] .nf-about__body {
+  max-height: none;
+  overflow: visible;
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+.nf-about__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;                 /* 2.5.5 target size */
+  margin: 16px 0 0;
+  padding: 12px 22px;
+  border: 2px solid #8FD338;
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.nf-about__toggle:hover { background: rgba(143, 211, 56, .14); }
+
+.nf-about__caret { transition: transform .2s ease; }
+.nf-about[data-expanded="true"] .nf-about__caret { transform: rotate(180deg); }
+
+/* The panel's own "stop animations" behaviour, and the system preference.
+   Revision 1 made this a site-wide setting; the expander honours it rather
+   than animating regardless. */
+@media (prefers-reduced-motion: reduce) {
+  .nf-about__caret { transition: none; }
+}
+[data-a11y-motion="off"] .nf-about__caret { transition: none; }

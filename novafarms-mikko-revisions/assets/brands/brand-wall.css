@@ -1,0 +1,140 @@
+/* =============================================================================
+   brand-wall.css — the homepage brand wall as three marquee columns.
+
+   Applies ONLY to what brand-wall.js has identified and tagged. The classes
+   involved are far too broad to style directly: `.e-grid` is on 45 of the 47
+   pages and `.elementor-flip-box__layer` is generic Elementor. See
+   brand-wall.js for the measurements and for why the wall is found by shape.
+   ============================================================================= */
+
+/* The grid becomes a plain block while it hosts the marquee, so the wall fills
+   the exact slot the flex row already gives the grid. See brand-wall.js for why
+   a sibling could not be sized to match. */
+[data-nf-wallhost] {
+  display: block !important;
+}
+
+.nf-wall {
+  display: flex;
+  width: 100%;
+  gap: 0;
+  /* The source grid measured 498x510 (three 170px rows). Holding that height
+     keeps the section's own layout exactly where it was -- the marquee replaces
+     the grid in place rather than resizing the band around it. */
+  height: 510px;
+  overflow: hidden;
+
+  /* OWNER: "Edges top and bottom should fade into white to avoid ugly looking
+     crop." A MASK rather than a painted gradient overlay, deliberately: the
+     ground behind this section measures rgb(239,240,241), not pure white, and a
+     hard-coded white overlay would show as a pale band against it. A mask fades
+     to transparent, so whatever the section's real background is shows through
+     and stays correct if it is ever restyled. */
+  -webkit-mask-image: linear-gradient(to bottom,
+    transparent 0, #000 11%, #000 89%, transparent 100%);
+          mask-image: linear-gradient(to bottom,
+    transparent 0, #000 11%, #000 89%, transparent 100%);
+}
+
+/* `display: flex` above beats the user-agent's `[hidden] { display: none }`, so
+   the wall stayed laid out when the script hid it for motion-off -- measured, the
+   grid went from 510px to 1700px tall because the hidden wall was still taking a
+   grid row. Any element given an explicit display needs this restated. */
+.nf-wall[hidden] { display: none !important; }
+
+.nf-wall__col { flex: 1 1 0; min-width: 0; overflow: hidden; }
+
+.nf-wall__track {
+  display: flex;
+  flex-direction: column;
+  animation: nf-wall-up 34s linear infinite;
+  will-change: transform;
+}
+
+/* Left column up, middle down, right up -- alternating from the left, which is
+   what the owner asked for and what brand-wall.js stamps as data-nf-dir. */
+.nf-wall__col[data-nf-dir="down"] .nf-wall__track { animation-name: nf-wall-down; }
+
+/* The track holds its tiles twice, so travelling exactly half its height lands
+   the copy where the original started and the loop is seamless. */
+@keyframes nf-wall-up   { from { transform: translate3d(0,    0, 0); }
+                          to   { transform: translate3d(0, -50%, 0); } }
+@keyframes nf-wall-down { from { transform: translate3d(0, -50%, 0); }
+                          to   { transform: translate3d(0,    0, 0); } }
+
+/* PAUSE ON HOVER AND ON FOCUS. Not a nicety: these cells flip on hover and one
+   of them is a real link, so a column still moving under the pointer makes both
+   unusable -- and content that moves for more than five seconds needs a way to
+   stop it (WCAG 2.2.2). focus-within covers keyboard users, who cannot hover. */
+.nf-wall__col:hover .nf-wall__track,
+.nf-wall__col:focus-within .nf-wall__track { animation-play-state: paused; }
+
+/* ------------------------------------------------------------------- tiles
+   Larger art with tighter spacing, capped on BOTH axes. The width cap is not
+   decoration: cell width changes with breakpoint (166 at 1440, 158 at 1280, 167
+   at 768, 169 at 375), so a height-only cap painted a constant 156 square and
+   brought the columns within 2px of touching at 1280. */
+[data-nf-brandtile] .elementor-flip-box__layer {
+  width: calc(100% - 12px) !important;
+  height: 156px !important;
+  margin-inline: auto !important;
+  border-radius: 12px !important;      /* owner: "corners ... a bit rounded" */
+  background-clip: padding-box;
+}
+
+/* =============================================================================
+   OWNER 2026-09-11: "add spacing between the logos" + "make corners a bit
+   rounded as well" (mobile, where the grid falls to 2 columns).
+
+   WHY THIS IS NOT THE RULE THAT BROKE THE WALL. My previous attempt put
+   margin-block on [data-nf-brandtile] -- the CELL -- which changes the cell's
+   outer height. build() lays those cells into a flex track, clones the whole
+   track, and the CSS travels exactly -50% inside a .nf-wall fixed at 510px.
+   Change the cell box and you change what fills a column. That shipped, broke
+   the marquee, and the owner caught it. Reverted in 93aca31.
+
+   NEITHER rule below touches a cell box:
+
+     `gap` on the GRID is inert while the marquee is mounted -- build() sets
+     data-nf-wallhost, whose rule is `display: block !important`, and gap does
+     nothing on a block container. So it styles ONLY the un-mounted grid, which
+     is the state the owner is looking at on mobile (2 columns, measured).
+
+     `border-radius` has no layout effect at all, in either state.
+
+   SELECTOR REACH, measured before use rather than assumed: `.e-grid` alone is on
+   45 of 47 pages, but `.e-grid:has(.elementor-flip-box__layer)` matched exactly
+   1 element on index.html and 0 on brands, attleboro, locations, privacy-policy,
+   blog, join-vip, shop, wholesale and visit-us -- at BOTH 1440 and 375. The
+   `:has()` is any-depth on purpose: the layer sits deeper than a grandchild, so
+   the `> * >` form I tried first matched nothing anywhere.
+
+   12px on both axes matches the 12px the marquee already puts between its
+   columns via the `calc(100% - 12px)` inset above, so the two states agree. */
+.e-grid:has(.elementor-flip-box__layer) {
+  gap: 12px !important;
+}
+
+.e-grid:has(.elementor-flip-box__layer) .elementor-flip-box__layer {
+  border-radius: 12px !important;
+  background-clip: padding-box;
+}
+
+/* ---------------------------------------------------------------- motion off
+   When motion is off the marquee is not merely paused -- brand-wall.js shows
+   the original grid instead, so the reader gets the plain static layout rather
+   than a frozen strip with half its tiles clipped by the mask. The rules below
+   are the belt to that braces, in case the script is blocked. */
+@media (prefers-reduced-motion: reduce) {
+  .nf-wall__track { animation: none !important; transform: none !important; }
+  .nf-wall { -webkit-mask-image: none; mask-image: none; height: auto; }
+}
+[data-a11y-motion="off"] .nf-wall__track {
+  animation: none !important;
+  transform: none !important;
+}
+[data-a11y-motion="off"] .nf-wall {
+  -webkit-mask-image: none;
+  mask-image: none;
+  height: auto;
+}

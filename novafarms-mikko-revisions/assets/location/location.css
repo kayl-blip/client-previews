@@ -1,0 +1,514 @@
+/* =============================================================================
+   location.css — the shared location-page template (revisions 2 + 4).
+
+   The client asked for these two designed together, and they are one thing: the
+   page a visitor lands on after choosing a store. It has to carry that store's
+   deals (revision 2) AND rank as a proper store page (revision 4).
+
+   The sections it styles are REAL MARKUP in each page, not injected at runtime.
+   Revision 4's whole point is that these pages rank, and script-rendered content
+   is indexed unreliably. Only the store rail is a runtime component, because
+   that is navigation rather than content.
+
+   "Content-heavy but scannable" is the constraint the client set, so the lower
+   sections use the same disclosure pattern approved in revision 3 rather than
+   stacking full-height panels above the menu links.
+
+   Colours are the measured pairings from a11y-base.css. Nothing here introduces
+   a combination the contrast pass has not already cleared.
+   ============================================================================= */
+
+/* =============================================================================
+   ONE CONTAINER WIDTH FOR THE WHOLE PAGE.
+
+   Owner: every section should share the same side padding and the same box
+   width. Measured on attleboro-ma at 1440 before this, the page had three:
+
+       my injected sections          1136 wide, left 152
+       the reviews band's content     976 wide, left 232
+       the client's prose run         923 wide, left 259   (--content-width: 65%)
+
+   The canonical one is the CLIENT'S OWN, not mine: their theme sets
+   `--content-width: min(100%, 1140px)` on the boxed containers, which lands at
+   1140 wide, left 150. Everything is brought to that rather than to my 1136 —
+   adopting the site's existing token means the sections that were already
+   correct do not move, and there is one number instead of two nearly-equal
+   ones.
+
+   --nf-gutter is the side padding on a narrow screen, where 1140 cannot fit.
+   ============================================================================= */
+:root {
+  --nf-container: 1140px;
+  --nf-gutter: 20px;
+}
+/* The mobile gutter has to live on :root too. It was originally set on .nf-loc
+   alone, so only that component narrowed on a phone while the reviews band and
+   the story rows kept reading the 20px default — one of the reasons the page
+   had four different mobile gutters (0, 18, 30 and 32px) despite every section
+   being symmetric. */
+@media (max-width: 600px) {
+  :root { --nf-gutter: 18px; }
+
+  /* framingham-ma and greenville-me put 18px of padding on <body> itself; the
+     other four store pages put none. Measured: main is 354 wide at left 18 on
+     those two and 390 at 0 on the rest, so my gutter landed on top of theirs
+     and every injected section sat at 36 instead of 18.
+
+     Normalised at the body, which is the actual source, rather than trying to
+     subtract it further down — 45 of the 47 pages are already at 0, so this
+     brings the two outliers onto the same baseline instead of teaching every
+     component to compensate. */
+  /* REMOVED 2026-09-11 — a compensation that outlived the thing it compensated for.
+
+     There used to be a `body.page-id-7751 .nf-loc, body.page-id-7790 .nf-loc
+     { padding-left/right: 0 !important }` here. Its premise was that
+     framingham-ma (7751) and greenville-me (7790) carried 18px of horizontal
+     padding on <body> while the other four store pages carried none, so this
+     build's own gutter would land on top of theirs and put every section at 36.
+
+     THAT PREMISE IS NO LONGER TRUE. Measured on the deployed preview at 375,
+     all six store pages report `body` padding 0px/0px:
+
+       framingham-ma 7751   bodyPad 0/0      greenville-me 7790   bodyPad 0/0
+       woodbury-nj   7787   bodyPad 0/0      newbritain-ct 7786   bodyPad 0/0
+       attleboro-ma  7734   bodyPad 0/0      dracut-ma     7749   bodyPad 0/0
+
+     With the body contribution gone, the override was no longer preventing a
+     doubled gutter — it was removing the ONLY gutter. Measured effect: .nf-loc
+     computed 0px/0px on those two against 18px/18px on the other four, so
+     "Shop by category" sat flush at x=0 while every sibling page inset it to
+     18, and the deals rail sat at 22 instead of 40.
+
+     The rule below (`.nf-loc { padding: 26px var(--nf-gutter) 6px }`) is now
+     the single source of the mobile gutter for all six pages. If the <body>
+     padding ever returns upstream, the symptom is sections at 36 rather than
+     18 — re-measure body padding first rather than reinstating this override. */
+}
+
+/* 1140 content + 22px padding either side = a 1184 box, centred: left 150 at
+   1440, matching the client's own containers exactly. Below that it falls back
+   to the gutter. */
+.nf-loc {
+  width: min(100% - (var(--nf-gutter) * 2), var(--nf-container));
+  max-width: none;
+  margin: 0 auto;
+  padding: 34px 0 8px;
+}
+.nf-loc__sec { margin: 0 0 38px; }
+.nf-loc__h {
+  margin: 0 0 16px;
+  font-size: clamp(21px, 3vw, 27px);
+  line-height: 1.15;
+  /* !important, and #0A2C47 rather than the #04263A used elsewhere here.
+
+     These headings are <h2>, and the theme ships `.elementor-kit-7 h2{color:#2868A7}`
+     at specificity (0,1,1) -- which beats a bare `.nf-loc__h` (0,1,0). Without the
+     !important these six headings rendered #2868A7, a blue that appears NOWHERE else
+     on the finished site: every native Elementor heading overrides that theme default
+     with its own widget colour. Measured on this page -- 10 native h2s at #0A2C47,
+     6 of mine at #2868A7. Mine were the only blue headings on the site.
+
+     #0A2C47 is the colour those 10 native headings actually use, so these sections
+     match the ones they sit beside. 14.34:1 on white. */
+  color: #0A2C47 !important;
+}
+.nf-loc__sub { margin: -8px 0 18px; font-size: 15px; color: #3B4A55; }
+
+/* ------------------------------------------------------- "About this store"
+   Body copy for the About-this-store section. Framingham and Greenville shipped
+   as stubs: an .nf-loc__todo box reading "Client copy needed" where the local
+   write-up belongs. This is the style that copy lands in once it exists.
+
+   #3B4A55 on white is 9.14:1 -- the same pairing .nf-loc__sub, .nf-loc__empty,
+   .nf-loc__deal-body and .nf-loc__todo p already use, so this introduces no
+   combination the contrast pass has not already cleared.
+
+   The h3s need no !important, unlike .nf-loc__h above. That override exists
+   because the theme ships `.elementor-kit-7 h2{color:#2868A7}`. h3 is NOT the
+   same case: the theme sets `.elementor-kit-7 h3{color:var(--e-global-color-7cf4602)}`
+   and that variable resolves to #0A2C47 -- already the colour we want, and
+   already the one .nf-loc__h settles on. The declaration below is restated
+   explicitly so the section does not silently follow the theme if that global
+   is ever repointed. Equal specificity (0,1,1) either way, and the kit's inline
+   <style> sits ahead of the bundle <link> in every store page, so source order
+   already favours this file. */
+.nf-loc__prose { margin: 0; font-size: 16px; line-height: 1.65; color: #3B4A55; }
+.nf-loc__prose h3 {
+  margin: 24px 0 8px;
+  font-size: 18px;
+  line-height: 1.3;
+  color: #0A2C47;
+}
+.nf-loc__prose h3:first-child { margin-top: 0; }
+.nf-loc__prose p { margin: 0 0 14px; }
+.nf-loc__prose p:last-child { margin-bottom: 0; }
+
+/* ------------------------------------------------------------- primary CTA */
+.nf-loc__cta-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+
+.nf-loc__cta {
+  display: inline-block;
+  min-height: 52px;
+  padding: 15px 30px;
+  border: 0; border-radius: 8px;
+  background: #8FD338;
+  /* !important because the theme colours every <a> with the brand green at a
+     higher specificity than a single class. Without it the label inherits
+     green-on-green. */
+  color: #04263A !important;      /* navy on brand green = 8.59:1 */
+  font-size: 16px; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase;
+  text-decoration: none; text-align: center;
+  transition: background-color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.nf-loc__cta:hover {
+  background: #7FC22B;              /* navy on this measures 7.19:1 */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(4, 38, 58, .18);
+}
+.nf-loc__cta:active { transform: translateY(0); }
+.nf-loc__cta--ghost:hover {
+  background: #04263A;
+  color: #FFFFFF !important;        /* 15.63:1 inverted */
+}
+.nf-loc__cta--ghost {
+  background: transparent;
+  border: 2px solid #04263A;
+  color: #04263A !important;      /* 15.63:1 on white */
+}
+
+/* OWNER CALL: the placeholder wears the real button.
+   This modifier used to grey the CTA out on the five stores whose menu URL is
+   still the 403 -- deliberately, so a reviewer could see which links were live.
+   The owner asked for the green button on every location "even if it leads
+   nowhere and only as a placeholder", so the visual distinction is gone and
+   this modifier now carries semantics only.
+
+   What is NOT dropped: the markup stays a <span role="link" aria-disabled="true">
+   with no tabindex, so a screen reader and the keyboard are still told the truth
+   even though the pixels no longer are. A sighted visitor clicking it gets
+   nothing; that is the accepted cost of the owner's call, and the whole set
+   flips to real links in one edit when the menu URL is confirmed. */
+.nf-loc__cta--pending {
+  cursor: default;
+}
+
+/* The captions under the CTA and the category rail ("Menu link pending client
+   confirmation -- the current destination returns 403", "Category links
+   pending") are hidden per the owner's "remove reminders". Left in the DOM
+   rather than deleted: one line here brings the whole set back, and the notes
+   still carry the 403 context for anyone reading the source. */
+.nf-loc__pending-note {
+  display: none;
+}
+
+/* ------------------------------------------------------------------- deals */
+.nf-loc__deals {
+  display: grid; gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
+  margin: 0; padding: 0; list-style: none;
+}
+/* One deal should not stretch to full width and look like a mistake; several
+   should not crowd. The client asked for a slot that holds anywhere from one to
+   many, so the single case is capped. */
+.nf-loc__deals--one { grid-template-columns: minmax(248px, 420px); }
+
+.nf-loc__deal {
+  display: flex; flex-direction: column; gap: 7px;
+  padding: 18px 18px 20px;
+  border: 1px solid #D9E0E5; border-left: 4px solid #8FD338;
+  border-radius: 10px; background: #fff;
+}
+.nf-loc__deal-tag {
+  font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+  color: #4A7019;                 /* the on-light green, 5.81:1 */
+}
+.nf-loc__deal-title { margin: 0; font-size: 18px; line-height: 1.2; color: #04263A; }
+.nf-loc__deal-body { margin: 0; font-size: 15px; line-height: 1.5; color: #3B4A55; }
+.nf-loc__deal-terms { margin: 0; font-size: 12px; color: #4A5B66; }
+
+.nf-loc__empty {
+  padding: 22px;
+  border: 1px dashed #A9B4BC; border-radius: 10px;
+  background: #F6F6F6;
+  font-size: 15px; color: #3B4A55;
+}
+
+/* -------------------------------------------------------- category tiles */
+.nf-loc__cats {
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  margin: 0; padding: 0; list-style: none;
+}
+.nf-loc__cat {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  min-height: 58px; padding: 16px 18px;
+  border: 1px solid #D9E0E5; border-radius: 10px;
+  background: #fff;
+  /* !important for the same reason the CTA needs it: .elementor-kit-7 a sets
+     the brand green at higher specificity than a single class. */
+  color: #04263A !important;
+  font-size: 15px; font-weight: 700; text-decoration: none;
+}
+a.nf-loc__cat:hover { border-color: #04263A; }
+/* border-style dropped with the dashed edge above; this modifier is semantic
+   only now (it still marks which tiles have no confirmed destination). */
+.nf-loc__cat--pending { color: #3B4A55 !important; font-weight: 400; }
+.nf-loc__cat-arrow { color: #4A7019; }
+
+/* ------------------------------------------------------------ store facts */
+.nf-loc__facts {
+  display: grid; gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  margin: 0; padding: 0;
+}
+.nf-loc__fact dt {
+  margin: 0 0 4px;
+  font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+  color: #4A5B66;
+}
+.nf-loc__fact dd { margin: 0; font-size: 16px; line-height: 1.45; color: #04263A; }
+.nf-loc__fact a { color: #4A7019 !important; text-decoration: underline; text-underline-offset: 2px; }
+
+.nf-loc__badge {
+  display: inline-block; padding: 3px 10px; border-radius: 99px;
+  background: #04263A; color: #fff; font-size: 12px; letter-spacing: .06em;
+}
+
+/* --------------------------------------------------- placeholder sections */
+/* Marked, never silently blank. The client can see exactly what is theirs to
+   write, per store. */
+.nf-loc__todo {
+  padding: 20px 22px;
+  border: 1px dashed #A9B4BC; border-radius: 10px; background: #F6F6F6;
+}
+.nf-loc__todo h3 { margin: 0 0 6px; font-size: 16px; color: #04263A; }
+.nf-loc__todo p  { margin: 0; font-size: 14px; line-height: 1.55; color: #3B4A55; }
+.nf-loc__todo-tag {
+  display: inline-block; margin: 0 0 8px; padding: 2px 9px;
+  border: 1px dashed #7A8A95; border-radius: 99px;
+  font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: #4A5B66;
+}
+
+@media (max-width: 600px) {
+  /* horizontal padding is the gutter now, so only the vertical changes.
+     --nf-gutter is set on :root above, not here — see that note.
+
+     ⚠ The width formula alone was not enough. On framingham-ma and
+     greenville-me — the two stub pages, whose structure differs — .nf-loc is
+     injected into a parent that carries its own 18px, so subtracting the
+     gutter from the width AND inheriting the parent's padding put every one of
+     my sections at 36 while the other four pages sat at 18. Same compounding
+     as the story block.
+
+     So on a phone: take the full width, zero the parent's contribution, and
+     let this padding be the only gutter. Verified on all six pages. */
+  .nf-loc {
+    width: 100%;
+    padding: 26px var(--nf-gutter, 18px) 6px;
+  }
+  .e-con:has(> .nf-loc),
+  .elementor-widget-container:has(> .nf-loc) {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .nf-loc__cta { display: block; width: 100%; }
+}
+
+
+/* =============================================================================
+   Shop by category — one line, icon + name.
+
+   Owner asked for the cards to sit on a single line with an icon and the name.
+   Nine categories in a 1180px container is ~125px per card, and "Concentrates"
+   alone is ~88px at 13px type, so a fixed nine-across grid would either clip the
+   longest label or shrink the type below where it is comfortable.
+
+   So the row does not wrap AND does not shrink: it scrolls. Every card keeps its
+   natural width, the row stays exactly one line at every width including a
+   phone, and nothing is cut off. That is also the standard pattern for a
+   category rail on mobile, so it behaves the way people expect.
+
+   The rail is focusable (set in category-icons.js) because a scrollable region
+   that cannot be reached by keyboard hides its overflow from keyboard users.
+   ============================================================================= */
+.nf-loc__cats {
+  display: flex;
+  flex-wrap: nowrap;          /* the "1 line" requirement */
+  gap: 10px;
+  margin: 0;
+  padding: 2px 2px 10px;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+.nf-loc__cats > li {
+  flex: 0 0 auto;             /* natural width, never squeezed */
+  scroll-snap-align: start;
+}
+
+.nf-loc__cats:focus-visible {
+  outline: 3px solid #8FD338;
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+/* A restrained scrollbar, so the row reads as scrollable without shouting. */
+.nf-loc__cats::-webkit-scrollbar { height: 6px; }
+.nf-loc__cats::-webkit-scrollbar-thumb {
+  background: #C7D2DA; border-radius: 999px;
+}
+.nf-loc__cats::-webkit-scrollbar-track { background: transparent; }
+
+.nf-loc__cat {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;           /* 2.5.5, and these become links once the
+                                 client confirms the menu URL */
+  padding: 10px 16px;
+  /* Solid, per the owner. The dashed edge was the "this is a placeholder"
+     signal; the owner asked for these to read as finished cards.
+
+     #B0BEC8, not a lighter grey: the dashed edge it replaces was #A9B4BC at
+     2.11:1 on white, and swapping a placeholder cue for a solid edge should
+     not make the card HARDER to see. This lands at 1.90:1 -- a touch softer
+     than the dash, still a clearly drawn card. (Decorative: the label and icon
+     identify the card, so 1.4.11's 3:1 does not bind on this edge.) */
+  border: 1px solid #B0BEC8;
+  border-radius: 8px;
+  background: #FFFFFF;
+  color: #0A2C47;             /* 14.34:1 on white */
+  font-size: 14px;
+  line-height: 1.2;
+  white-space: nowrap;        /* a label never wraps inside its own card */
+  transition: border-color .18s ease, background-color .18s ease,
+              transform .18s ease, box-shadow .18s ease;
+}
+
+/* Hover, per the owner. Deliberately small: nine of these sit in a row, so a
+   big lift on each turns a scan across the rail into a wave. The card rises
+   2px, its edge takes the brand navy, and the icon grows a touch -- enough to
+   say "this one" without the row moving under the pointer.
+
+   The border-colour change carries the state on its own, so this is not a
+   hover cue conveyed by motion alone -- it survives the reduced-motion block
+   below intact (WCAG 1.4.1). */
+.nf-loc__cat:hover {
+  border-color: #04263A;
+  background: #F7FAF1;              /* a hint of the brand green's hue */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(4, 38, 58, .12);
+}
+.nf-loc__cat:hover .nf-loc__cat-icon { transform: scale(1.1); }
+.nf-loc__cat:focus-visible {
+  outline: 3px solid #8FD338;
+  outline-offset: 2px;
+}
+
+.nf-loc__cat-icon {
+  flex: 0 0 auto;
+  color: #4A7019;                   /* on-light green, 5.81:1 */
+  transition: transform .18s ease;
+}
+.nf-loc__cat-label { display: inline-block; }
+
+/* Both switches, not just the OS one: the panel's stop-animations toggle sets
+   data-a11y-motion="off" and has to reach these too, or the toggle lies.
+   Only the MOTION is dropped -- colour and shadow still answer the pointer. */
+@media (prefers-reduced-motion: reduce) {
+  .nf-loc__cat, .nf-loc__cat-icon, .nf-loc__cta { transition: none; }
+  .nf-loc__cat:hover, .nf-loc__cta:hover { transform: none; }
+  .nf-loc__cat:hover .nf-loc__cat-icon { transform: none; }
+}
+html[data-a11y-motion="off"] .nf-loc__cat,
+html[data-a11y-motion="off"] .nf-loc__cat-icon,
+html[data-a11y-motion="off"] .nf-loc__cta { transition: none !important; }
+html[data-a11y-motion="off"] .nf-loc__cat:hover,
+html[data-a11y-motion="off"] .nf-loc__cta:hover { transform: none !important; }
+html[data-a11y-motion="off"] .nf-loc__cat:hover .nf-loc__cat-icon { transform: none !important; }
+
+
+/* =============================================================================
+   The tail CTA row — centre-stacked.                         (owner request)
+
+   This is the pair in the "Ready to shop <store>?" band. The hero pair moved
+   and became a right-hand column; this one stays where it is and stacks in the
+   centre. Equal width for the same reason as the hero: the labels differ in
+   length by more than a factor of two, so without a shared width they would
+   read as two different kinds of control.
+   ============================================================================= */
+.nf-loc__sec .nf-loc__cta-row:not(.nf-hero__cta) {
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+/* Same treatment as the hero pair, for the same reason: the ghost button's 2px
+   border would otherwise make it 4px taller than the filled one. */
+.nf-loc__sec .nf-loc__cta-row:not(.nf-hero__cta) > .nf-loc__cta {
+  width: 100%;
+  max-width: 330px;
+  margin: 0;
+  min-height: 58px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+/* The heading above it centres too, or the band reads as centred buttons under
+   a left-aligned title. */
+.nf-loc__sec:has(> .nf-loc__cta-row:not(.nf-hero__cta)) > .nf-loc__h {
+  text-align: center;
+}
+
+/* =============================================================================
+   THE CATEGORY RAIL CLIPPED ITS LAST CARD ON EVERY DESKTOP WIDTH.
+
+   The rail is a deliberate horizontal scroller -- `flex-wrap: nowrap` is the
+   owner's "1 line" requirement, with scroll-snap, a restrained scrollbar and a
+   focusable region, and on a phone that is exactly right. On a desktop it was
+   not: the container caps at --nf-container (1140px) and the nine cards measure
+   1217px, so "Accessories" was always partly cut with only 77px of hidden
+   scroll behind it. Measured on all six store pages:
+
+     width    clientWidth  scrollWidth  over
+     375          262         1140       878   <- scroller, as designed
+     768          651         1140       489   <- scroller, as designed
+     1024         984         1217       233
+     1200        1140         1217        77   <- 9th card clipped
+     1280        1140         1217        77
+     1440        1140         1217        77
+     1920        1140         1217        77
+
+   A 77px scroller on a 1920 screen is not a scroller, it is a cut-off card.
+
+   Trimming 4px of padding per side and 2px of gap recovers 88px -- 9 cards x
+   8px plus 8 gaps x 2px -- which is more than the 77 needed, so all nine sit on
+   one line with room to spare. The "1 line" requirement is kept rather than
+   overridden, the 44px minimum target is untouched (measured: min card height
+   still 44 at every width), and below 1200 nothing changes at all, so the
+   phone and tablet scroller behaves exactly as it did.
+
+   Measured after: over = 0 at 1200, 1280, 1440 and 1920 on attleboro-ma,
+   woodbury-nj and locations-newbritain-ct; 0 clipped cards. A gentler variant
+   (13px padding, 9px gap) was tried first and still left 15px over.
+
+   NOT DONE HERE, deliberately: `.nf-loc__cat` is declared twice at top level in
+   this file -- line 219 (the legacy stacked grid) and line 341 (the rail that
+   shipped) -- and the audit flagged that duplication as a source-order hazard.
+   It is a real cleanup and it is already on the open list, but removing the
+   first block needs a property-by-property diff to prove nothing in it is still
+   live rather than merely re-stated, and that is not a change to make at the
+   tail of a long session. The rule below is appended AFTER both, so source
+   order settles it regardless.
+   ============================================================================= */
+@media (min-width: 1200px) {
+  .nf-loc__cats { gap: 8px !important; }
+  .nf-loc__cat {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+}

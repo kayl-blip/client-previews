@@ -1,0 +1,241 @@
+/* =============================================================================
+   store-rail.css — the "you're viewing [Store]" indicator and switcher.
+
+   Revision 2 asked for a visible indicator of the current store with an easy way
+   to change it. The 4Twenty Market reference does both jobs with one component:
+   a slim rail under the header listing every location, the current one marked.
+   This is that, in Nova's own colours.
+
+   It is navigation, not page content, so it is rendered at runtime by
+   store-rail.js. Everything the location pages need INDEXED is real markup in
+   the page itself.
+   ============================================================================= */
+
+.nf-rail {
+  /* Sticky, per the owner, travelling under the pinned header. `top` is set by
+     store-rail.js as --nf-rail-top: the fixed header's BOTTOM edge in viewport
+     coordinates, measured live because it differs by page and width (104 on a
+     store page at 1440, 89 at 375, 138 on index where a ticker sits above the
+     header). The 0px fallback keeps the bar usable if the script is blocked.
+
+     z-index 998 puts it above page content and below the header's own 9999, so
+     the two never fight and the header always wins the overlap. */
+  position: sticky;
+  top: var(--nf-rail-top, 0px);
+  z-index: 998;                     /* above the header scrim from a11y-base */
+  background: #04263A;
+  border-top: 1px solid rgba(143, 211, 56, .28);
+  border-bottom: 1px solid rgba(143, 211, 56, .28);
+}
+
+.nf-rail__inner {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.nf-rail__inner::-webkit-scrollbar { display: none; }
+
+.nf-rail__label {
+  display: none;
+  align-items: center;
+  padding: 0 14px 0 2px;
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #8FD338;                   /* 8.59:1 on #04263A */
+}
+/* 1160, not 900, and the number is measured.
+
+   At 900 the label was revealed as soon as there was "room", but revealing it
+   COSTS 101.8px of rail and the rail does not fit until 1160. So content
+   visibility went DOWN as the window got WIDER -- measured on index.html, the
+   rail's hidden overflow:
+
+     899   hidden 150   no label    all 7 store links fully visible
+     900   hidden 253   label       Greenville clipped to 83%, RI slot to 0%
+     905   hidden 248   label       Greenville 87%
+     950   hidden 203   label       ...
+     1150  hidden   3   label
+     1160  hidden   0   label       everything fits
+
+   A +103px jump backwards at a single pixel of width. Revealing the label only
+   where the rail can afford it makes the sequence monotonic: 169, 150, 149,
+   144, 99, 49, 0, 0, 0 -- it never rises. The label is a nicety; a store link
+   is navigation, and the store links win the space until there is genuinely
+   room for both. */
+@media (min-width: 1160px) { .nf-rail__label { display: flex; } }
+
+.nf-rail__item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 46px;
+  padding: 11px 14px;
+  white-space: nowrap;
+  /* !important: .elementor-kit-7 a sets the brand green at (0,1,1) and would
+     otherwise repaint every rail item, erasing the current-store cue. */
+  color: #DDE5EA !important;        /* 11.4:1 on #04263A */
+  /* Owner call: the store names read as caps at the same size as the VIEWING
+     label, so the rail reads as one band of small caps rather than a label
+     followed by larger mixed-case links. 11px / .14em is exactly what
+     .nf-rail__label above uses. Weight 600 because 11px caps at 400 go thin. */
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+}
+/* OWNER CALL 2026-09-10: "it may highlight in home only when hovered on."
+   Hover was #fff, a barely-visible step up from the #DDE5EA resting colour.
+   It now takes the brand green, so the rail CAN highlight under the cursor on
+   every page — including the pages where nothing is marked as current.
+   #8FD338 on #04263A is 8.59:1. The state suffix comes along so the whole
+   item lifts together rather than half of it. */
+.nf-rail__item:hover,
+.nf-rail__item:focus-visible { color: #8FD338 !important; }
+.nf-rail__item:hover .nf-rail__state,
+.nf-rail__item:focus-visible .nf-rail__state { color: #8FD338; }
+
+/* The current store — ONLY ever a store page's own store now; see the
+   ofThisPage() note in store-rail.js. Marked by weight, colour AND an
+   underline, so it is not signalled by colour alone (1.4.1), and so it stays
+   distinguishable from the hover state above, which shares its colour. */
+.nf-rail__item[aria-current="true"] {
+  color: #8FD338 !important;
+  font-weight: 700;
+  border-bottom-color: #8FD338;
+}
+
+.nf-rail__state {
+  /* One step down from the name now that the name is 11px, so the state code
+     still reads as a suffix rather than part of the name. Colour carries the
+     rest of the separation. */
+  font-size: 10px;
+  letter-spacing: .08em;
+  color: #A9B8C2;                   /* 7.4:1 on #04263A */
+}
+.nf-rail__item[aria-current="true"] .nf-rail__state { color: #8FD338; }
+
+.nf-rail__soon {
+  display: flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 11px 14px;
+  white-space: nowrap;
+  color: #A9B8C2;
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* Screen-reader-only text carrying the "you are viewing" phrasing, so the
+   indicator is not purely visual. */
+.nf-rail__sr {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* =============================================================================
+   nf-chrome-solid — set by store-rail.js on the two pages whose hero uses a
+   negative top margin to slide under a transparent header (index.html at
+   -106px, services.html at -112px; the other 45 pages are at 0 and never get
+   this class).
+
+   On those two, the rail now pushes the hero down so it occupies its whole
+   container. That removes the photo from behind the header -- and the header's
+   accessibility scrim, which is rgba(4,38,58,.82) in a11y-base.css, was sized
+   for compositing against a PHOTO. Against the white page underneath it
+   resolves to rgb(49,76,93), a slate that sits next to the rail's #04263A and
+   reads as two mismatched bands rather than one piece of chrome.
+
+   Making the scrim opaque on these pages only: the ticker, the nav row and the
+   rail become one continuous brand-navy block, and the hero starts cleanly
+   below it. Contrast can only improve -- every foreground the scrim was already
+   carrying was measured against the DARKEST composite it produced, and this is
+   that composite exactly.
+   ============================================================================= */
+html.nf-chrome-solid [data-a11y-scrim="header"]::before {
+  background-color: #04263A;
+}
+
+/* =============================================================================
+   CLS — reserve the rail's height before the script inserts it.
+
+   The second QA run reported PERF-002, CLS 0.146 (measured here at 0.213 on a
+   phone). The largest single contributor is this rail: store-rail.js mounts at
+   DOMContentLoaded and inserts a 48px band between the header and <main>, so
+   everything below it drops 48px AFTER the first paint.
+
+   Moving the script earlier is not available — it already runs at
+   DOMContentLoaded, which is as early as a body-end script can, and it needs
+   the header in the DOM to position against.
+
+   So the space is reserved instead. The rail measures 48px at 440, 768, 1024
+   AND 1280 — checked at all four, it is not breakpoint-dependent — so a fixed
+   reservation is exact rather than approximate, and the swap is net zero:
+
+       before mount   .site-main carries 48px of top margin, no rail
+       after mount    the 48px rail exists, the margin is gone
+       net            <main> sits at the same y in both states
+
+   store-rail.js sets data-nf-rail-ready on <body> immediately after the
+   insertBefore, which is what switches the margin off.
+
+   IF JAVASCRIPT NEVER RUNS the margin simply stays and the page shows a 48px
+   gap where the rail would have been. That is the fail-closed direction: a gap,
+   not a jump.
+   ============================================================================= */
+body:not([data-nf-rail-ready]) .site-main {
+  margin-block-start: 48px;
+}
+
+/* =============================================================================
+   Make the solid chrome MACHINE-READABLE, not just visually correct.
+
+   The QA run reports A11Y-002 on the header's SHOP button at "ratio 1.00:1".
+   Sampled from the rendered pixels it is white on brand navy at 15.63:1, so the
+   finding is wrong — but it is wrong for a fixable reason.
+
+   The scrim is painted by a PSEUDO-ELEMENT:
+
+       [data-a11y-scrim="header"]::before { background-color: rgba(4,38,58,.82) }
+
+   and the rule above makes that opaque #04263A on these two pages. A contrast
+   checker walks ANCESTOR ELEMENTS looking for a background; it cannot see a
+   ::before. Measured that walk from the SHOP button: ten ancestors, every one
+   rgba(0,0,0,0), terminating at body = white. Hence white-on-white.
+
+   A FIRST ATTEMPT PUT THE COLOUR ON THE SCRIM ELEMENT AND DID NOT WORK.
+   That element (.elementor-element-4a3d33e) refuses a background-color from a
+   stylesheet AND from an inline declaration with !important — Elementor owns it.
+   Measured, then abandoned. The <header> accepts one normally, and it is also an
+   ancestor of the button, so the walk terminates there instead:
+
+       before   10 ancestors -> body white      -> 1.00:1
+       after     9 ancestors -> header #04263A  -> 15.63:1
+
+   NOTHING MOVES ON SCREEN. The opaque scrim sits inside the header and covers
+   it, so this paints the same navy underneath navy. Verified by pixel diff on
+   BOTH affected pages at 440 and 1280, at scroll 0, 300 and 1500: 0 subpixels
+   differ in all twelve comparisons.
+
+   SCOPED TO html.nf-chrome-solid ON PURPOSE. On the other 45 pages the scrim is
+   rgba(...,.82) over the hero photograph, and an opaque header there would hide
+   the photo. Those pages keep the translucent scrim — and keep the false
+   positive, whose honest fix is a checker that composites pseudo-elements.
+   ============================================================================= */
+html.nf-chrome-solid body > header.elementor-location-header {
+  background-color: #04263A;
+}

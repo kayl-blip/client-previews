@@ -1,0 +1,1412 @@
+{
+  "shape": "mp",
+  "domain": "novafarms.com",
+  "bundle_root": "C:\\Users\\kaylt\\clone-site-output\\novafarms.com.v3",
+  "pages": [
+    {
+      "name": "index.html",
+      "source": "https://novafarms.com/",
+      "templates_injected": []
+    },
+    {
+      "name": "locations.html",
+      "source": "https://novafarms.com/locations/",
+      "templates_injected": []
+    },
+    {
+      "name": "attleboro-ma.html",
+      "source": "https://novafarms.com/locations/attleboro-ma/",
+      "templates_injected": [
+        "tabs",
+        "carousel"
+      ]
+    },
+    {
+      "name": "dracut-ma.html",
+      "source": "https://novafarms.com/locations/dracut-ma/",
+      "templates_injected": [
+        "tabs",
+        "carousel"
+      ]
+    },
+    {
+      "name": "framingham-ma.html",
+      "source": "https://novafarms.com/locations/framingham-ma/",
+      "templates_injected": [
+        "tabs"
+      ]
+    },
+    {
+      "name": "locations-newbritain-ct.html",
+      "source": "https://novafarms.com/locations/newbritain-ct/",
+      "templates_injected": [
+        "tabs",
+        "carousel"
+      ]
+    },
+    {
+      "name": "woodbury-nj.html",
+      "source": "https://novafarms.com/locations/woodbury-nj/",
+      "templates_injected": [
+        "tabs",
+        "carousel"
+      ]
+    },
+    {
+      "name": "greenville-me.html",
+      "source": "https://novafarms.com/locations/greenville-me/",
+      "templates_injected": [
+        "tabs"
+      ]
+    },
+    {
+      "name": "visit-us.html",
+      "source": "https://novafarms.com/visit-us/",
+      "templates_injected": []
+    },
+    {
+      "name": "best-cannabis-dispensary-near-barrington-ri.html",
+      "source": "https://novafarms.com/visit-us/best-cannabis-dispensary-near-barrington-ri/",
+      "templates_injected": []
+    },
+    {
+      "name": "recreational-cannabis-dispensary-near-plainville-ma.html",
+      "source": "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-plainville-ma/",
+      "templates_injected": []
+    },
+    {
+      "name": "recreational-cannabis-dispensary-near-seekonk-ma.html",
+      "source": "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-seekonk-ma/",
+      "templates_injected": []
+    },
+    {
+      "name": "best-cannabis-dispensary-near-providence-ri.html",
+      "source": "https://novafarms.com/visit-us/best-cannabis-dispensary-near-providence-ri/",
+      "templates_injected": []
+    },
+    {
+      "name": "recreational-cannabis-dispensary-near-pawtucket-ri.html",
+      "source": "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-pawtucket-ri/",
+      "templates_injected": []
+    },
+    {
+      "name": "closest-ma-cannabis-dispensary-to-rhode-island-border.html",
+      "source": "https://novafarms.com/visit-us/closest-ma-cannabis-dispensary-to-rhode-island-border/",
+      "templates_injected": []
+    },
+    {
+      "name": "closest-nj-cannabis-dispensary-to-pennsylvania-border.html",
+      "source": "https://novafarms.com/visit-us/closest-nj-cannabis-dispensary-to-pennsylvania-border/",
+      "templates_injected": []
+    },
+    {
+      "name": "recreational-cannabis-dispensary-near-philadelphia-pa.html",
+      "source": "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-philadelphia-pa/",
+      "templates_injected": []
+    },
+    {
+      "name": "recreational-cannabis-dispensary-near-umass-lowell-ma.html",
+      "source": "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-umass-lowell-ma/",
+      "templates_injected": []
+    },
+    {
+      "name": "recreational-cannabis-dispensary-near-deptford-nj.html",
+      "source": "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-deptford-nj/",
+      "templates_injected": []
+    },
+    {
+      "name": "recreational-medical-cannabis-dispensary-near-west-hartford-ct.html",
+      "source": "https://novafarms.com/visit-us/recreational-medical-cannabis-dispensary-near-west-hartford-ct/",
+      "templates_injected": []
+    },
+    {
+      "name": "recreational-medical-cannabis-dispensary-near-southington-ct.html",
+      "source": "https://novafarms.com/visit-us/recreational-medical-cannabis-dispensary-near-southington-ct/",
+      "templates_injected": []
+    },
+    {
+      "name": "recreational-medical-cannabis-dispensary-near-farmington-ct.html",
+      "source": "https://novafarms.com/visit-us/recreational-medical-cannabis-dispensary-near-farmington-ct/",
+      "templates_injected": []
+    },
+    {
+      "name": "recreational-medical-cannabis-dispensary-near-newington-ct.html",
+      "source": "https://novafarms.com/visit-us/recreational-medical-cannabis-dispensary-near-newington-ct/",
+      "templates_injected": []
+    },
+    {
+      "name": "recreational-cannabis-dispensary-near-lawrence-ma.html",
+      "source": "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-lawrence-ma/",
+      "templates_injected": []
+    },
+    {
+      "name": "best-cannabis-dispensary-near-rowan-university.html",
+      "source": "https://novafarms.com/visit-us/best-cannabis-dispensary-near-rowan-university/",
+      "templates_injected": []
+    },
+    {
+      "name": "recreational-cannabis-dispensary-near-wilmington-de.html",
+      "source": "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-wilmington-de/",
+      "templates_injected": []
+    },
+    {
+      "name": "recreational-cannabis-dispensary-near-camden-nj.html",
+      "source": "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-camden-nj/",
+      "templates_injected": []
+    },
+    {
+      "name": "pharmacy.html",
+      "source": "https://novafarms.com/pharmacy/",
+      "templates_injected": []
+    },
+    {
+      "name": "pharmacy-newbritain-ct.html",
+      "source": "https://novafarms.com/pharmacy/newbritain-ct/",
+      "templates_injected": [
+        "tabs"
+      ]
+    },
+    {
+      "name": "team.html",
+      "source": "https://novafarms.com/pharmacy/newbritain-ct/team/",
+      "templates_injected": []
+    },
+    {
+      "name": "services.html",
+      "source": "https://novafarms.com/pharmacy/newbritain-ct/services/",
+      "templates_injected": []
+    },
+    {
+      "name": "medproviders-ct.html",
+      "source": "https://novafarms.com/medproviders-ct/",
+      "templates_injected": []
+    },
+    {
+      "name": "book-med-consult-ct.html",
+      "source": "https://novafarms.com/book-med-consult-ct/",
+      "templates_injected": []
+    },
+    {
+      "name": "med-portal.html",
+      "source": "https://novafarms.com/med-portal/",
+      "templates_injected": []
+    },
+    {
+      "name": "employee.html",
+      "source": "https://novafarms.com/med-portal/employee/",
+      "templates_injected": []
+    },
+    {
+      "name": "ma-vip.html",
+      "source": "https://novafarms.com/ma-vip/",
+      "templates_injected": []
+    },
+    {
+      "name": "join-vip.html",
+      "source": "https://novafarms.com/join-vip/",
+      "templates_injected": []
+    },
+    {
+      "name": "joinloyalty.html",
+      "source": "https://novafarms.com/joinloyalty/",
+      "templates_injected": [
+        "form-submit"
+      ]
+    },
+    {
+      "name": "shop.html",
+      "source": "https://novafarms.com/shop/",
+      "templates_injected": []
+    },
+    {
+      "name": "newbritain.html",
+      "source": "https://novafarms.com/shop/newbritain/",
+      "templates_injected": []
+    },
+    {
+      "name": "wholesale.html",
+      "source": "https://novafarms.com/wholesale/",
+      "templates_injected": []
+    },
+    {
+      "name": "review.html",
+      "source": "https://novafarms.com/review/",
+      "templates_injected": [
+        "tabs"
+      ]
+    },
+    {
+      "name": "budtender.html",
+      "source": "https://novafarms.com/budtender/",
+      "templates_injected": []
+    },
+    {
+      "name": "customer-education.html",
+      "source": "https://novafarms.com/customer-education/",
+      "templates_injected": []
+    },
+    {
+      "name": "privacy-policy.html",
+      "source": "https://novafarms.com/privacy-policy/",
+      "templates_injected": []
+    },
+    {
+      "name": "invest-successful-submission.html",
+      "source": "https://novafarms.com/invest_successful-submission/",
+      "templates_injected": []
+    },
+    {
+      "name": "blog.html",
+      "source": "https://novafarms.com/blog/",
+      "templates_injected": []
+    }
+  ],
+  "chrome_css_chars": 0,
+  "css_sources_consolidated": 1090,
+  "assets_emitted": 1916,
+  "transformations": {
+    "links_removed": 957,
+    "styles_removed": 589,
+    "tracking_scripts_stripped": 312,
+    "base_stripped": 0,
+    "data_screen_label_stripped": 0,
+    "url_attrs_rewritten": 1878,
+    "internal_hrefs_rewritten": 1330,
+    "ajax_listings_injected": 0,
+    "noscript_rewritten": 216,
+    "video_widgets_localised": 0,
+    "templates_injected": [
+      "tabs",
+      "carousel",
+      "form-submit"
+    ]
+  },
+  "internal_link_map": [
+    [
+      "https://novafarms.com/",
+      "index.html"
+    ],
+    [
+      "https://novafarms.com",
+      "index.html"
+    ],
+    [
+      "//novafarms.com/",
+      "index.html"
+    ],
+    [
+      "//novafarms.com",
+      "index.html"
+    ],
+    [
+      "/",
+      "index.html"
+    ],
+    [
+      "https://novafarms.com/locations/",
+      "locations.html"
+    ],
+    [
+      "https://novafarms.com/locations",
+      "locations.html"
+    ],
+    [
+      "//novafarms.com/locations/",
+      "locations.html"
+    ],
+    [
+      "//novafarms.com/locations",
+      "locations.html"
+    ],
+    [
+      "/locations/",
+      "locations.html"
+    ],
+    [
+      "/locations",
+      "locations.html"
+    ],
+    [
+      "https://novafarms.com/locations/attleboro-ma/",
+      "attleboro-ma.html"
+    ],
+    [
+      "https://novafarms.com/locations/attleboro-ma",
+      "attleboro-ma.html"
+    ],
+    [
+      "//novafarms.com/locations/attleboro-ma/",
+      "attleboro-ma.html"
+    ],
+    [
+      "//novafarms.com/locations/attleboro-ma",
+      "attleboro-ma.html"
+    ],
+    [
+      "/locations/attleboro-ma/",
+      "attleboro-ma.html"
+    ],
+    [
+      "/locations/attleboro-ma",
+      "attleboro-ma.html"
+    ],
+    [
+      "https://novafarms.com/locations/dracut-ma/",
+      "dracut-ma.html"
+    ],
+    [
+      "https://novafarms.com/locations/dracut-ma",
+      "dracut-ma.html"
+    ],
+    [
+      "//novafarms.com/locations/dracut-ma/",
+      "dracut-ma.html"
+    ],
+    [
+      "//novafarms.com/locations/dracut-ma",
+      "dracut-ma.html"
+    ],
+    [
+      "/locations/dracut-ma/",
+      "dracut-ma.html"
+    ],
+    [
+      "/locations/dracut-ma",
+      "dracut-ma.html"
+    ],
+    [
+      "https://novafarms.com/locations/framingham-ma/",
+      "framingham-ma.html"
+    ],
+    [
+      "https://novafarms.com/locations/framingham-ma",
+      "framingham-ma.html"
+    ],
+    [
+      "//novafarms.com/locations/framingham-ma/",
+      "framingham-ma.html"
+    ],
+    [
+      "//novafarms.com/locations/framingham-ma",
+      "framingham-ma.html"
+    ],
+    [
+      "/locations/framingham-ma/",
+      "framingham-ma.html"
+    ],
+    [
+      "/locations/framingham-ma",
+      "framingham-ma.html"
+    ],
+    [
+      "https://novafarms.com/locations/newbritain-ct/",
+      "locations-newbritain-ct.html"
+    ],
+    [
+      "https://novafarms.com/locations/newbritain-ct",
+      "locations-newbritain-ct.html"
+    ],
+    [
+      "//novafarms.com/locations/newbritain-ct/",
+      "locations-newbritain-ct.html"
+    ],
+    [
+      "//novafarms.com/locations/newbritain-ct",
+      "locations-newbritain-ct.html"
+    ],
+    [
+      "/locations/newbritain-ct/",
+      "locations-newbritain-ct.html"
+    ],
+    [
+      "/locations/newbritain-ct",
+      "locations-newbritain-ct.html"
+    ],
+    [
+      "https://novafarms.com/locations/woodbury-nj/",
+      "woodbury-nj.html"
+    ],
+    [
+      "https://novafarms.com/locations/woodbury-nj",
+      "woodbury-nj.html"
+    ],
+    [
+      "//novafarms.com/locations/woodbury-nj/",
+      "woodbury-nj.html"
+    ],
+    [
+      "//novafarms.com/locations/woodbury-nj",
+      "woodbury-nj.html"
+    ],
+    [
+      "/locations/woodbury-nj/",
+      "woodbury-nj.html"
+    ],
+    [
+      "/locations/woodbury-nj",
+      "woodbury-nj.html"
+    ],
+    [
+      "https://novafarms.com/locations/greenville-me/",
+      "greenville-me.html"
+    ],
+    [
+      "https://novafarms.com/locations/greenville-me",
+      "greenville-me.html"
+    ],
+    [
+      "//novafarms.com/locations/greenville-me/",
+      "greenville-me.html"
+    ],
+    [
+      "//novafarms.com/locations/greenville-me",
+      "greenville-me.html"
+    ],
+    [
+      "/locations/greenville-me/",
+      "greenville-me.html"
+    ],
+    [
+      "/locations/greenville-me",
+      "greenville-me.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/",
+      "visit-us.html"
+    ],
+    [
+      "https://novafarms.com/visit-us",
+      "visit-us.html"
+    ],
+    [
+      "//novafarms.com/visit-us/",
+      "visit-us.html"
+    ],
+    [
+      "//novafarms.com/visit-us",
+      "visit-us.html"
+    ],
+    [
+      "/visit-us/",
+      "visit-us.html"
+    ],
+    [
+      "/visit-us",
+      "visit-us.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/best-cannabis-dispensary-near-barrington-ri/",
+      "best-cannabis-dispensary-near-barrington-ri.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/best-cannabis-dispensary-near-barrington-ri",
+      "best-cannabis-dispensary-near-barrington-ri.html"
+    ],
+    [
+      "//novafarms.com/visit-us/best-cannabis-dispensary-near-barrington-ri/",
+      "best-cannabis-dispensary-near-barrington-ri.html"
+    ],
+    [
+      "//novafarms.com/visit-us/best-cannabis-dispensary-near-barrington-ri",
+      "best-cannabis-dispensary-near-barrington-ri.html"
+    ],
+    [
+      "/visit-us/best-cannabis-dispensary-near-barrington-ri/",
+      "best-cannabis-dispensary-near-barrington-ri.html"
+    ],
+    [
+      "/visit-us/best-cannabis-dispensary-near-barrington-ri",
+      "best-cannabis-dispensary-near-barrington-ri.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-plainville-ma/",
+      "recreational-cannabis-dispensary-near-plainville-ma.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-plainville-ma",
+      "recreational-cannabis-dispensary-near-plainville-ma.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-cannabis-dispensary-near-plainville-ma/",
+      "recreational-cannabis-dispensary-near-plainville-ma.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-cannabis-dispensary-near-plainville-ma",
+      "recreational-cannabis-dispensary-near-plainville-ma.html"
+    ],
+    [
+      "/visit-us/recreational-cannabis-dispensary-near-plainville-ma/",
+      "recreational-cannabis-dispensary-near-plainville-ma.html"
+    ],
+    [
+      "/visit-us/recreational-cannabis-dispensary-near-plainville-ma",
+      "recreational-cannabis-dispensary-near-plainville-ma.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-seekonk-ma/",
+      "recreational-cannabis-dispensary-near-seekonk-ma.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-seekonk-ma",
+      "recreational-cannabis-dispensary-near-seekonk-ma.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-cannabis-dispensary-near-seekonk-ma/",
+      "recreational-cannabis-dispensary-near-seekonk-ma.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-cannabis-dispensary-near-seekonk-ma",
+      "recreational-cannabis-dispensary-near-seekonk-ma.html"
+    ],
+    [
+      "/visit-us/recreational-cannabis-dispensary-near-seekonk-ma/",
+      "recreational-cannabis-dispensary-near-seekonk-ma.html"
+    ],
+    [
+      "/visit-us/recreational-cannabis-dispensary-near-seekonk-ma",
+      "recreational-cannabis-dispensary-near-seekonk-ma.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/best-cannabis-dispensary-near-providence-ri/",
+      "best-cannabis-dispensary-near-providence-ri.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/best-cannabis-dispensary-near-providence-ri",
+      "best-cannabis-dispensary-near-providence-ri.html"
+    ],
+    [
+      "//novafarms.com/visit-us/best-cannabis-dispensary-near-providence-ri/",
+      "best-cannabis-dispensary-near-providence-ri.html"
+    ],
+    [
+      "//novafarms.com/visit-us/best-cannabis-dispensary-near-providence-ri",
+      "best-cannabis-dispensary-near-providence-ri.html"
+    ],
+    [
+      "/visit-us/best-cannabis-dispensary-near-providence-ri/",
+      "best-cannabis-dispensary-near-providence-ri.html"
+    ],
+    [
+      "/visit-us/best-cannabis-dispensary-near-providence-ri",
+      "best-cannabis-dispensary-near-providence-ri.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-pawtucket-ri/",
+      "recreational-cannabis-dispensary-near-pawtucket-ri.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-pawtucket-ri",
+      "recreational-cannabis-dispensary-near-pawtucket-ri.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-cannabis-dispensary-near-pawtucket-ri/",
+      "recreational-cannabis-dispensary-near-pawtucket-ri.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-cannabis-dispensary-near-pawtucket-ri",
+      "recreational-cannabis-dispensary-near-pawtucket-ri.html"
+    ],
+    [
+      "/visit-us/recreational-cannabis-dispensary-near-pawtucket-ri/",
+      "recreational-cannabis-dispensary-near-pawtucket-ri.html"
+    ],
+    [
+      "/visit-us/recreational-cannabis-dispensary-near-pawtucket-ri",
+      "recreational-cannabis-dispensary-near-pawtucket-ri.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/closest-ma-cannabis-dispensary-to-rhode-island-border/",
+      "closest-ma-cannabis-dispensary-to-rhode-island-border.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/closest-ma-cannabis-dispensary-to-rhode-island-border",
+      "closest-ma-cannabis-dispensary-to-rhode-island-border.html"
+    ],
+    [
+      "//novafarms.com/visit-us/closest-ma-cannabis-dispensary-to-rhode-island-border/",
+      "closest-ma-cannabis-dispensary-to-rhode-island-border.html"
+    ],
+    [
+      "//novafarms.com/visit-us/closest-ma-cannabis-dispensary-to-rhode-island-border",
+      "closest-ma-cannabis-dispensary-to-rhode-island-border.html"
+    ],
+    [
+      "/visit-us/closest-ma-cannabis-dispensary-to-rhode-island-border/",
+      "closest-ma-cannabis-dispensary-to-rhode-island-border.html"
+    ],
+    [
+      "/visit-us/closest-ma-cannabis-dispensary-to-rhode-island-border",
+      "closest-ma-cannabis-dispensary-to-rhode-island-border.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/closest-nj-cannabis-dispensary-to-pennsylvania-border/",
+      "closest-nj-cannabis-dispensary-to-pennsylvania-border.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/closest-nj-cannabis-dispensary-to-pennsylvania-border",
+      "closest-nj-cannabis-dispensary-to-pennsylvania-border.html"
+    ],
+    [
+      "//novafarms.com/visit-us/closest-nj-cannabis-dispensary-to-pennsylvania-border/",
+      "closest-nj-cannabis-dispensary-to-pennsylvania-border.html"
+    ],
+    [
+      "//novafarms.com/visit-us/closest-nj-cannabis-dispensary-to-pennsylvania-border",
+      "closest-nj-cannabis-dispensary-to-pennsylvania-border.html"
+    ],
+    [
+      "/visit-us/closest-nj-cannabis-dispensary-to-pennsylvania-border/",
+      "closest-nj-cannabis-dispensary-to-pennsylvania-border.html"
+    ],
+    [
+      "/visit-us/closest-nj-cannabis-dispensary-to-pennsylvania-border",
+      "closest-nj-cannabis-dispensary-to-pennsylvania-border.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-philadelphia-pa/",
+      "recreational-cannabis-dispensary-near-philadelphia-pa.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-philadelphia-pa",
+      "recreational-cannabis-dispensary-near-philadelphia-pa.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-cannabis-dispensary-near-philadelphia-pa/",
+      "recreational-cannabis-dispensary-near-philadelphia-pa.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-cannabis-dispensary-near-philadelphia-pa",
+      "recreational-cannabis-dispensary-near-philadelphia-pa.html"
+    ],
+    [
+      "/visit-us/recreational-cannabis-dispensary-near-philadelphia-pa/",
+      "recreational-cannabis-dispensary-near-philadelphia-pa.html"
+    ],
+    [
+      "/visit-us/recreational-cannabis-dispensary-near-philadelphia-pa",
+      "recreational-cannabis-dispensary-near-philadelphia-pa.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-umass-lowell-ma/",
+      "recreational-cannabis-dispensary-near-umass-lowell-ma.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-umass-lowell-ma",
+      "recreational-cannabis-dispensary-near-umass-lowell-ma.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-cannabis-dispensary-near-umass-lowell-ma/",
+      "recreational-cannabis-dispensary-near-umass-lowell-ma.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-cannabis-dispensary-near-umass-lowell-ma",
+      "recreational-cannabis-dispensary-near-umass-lowell-ma.html"
+    ],
+    [
+      "/visit-us/recreational-cannabis-dispensary-near-umass-lowell-ma/",
+      "recreational-cannabis-dispensary-near-umass-lowell-ma.html"
+    ],
+    [
+      "/visit-us/recreational-cannabis-dispensary-near-umass-lowell-ma",
+      "recreational-cannabis-dispensary-near-umass-lowell-ma.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-deptford-nj/",
+      "recreational-cannabis-dispensary-near-deptford-nj.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-deptford-nj",
+      "recreational-cannabis-dispensary-near-deptford-nj.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-cannabis-dispensary-near-deptford-nj/",
+      "recreational-cannabis-dispensary-near-deptford-nj.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-cannabis-dispensary-near-deptford-nj",
+      "recreational-cannabis-dispensary-near-deptford-nj.html"
+    ],
+    [
+      "/visit-us/recreational-cannabis-dispensary-near-deptford-nj/",
+      "recreational-cannabis-dispensary-near-deptford-nj.html"
+    ],
+    [
+      "/visit-us/recreational-cannabis-dispensary-near-deptford-nj",
+      "recreational-cannabis-dispensary-near-deptford-nj.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-medical-cannabis-dispensary-near-west-hartford-ct/",
+      "recreational-medical-cannabis-dispensary-near-west-hartford-ct.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-medical-cannabis-dispensary-near-west-hartford-ct",
+      "recreational-medical-cannabis-dispensary-near-west-hartford-ct.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-medical-cannabis-dispensary-near-west-hartford-ct/",
+      "recreational-medical-cannabis-dispensary-near-west-hartford-ct.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-medical-cannabis-dispensary-near-west-hartford-ct",
+      "recreational-medical-cannabis-dispensary-near-west-hartford-ct.html"
+    ],
+    [
+      "/visit-us/recreational-medical-cannabis-dispensary-near-west-hartford-ct/",
+      "recreational-medical-cannabis-dispensary-near-west-hartford-ct.html"
+    ],
+    [
+      "/visit-us/recreational-medical-cannabis-dispensary-near-west-hartford-ct",
+      "recreational-medical-cannabis-dispensary-near-west-hartford-ct.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-medical-cannabis-dispensary-near-southington-ct/",
+      "recreational-medical-cannabis-dispensary-near-southington-ct.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-medical-cannabis-dispensary-near-southington-ct",
+      "recreational-medical-cannabis-dispensary-near-southington-ct.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-medical-cannabis-dispensary-near-southington-ct/",
+      "recreational-medical-cannabis-dispensary-near-southington-ct.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-medical-cannabis-dispensary-near-southington-ct",
+      "recreational-medical-cannabis-dispensary-near-southington-ct.html"
+    ],
+    [
+      "/visit-us/recreational-medical-cannabis-dispensary-near-southington-ct/",
+      "recreational-medical-cannabis-dispensary-near-southington-ct.html"
+    ],
+    [
+      "/visit-us/recreational-medical-cannabis-dispensary-near-southington-ct",
+      "recreational-medical-cannabis-dispensary-near-southington-ct.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-medical-cannabis-dispensary-near-farmington-ct/",
+      "recreational-medical-cannabis-dispensary-near-farmington-ct.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-medical-cannabis-dispensary-near-farmington-ct",
+      "recreational-medical-cannabis-dispensary-near-farmington-ct.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-medical-cannabis-dispensary-near-farmington-ct/",
+      "recreational-medical-cannabis-dispensary-near-farmington-ct.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-medical-cannabis-dispensary-near-farmington-ct",
+      "recreational-medical-cannabis-dispensary-near-farmington-ct.html"
+    ],
+    [
+      "/visit-us/recreational-medical-cannabis-dispensary-near-farmington-ct/",
+      "recreational-medical-cannabis-dispensary-near-farmington-ct.html"
+    ],
+    [
+      "/visit-us/recreational-medical-cannabis-dispensary-near-farmington-ct",
+      "recreational-medical-cannabis-dispensary-near-farmington-ct.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-medical-cannabis-dispensary-near-newington-ct/",
+      "recreational-medical-cannabis-dispensary-near-newington-ct.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-medical-cannabis-dispensary-near-newington-ct",
+      "recreational-medical-cannabis-dispensary-near-newington-ct.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-medical-cannabis-dispensary-near-newington-ct/",
+      "recreational-medical-cannabis-dispensary-near-newington-ct.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-medical-cannabis-dispensary-near-newington-ct",
+      "recreational-medical-cannabis-dispensary-near-newington-ct.html"
+    ],
+    [
+      "/visit-us/recreational-medical-cannabis-dispensary-near-newington-ct/",
+      "recreational-medical-cannabis-dispensary-near-newington-ct.html"
+    ],
+    [
+      "/visit-us/recreational-medical-cannabis-dispensary-near-newington-ct",
+      "recreational-medical-cannabis-dispensary-near-newington-ct.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-lawrence-ma/",
+      "recreational-cannabis-dispensary-near-lawrence-ma.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-lawrence-ma",
+      "recreational-cannabis-dispensary-near-lawrence-ma.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-cannabis-dispensary-near-lawrence-ma/",
+      "recreational-cannabis-dispensary-near-lawrence-ma.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-cannabis-dispensary-near-lawrence-ma",
+      "recreational-cannabis-dispensary-near-lawrence-ma.html"
+    ],
+    [
+      "/visit-us/recreational-cannabis-dispensary-near-lawrence-ma/",
+      "recreational-cannabis-dispensary-near-lawrence-ma.html"
+    ],
+    [
+      "/visit-us/recreational-cannabis-dispensary-near-lawrence-ma",
+      "recreational-cannabis-dispensary-near-lawrence-ma.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/best-cannabis-dispensary-near-rowan-university/",
+      "best-cannabis-dispensary-near-rowan-university.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/best-cannabis-dispensary-near-rowan-university",
+      "best-cannabis-dispensary-near-rowan-university.html"
+    ],
+    [
+      "//novafarms.com/visit-us/best-cannabis-dispensary-near-rowan-university/",
+      "best-cannabis-dispensary-near-rowan-university.html"
+    ],
+    [
+      "//novafarms.com/visit-us/best-cannabis-dispensary-near-rowan-university",
+      "best-cannabis-dispensary-near-rowan-university.html"
+    ],
+    [
+      "/visit-us/best-cannabis-dispensary-near-rowan-university/",
+      "best-cannabis-dispensary-near-rowan-university.html"
+    ],
+    [
+      "/visit-us/best-cannabis-dispensary-near-rowan-university",
+      "best-cannabis-dispensary-near-rowan-university.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-wilmington-de/",
+      "recreational-cannabis-dispensary-near-wilmington-de.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-wilmington-de",
+      "recreational-cannabis-dispensary-near-wilmington-de.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-cannabis-dispensary-near-wilmington-de/",
+      "recreational-cannabis-dispensary-near-wilmington-de.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-cannabis-dispensary-near-wilmington-de",
+      "recreational-cannabis-dispensary-near-wilmington-de.html"
+    ],
+    [
+      "/visit-us/recreational-cannabis-dispensary-near-wilmington-de/",
+      "recreational-cannabis-dispensary-near-wilmington-de.html"
+    ],
+    [
+      "/visit-us/recreational-cannabis-dispensary-near-wilmington-de",
+      "recreational-cannabis-dispensary-near-wilmington-de.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-camden-nj/",
+      "recreational-cannabis-dispensary-near-camden-nj.html"
+    ],
+    [
+      "https://novafarms.com/visit-us/recreational-cannabis-dispensary-near-camden-nj",
+      "recreational-cannabis-dispensary-near-camden-nj.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-cannabis-dispensary-near-camden-nj/",
+      "recreational-cannabis-dispensary-near-camden-nj.html"
+    ],
+    [
+      "//novafarms.com/visit-us/recreational-cannabis-dispensary-near-camden-nj",
+      "recreational-cannabis-dispensary-near-camden-nj.html"
+    ],
+    [
+      "/visit-us/recreational-cannabis-dispensary-near-camden-nj/",
+      "recreational-cannabis-dispensary-near-camden-nj.html"
+    ],
+    [
+      "/visit-us/recreational-cannabis-dispensary-near-camden-nj",
+      "recreational-cannabis-dispensary-near-camden-nj.html"
+    ],
+    [
+      "https://novafarms.com/pharmacy/",
+      "pharmacy.html"
+    ],
+    [
+      "https://novafarms.com/pharmacy",
+      "pharmacy.html"
+    ],
+    [
+      "//novafarms.com/pharmacy/",
+      "pharmacy.html"
+    ],
+    [
+      "//novafarms.com/pharmacy",
+      "pharmacy.html"
+    ],
+    [
+      "/pharmacy/",
+      "pharmacy.html"
+    ],
+    [
+      "/pharmacy",
+      "pharmacy.html"
+    ],
+    [
+      "https://novafarms.com/pharmacy/newbritain-ct/",
+      "pharmacy-newbritain-ct.html"
+    ],
+    [
+      "https://novafarms.com/pharmacy/newbritain-ct",
+      "pharmacy-newbritain-ct.html"
+    ],
+    [
+      "//novafarms.com/pharmacy/newbritain-ct/",
+      "pharmacy-newbritain-ct.html"
+    ],
+    [
+      "//novafarms.com/pharmacy/newbritain-ct",
+      "pharmacy-newbritain-ct.html"
+    ],
+    [
+      "/pharmacy/newbritain-ct/",
+      "pharmacy-newbritain-ct.html"
+    ],
+    [
+      "/pharmacy/newbritain-ct",
+      "pharmacy-newbritain-ct.html"
+    ],
+    [
+      "https://novafarms.com/pharmacy/newbritain-ct/team/",
+      "team.html"
+    ],
+    [
+      "https://novafarms.com/pharmacy/newbritain-ct/team",
+      "team.html"
+    ],
+    [
+      "//novafarms.com/pharmacy/newbritain-ct/team/",
+      "team.html"
+    ],
+    [
+      "//novafarms.com/pharmacy/newbritain-ct/team",
+      "team.html"
+    ],
+    [
+      "/pharmacy/newbritain-ct/team/",
+      "team.html"
+    ],
+    [
+      "/pharmacy/newbritain-ct/team",
+      "team.html"
+    ],
+    [
+      "https://novafarms.com/pharmacy/newbritain-ct/services/",
+      "services.html"
+    ],
+    [
+      "https://novafarms.com/pharmacy/newbritain-ct/services",
+      "services.html"
+    ],
+    [
+      "//novafarms.com/pharmacy/newbritain-ct/services/",
+      "services.html"
+    ],
+    [
+      "//novafarms.com/pharmacy/newbritain-ct/services",
+      "services.html"
+    ],
+    [
+      "/pharmacy/newbritain-ct/services/",
+      "services.html"
+    ],
+    [
+      "/pharmacy/newbritain-ct/services",
+      "services.html"
+    ],
+    [
+      "https://novafarms.com/medproviders-ct/",
+      "medproviders-ct.html"
+    ],
+    [
+      "https://novafarms.com/medproviders-ct",
+      "medproviders-ct.html"
+    ],
+    [
+      "//novafarms.com/medproviders-ct/",
+      "medproviders-ct.html"
+    ],
+    [
+      "//novafarms.com/medproviders-ct",
+      "medproviders-ct.html"
+    ],
+    [
+      "/medproviders-ct/",
+      "medproviders-ct.html"
+    ],
+    [
+      "/medproviders-ct",
+      "medproviders-ct.html"
+    ],
+    [
+      "https://novafarms.com/book-med-consult-ct/",
+      "book-med-consult-ct.html"
+    ],
+    [
+      "https://novafarms.com/book-med-consult-ct",
+      "book-med-consult-ct.html"
+    ],
+    [
+      "//novafarms.com/book-med-consult-ct/",
+      "book-med-consult-ct.html"
+    ],
+    [
+      "//novafarms.com/book-med-consult-ct",
+      "book-med-consult-ct.html"
+    ],
+    [
+      "/book-med-consult-ct/",
+      "book-med-consult-ct.html"
+    ],
+    [
+      "/book-med-consult-ct",
+      "book-med-consult-ct.html"
+    ],
+    [
+      "https://novafarms.com/med-portal/",
+      "med-portal.html"
+    ],
+    [
+      "https://novafarms.com/med-portal",
+      "med-portal.html"
+    ],
+    [
+      "//novafarms.com/med-portal/",
+      "med-portal.html"
+    ],
+    [
+      "//novafarms.com/med-portal",
+      "med-portal.html"
+    ],
+    [
+      "/med-portal/",
+      "med-portal.html"
+    ],
+    [
+      "/med-portal",
+      "med-portal.html"
+    ],
+    [
+      "https://novafarms.com/med-portal/employee/",
+      "employee.html"
+    ],
+    [
+      "https://novafarms.com/med-portal/employee",
+      "employee.html"
+    ],
+    [
+      "//novafarms.com/med-portal/employee/",
+      "employee.html"
+    ],
+    [
+      "//novafarms.com/med-portal/employee",
+      "employee.html"
+    ],
+    [
+      "/med-portal/employee/",
+      "employee.html"
+    ],
+    [
+      "/med-portal/employee",
+      "employee.html"
+    ],
+    [
+      "https://novafarms.com/ma-vip/",
+      "ma-vip.html"
+    ],
+    [
+      "https://novafarms.com/ma-vip",
+      "ma-vip.html"
+    ],
+    [
+      "//novafarms.com/ma-vip/",
+      "ma-vip.html"
+    ],
+    [
+      "//novafarms.com/ma-vip",
+      "ma-vip.html"
+    ],
+    [
+      "/ma-vip/",
+      "ma-vip.html"
+    ],
+    [
+      "/ma-vip",
+      "ma-vip.html"
+    ],
+    [
+      "https://novafarms.com/join-vip/",
+      "join-vip.html"
+    ],
+    [
+      "https://novafarms.com/join-vip",
+      "join-vip.html"
+    ],
+    [
+      "//novafarms.com/join-vip/",
+      "join-vip.html"
+    ],
+    [
+      "//novafarms.com/join-vip",
+      "join-vip.html"
+    ],
+    [
+      "/join-vip/",
+      "join-vip.html"
+    ],
+    [
+      "/join-vip",
+      "join-vip.html"
+    ],
+    [
+      "https://novafarms.com/joinloyalty/",
+      "joinloyalty.html"
+    ],
+    [
+      "https://novafarms.com/joinloyalty",
+      "joinloyalty.html"
+    ],
+    [
+      "//novafarms.com/joinloyalty/",
+      "joinloyalty.html"
+    ],
+    [
+      "//novafarms.com/joinloyalty",
+      "joinloyalty.html"
+    ],
+    [
+      "/joinloyalty/",
+      "joinloyalty.html"
+    ],
+    [
+      "/joinloyalty",
+      "joinloyalty.html"
+    ],
+    [
+      "https://novafarms.com/shop/",
+      "shop.html"
+    ],
+    [
+      "https://novafarms.com/shop",
+      "shop.html"
+    ],
+    [
+      "//novafarms.com/shop/",
+      "shop.html"
+    ],
+    [
+      "//novafarms.com/shop",
+      "shop.html"
+    ],
+    [
+      "/shop/",
+      "shop.html"
+    ],
+    [
+      "/shop",
+      "shop.html"
+    ],
+    [
+      "https://novafarms.com/shop/newbritain/",
+      "newbritain.html"
+    ],
+    [
+      "https://novafarms.com/shop/newbritain",
+      "newbritain.html"
+    ],
+    [
+      "//novafarms.com/shop/newbritain/",
+      "newbritain.html"
+    ],
+    [
+      "//novafarms.com/shop/newbritain",
+      "newbritain.html"
+    ],
+    [
+      "/shop/newbritain/",
+      "newbritain.html"
+    ],
+    [
+      "/shop/newbritain",
+      "newbritain.html"
+    ],
+    [
+      "https://novafarms.com/wholesale/",
+      "wholesale.html"
+    ],
+    [
+      "https://novafarms.com/wholesale",
+      "wholesale.html"
+    ],
+    [
+      "//novafarms.com/wholesale/",
+      "wholesale.html"
+    ],
+    [
+      "//novafarms.com/wholesale",
+      "wholesale.html"
+    ],
+    [
+      "/wholesale/",
+      "wholesale.html"
+    ],
+    [
+      "/wholesale",
+      "wholesale.html"
+    ],
+    [
+      "https://novafarms.com/review/",
+      "review.html"
+    ],
+    [
+      "https://novafarms.com/review",
+      "review.html"
+    ],
+    [
+      "//novafarms.com/review/",
+      "review.html"
+    ],
+    [
+      "//novafarms.com/review",
+      "review.html"
+    ],
+    [
+      "/review/",
+      "review.html"
+    ],
+    [
+      "/review",
+      "review.html"
+    ],
+    [
+      "https://novafarms.com/budtender/",
+      "budtender.html"
+    ],
+    [
+      "https://novafarms.com/budtender",
+      "budtender.html"
+    ],
+    [
+      "//novafarms.com/budtender/",
+      "budtender.html"
+    ],
+    [
+      "//novafarms.com/budtender",
+      "budtender.html"
+    ],
+    [
+      "/budtender/",
+      "budtender.html"
+    ],
+    [
+      "/budtender",
+      "budtender.html"
+    ],
+    [
+      "https://novafarms.com/customer-education/",
+      "customer-education.html"
+    ],
+    [
+      "https://novafarms.com/customer-education",
+      "customer-education.html"
+    ],
+    [
+      "//novafarms.com/customer-education/",
+      "customer-education.html"
+    ],
+    [
+      "//novafarms.com/customer-education",
+      "customer-education.html"
+    ],
+    [
+      "/customer-education/",
+      "customer-education.html"
+    ],
+    [
+      "/customer-education",
+      "customer-education.html"
+    ],
+    [
+      "https://novafarms.com/privacy-policy/",
+      "privacy-policy.html"
+    ],
+    [
+      "https://novafarms.com/privacy-policy",
+      "privacy-policy.html"
+    ],
+    [
+      "//novafarms.com/privacy-policy/",
+      "privacy-policy.html"
+    ],
+    [
+      "//novafarms.com/privacy-policy",
+      "privacy-policy.html"
+    ],
+    [
+      "/privacy-policy/",
+      "privacy-policy.html"
+    ],
+    [
+      "/privacy-policy",
+      "privacy-policy.html"
+    ],
+    [
+      "https://novafarms.com/invest_successful-submission/",
+      "invest-successful-submission.html"
+    ],
+    [
+      "https://novafarms.com/invest_successful-submission",
+      "invest-successful-submission.html"
+    ],
+    [
+      "//novafarms.com/invest_successful-submission/",
+      "invest-successful-submission.html"
+    ],
+    [
+      "//novafarms.com/invest_successful-submission",
+      "invest-successful-submission.html"
+    ],
+    [
+      "/invest_successful-submission/",
+      "invest-successful-submission.html"
+    ],
+    [
+      "/invest_successful-submission",
+      "invest-successful-submission.html"
+    ],
+    [
+      "https://novafarms.com/blog/",
+      "blog.html"
+    ],
+    [
+      "https://novafarms.com/blog",
+      "blog.html"
+    ],
+    [
+      "//novafarms.com/blog/",
+      "blog.html"
+    ],
+    [
+      "//novafarms.com/blog",
+      "blog.html"
+    ],
+    [
+      "/blog/",
+      "blog.html"
+    ],
+    [
+      "/blog",
+      "blog.html"
+    ]
+  ],
+  "clone_stage": 3,
+  "emitted_at": "2026-09-02T07:07:48.827Z"
+}
