@@ -531,6 +531,194 @@
   }
 
   /* ======================================================================
+     Shared: drag / swipe (owner request 2026-09-22: every slider can be
+     dragged with the mouse and swiped with a finger). One helper on
+     Pointer Events, used by section 5 (Shop By Category <= 760 carousel),
+     6 (Best Seller coverflow), 9 (brand rows) and 10 (Latest Products).
+     dragX(el, { accept(e), start(e), move(dx, dy), end(dx, v, cancelled) })
+     - mouse: primary button only; touch / pen: the primary pointer only;
+       accept(e) may refuse a press (e.g. leave a finger to native scroll).
+     - a press becomes a drag only once it has moved > 6px AND more
+       sideways than up/down; a vertical start is given up, so the page
+       scrolls (the animated / stepped rows set touch-action: pan-y in the
+       sheet; the native scroll rows keep their own finger scrolling).
+     - dragging: pointer capture on el, el.rf-dragging (grabbing cursor,
+       no text selection); no native image / link drag, no selection.
+     - end() on pointerup, pointercancel or lostpointercapture, with the
+       release velocity (px/ms, 0 when cancelled or held still).
+     - the click that ends a real drag is swallowed on window, capture
+       phase (before section 1): no side-card click, no link. So is the
+       click ending a MOUSE press that moved > 6px vertically first (given
+       up, not a drag, but not a click either: native link drag stays
+       blocked for an accepted press, so without this its release clicked
+       the card under it). A plain click (moved <= 6px) is untouched; a
+       finger's vertical start is left to the browser (it scrolls, or its
+       own tap slop decides). Only a pointer's click on the
+       dragged surface (or on an ancestor, when the capture was lost) is
+       swallowed: a keyboard / assistive-tech / script click (detail 0)
+       and a click anywhere else pass, even right after a finger swipe
+       (which ends in no click, so it leaves the swallow armed).
+     ====================================================================== */
+  var DRAG_SLOP = 6;
+  var dragClickUntil = 0, dragClickEl = null;
+  window.addEventListener('click', function (e) {
+    if (!dragClickUntil || !e.detail) return;             // detail 0: not a pointer's click
+    var live = performance.now() < dragClickUntil, from = dragClickEl, t = e.target;
+    dragClickUntil = 0;
+    dragClickEl = null;
+    if (!live || !from || !t || !t.contains || !(from.contains(t) || t.contains(from))) return;
+    e.preventDefault();
+    e.stopPropagation();
+  }, true);
+  window.addEventListener('pointerdown', function () { dragClickUntil = 0; dragClickEl = null; }, true);
+
+  function dragVelocity(pts, tEnd) {
+    var i = pts.length - 1;
+    if (i < 1 || tEnd - pts[i][0] > 80) return 0;           // held still before the release
+    var j = i;
+    while (j > 0 && pts[i][0] - pts[j - 1][0] <= 100) j--;  // the last ~100ms of movement
+    var dt = pts[i][0] - pts[j][0];
+    if (dt <= 0) return 0;
+    return Math.max(-3, Math.min(3, (pts[i][1] - pts[j][1]) / dt));
+  }
+
+  function dragX(el, o) {
+    var st = null;        // the current press: {id, mouse, x0, y0, on, gaveUp, pts}
+    var armed = false;    // the last press on el was accepted (blocks native drag / selection)
+    el.classList.add('rf-drag');
+    function finish(e, cancelled) {
+      var s = st;
+      if (!s || e.pointerId !== s.id) return;
+      st = null;
+      if (!s.on) return;
+      el.classList.remove('rf-dragging');
+      var x = e.type === 'pointerup' ? e.clientX : s.pts[s.pts.length - 1][1];
+      dragClickUntil = performance.now() + 400;
+      dragClickEl = el;
+      o.end(x - s.x0, cancelled ? 0 : dragVelocity(s.pts, e.timeStamp), !!cancelled);
+    }
+    el.addEventListener('pointerdown', function (e) {
+      if (st && st.on) return;
+      st = null;
+      armed = false;
+      if (!e.isPrimary || (e.pointerType === 'mouse' && e.button !== 0)) return;
+      if (o.accept && !o.accept(e)) return;
+      armed = true;
+      st = { id: e.pointerId, mouse: e.pointerType === 'mouse', x0: e.clientX, y0: e.clientY, on: false, pts: [[e.timeStamp, e.clientX]] };
+    });
+    el.addEventListener('pointermove', function (e) {
+      if (!st || e.pointerId !== st.id) return;
+      if (st.mouse && !(e.buttons & 1)) {                    // released where we could not see it
+        if (st.on) finish(e, true); else st = null;
+        return;
+      }
+      if (st.gaveUp) return;
+      var dx = e.clientX - st.x0, dy = e.clientY - st.y0;
+      if (!st.on) {
+        var ax = Math.abs(dx), ay = Math.abs(dy);
+        if (ax <= DRAG_SLOP && ay <= DRAG_SLOP) return;
+        // vertical first: never a drag (the page scrolls). A mouse press is kept, given up, until
+        // its release, so the click that release makes is swallowed (window pointerup below).
+        if (ay >= ax) { if (st.mouse) st.gaveUp = true; else st = null; return; }
+        st.on = true;
+        try { el.setPointerCapture(e.pointerId); } catch (err) { /* pointer already gone */ }
+        el.classList.add('rf-dragging');
+        // a press focuses the link under it (Chrome); a drag is not a click on it
+        var a = doc.activeElement;
+        if (a && a !== doc.body && el.contains(a) && a.blur) a.blur();
+        var sel = window.getSelection && window.getSelection();
+        if (sel && sel.rangeCount) sel.removeAllRanges();
+        if (o.start) o.start(e);
+      }
+      st.pts.push([e.timeStamp, e.clientX]);
+      if (st.pts.length > 16) st.pts.shift();
+      o.move(dx, dy);
+    });
+    el.addEventListener('pointerup', function (e) { finish(e, false); });
+    el.addEventListener('pointercancel', function (e) { finish(e, true); });
+    // only el's own capture: taking a finger's implicit capture from the touched child fires a
+    // (bubbling) lostpointercapture on that child, which is not the end of the drag
+    el.addEventListener('lostpointercapture', function (e) { if (e.target === el) finish(e, true); });
+    // window: a given-up mouse press may be released outside el (no capture); its click then goes
+    // to a common ancestor, which the swallow matches too
+    window.addEventListener('pointerup', function (e) {
+      armed = false;
+      if (st && st.gaveUp && e.pointerId === st.id) {
+        st = null;
+        dragClickUntil = performance.now() + 400;
+        dragClickEl = el;
+      }
+    }, true);
+    window.addEventListener('pointercancel', function () { armed = false; }, true);
+    el.addEventListener('dragstart', function (e) { if (armed) e.preventDefault(); });
+    el.addEventListener('selectstart', function (e) { if (armed && st && st.mouse && !st.gaveUp) e.preventDefault(); });
+  }
+
+  // Marquee rows (sections 9, 10): the drag scrubs the loop 1:1 under the pointer.
+  // - CSS animation running: the row is paused by a class while dragged (never Animation.pause(),
+  //   which would override the sheet's :hover / :focus-within pause for good) and the animation's
+  //   currentTime follows the pointer, wrapped modulo the duration (seamless both ways). Release:
+  //   a short inertia glide from the release velocity, then the row runs on by itself (a mouse
+  //   still over it keeps it paused, as before).
+  // - reduced motion (no animation): a native scroll row (nativeRow) gets scrollLeft from a mouse
+  //   drag (fingers scroll it natively); otherwise the track is shifted by a transform, wrapped
+  //   modulo one half. No inertia.
+  // dir: -1 when the row moves left (translateX 0 -> -50%), +1 when it moves right.
+  function loopAnimation(track) {
+    var list = track.getAnimations ? track.getAnimations() : [];
+    for (var i = 0; i < list.length; i++) if (list[i].animationName) return list[i];
+    return null;
+  }
+  function wrapMod(v, m) { return ((v % m) + m) % m; }
+  function marqueeDrag(row, track, dir, nativeRow) {
+    var mode = null, anim = null, dur = 0, half = 0, t0 = 0, x0 = 0, shift = 0, raf = 0;
+    function stopGlide() { if (raf) cancelAnimationFrame(raf); raf = 0; }
+    function nudge(dx) {       // move the loop by dx px (time mode)
+      anim.currentTime = wrapMod((Number(anim.currentTime) || 0) + dir * dx * dur / half, dur);
+    }
+    dragX(row, {
+      accept: function (e) { return !!loopAnimation(track) || !nativeRow || e.pointerType === 'mouse'; },
+      start: function () {
+        stopGlide();
+        anim = loopAnimation(track);
+        half = track.getBoundingClientRect().width / 2;
+        dur = anim ? Number(anim.effect.getTiming().duration) || 0 : 0;
+        if (anim && dur && half) { mode = 'time'; t0 = Number(anim.currentTime) || 0; }
+        else if (nativeRow) { mode = 'scroll'; x0 = row.scrollLeft; }
+        else { mode = half ? 'shift' : null; x0 = shift; }
+      },
+      move: function (dx) {
+        if (mode === 'time') anim.currentTime = wrapMod(t0 + dir * dx * dur / half, dur);
+        else if (mode === 'scroll') row.scrollLeft = x0 - dx;
+        else if (mode === 'shift') {
+          shift = -wrapMod(-(x0 + dx), half);   // (-half, 0]: one half always covers the row
+          track.style.transform = 'translateX(' + shift.toFixed(1) + 'px)';
+        }
+      },
+      end: function (dx, v) {
+        var m = mode;
+        mode = null;
+        if (m !== 'time' || reducedMotion.matches || Math.abs(v) < 0.05) return;
+        var last = performance.now();
+        raf = requestAnimationFrame(function glide(now) {
+          var dt = Math.min(50, now - last);
+          last = now;
+          v *= Math.pow(0.92, dt / 16.7);                  // ~0.2s x release speed of travel
+          if (!loopAnimation(track) || Math.abs(v) < 0.03) { raf = 0; return; }
+          nudge(v * dt);
+          raf = requestAnimationFrame(glide);
+        });
+      },
+    });
+    // back to the sheet's own state when the motion preference changes
+    reducedMotion.addEventListener('change', function () {
+      stopGlide();
+      shift = 0;
+      track.style.transform = '';
+    });
+  }
+
+  /* ======================================================================
      5. Shop By Category: filter sidebar + product grid (owner request,
         2026-09-21; the reference "showcase" filter pattern).
      The 4 existing category cards become the filter rows (their links,
@@ -538,6 +726,8 @@
      Products come from a build-time snapshot of the store's public
      collection JSON (tools/preview/fetch-category-data.mjs), so nothing
      is invented and the live store is never called at runtime.
+     <= 760 the category cards are a swipe row (sheet); a mouse can drag
+     it too (shared dragX).
      ====================================================================== */
   (function shopByCategory() {
     var sec = doc.querySelector('main .shopify-section[id*="__collection_list"]');
@@ -558,6 +748,55 @@
     }
     function money(v) { return '$' + Number(v).toFixed(2) + ' USD'; }
     function sized(src, w) { return src + (src.indexOf('?') >= 0 ? '&' : '?') + 'width=' + w; }
+
+    // <= 760 the 4 category cards are a native scroll-snap row: fingers scroll it natively; a mouse
+    // drag scrolls it too (shared dragX), with snapping off while dragged. Release: a smooth scroll
+    // to the nearest card (a flick carries on; past 40px at least one card on), then snapping is
+    // restored with the row already on a snap position.
+    (function mouseDragRow() {
+      var MQ_ROW = window.matchMedia('(max-width: 760px)');
+      var x0 = 0, settle = 0;
+      function snapBack() {
+        clearTimeout(settle);
+        settle = 0;
+        list.removeEventListener('scrollend', snapBack);
+        list.classList.remove('rf-nosnap');
+      }
+      function stops() {        // scrollLeft of every card's snap position (align start + scroll-padding)
+        var lr = list.getBoundingClientRect();
+        var pad = parseFloat(getComputedStyle(list).scrollPaddingLeft) || 0;
+        var max = list.scrollWidth - list.clientWidth;
+        return [].map.call(list.children, function (li) {
+          var x = list.scrollLeft + li.getBoundingClientRect().left - lr.left - list.clientLeft - pad;
+          return Math.max(0, Math.min(max, Math.round(x)));
+        });
+      }
+      function nearest(pos, xs) {
+        var k = 0;
+        for (var i = 1; i < xs.length; i++) if (Math.abs(xs[i] - pos) < Math.abs(xs[k] - pos)) k = i;
+        return k;
+      }
+      dragX(list, {
+        accept: function (e) { return e.pointerType === 'mouse' && MQ_ROW.matches && list.scrollWidth > list.clientWidth + 1; },
+        start: function () {
+          snapBack();
+          x0 = list.scrollLeft;
+          list.classList.add('rf-nosnap');
+        },
+        move: function (dx) { list.scrollLeft = x0 - dx; },
+        end: function (dx, v) {
+          var xs = stops();
+          if (!xs.length) { snapBack(); return; }
+          var from = nearest(x0, xs);
+          var k = nearest(list.scrollLeft - v * 200, xs);
+          if (k === from && Math.abs(dx) > 40) k = Math.max(0, Math.min(xs.length - 1, from + (dx < 0 ? 1 : -1)));
+          if (Math.abs(list.scrollLeft - xs[k]) < 1) { snapBack(); return; }
+          list.addEventListener('scrollend', snapBack);
+          settle = setTimeout(snapBack, 900);                 // no scrollend event: restore anyway
+          list.scrollTo({ left: xs[k], behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+        },
+      });
+    })();
 
     var rows = [].slice.call(list.querySelectorAll('.collection-list__item')).map(function (li) {
       var a = li.querySelector('.card__content:not(.card__inner .card__content) a[href*="/collections/"]') ||
@@ -696,9 +935,9 @@
         2026-09-21). The 7 existing product cards stay as they are (same
         card design); the active one is centred and full size, neighbours
         overlap behind it, smaller, at 65% opacity (35% less). Loops.
-        Prev / next buttons, click a side card, swipe, arrow keys; focusing
-        a card brings it to the front. Each card gets a star badge
-        ("Best seller").
+        Prev / next buttons, click a side card, mouse drag / finger swipe
+        with live feedback (shared dragX), arrow keys; focusing a card
+        brings it to the front. Each card gets a star badge ("Best seller").
      ====================================================================== */
   (function bestSellerCoverflow() {
     var sec = doc.querySelector('main .shopify-section[id*="__featured_collection_Aa7epV"]');
@@ -774,17 +1013,23 @@
     prev.addEventListener('click', function () { go(active - 1); });
     next.addEventListener('click', function () { go(active + 1); });
 
-    // A click on a side card brings it to the front (links are inert anyway).
-    var swiped = false;
+    // A click on a side card brings it to the front (links are inert anyway). The click that ends
+    // a drag never gets here (swallowed by dragX).
     ul.addEventListener('click', function (e) {
       var li = e.target.closest && e.target.closest('li');
       if (!li || !ul.contains(li)) return;
-      if (swiped) { swiped = false; e.preventDefault(); return; }
       var i = items.indexOf(li);
       if (i >= 0 && i !== active) { e.preventDefault(); go(i); }
     });
-    // Keyboard: focusing a card brings it forward; arrows move.
+    // Keyboard: focusing a card brings it forward; arrows move. A mouse press also focuses the link
+    // under it (Chrome) before anyone knows whether it is a click or a drag: that focus is left to
+    // the click above, so grabbing a side card does not make the stack jump.
+    var pressing = false;
+    ul.addEventListener('pointerdown', function () { pressing = true; });
+    window.addEventListener('pointerup', function () { pressing = false; }, true);
+    window.addEventListener('pointercancel', function () { pressing = false; }, true);
     ul.addEventListener('focusin', function (e) {
+      if (pressing) return;
       var li = e.target.closest && e.target.closest('li');
       var i = items.indexOf(li);
       if (i >= 0 && i !== active) go(i);
@@ -795,16 +1040,43 @@
         if (e.key === 'ArrowRight') { e.preventDefault(); go(active + 1); }
       });
     });
-    // Swipe / drag.
-    var x0 = null;
-    ul.addEventListener('pointerdown', function (e) { x0 = e.clientX; swiped = false; });
-    ul.addEventListener('pointerup', function (e) {
-      if (x0 == null) return;
-      var dx = e.clientX - x0;
-      x0 = null;
-      if (Math.abs(dx) > 40) { swiped = true; go(active + (dx < 0 ? 1 : -1)); }
+    // Drag / swipe (shared dragX). While dragged the stack follows the pointer: --rf-cf-f (a
+    // fractional step, on the list itself: animations.js only rewrites the style of the cards,
+    // .scroll-trigger[data-cascade]) shifts every card, damped so it never passes the 3-step
+    // clamp; as the drag crosses half a step the centre card is re-based (data-o), so all 7 slots
+    // stay filled. Release: at least 1 step past 40px, more for longer drags or fast flicks
+    // (max 3), then the resting layout's own transitions settle it.
+    var dragFrom = 0, stepPx = 1;
+    function damp(s) { return 3 * Math.tanh(s / 3); }
+    function wrapIndex(i) { return ((i % n) + n) % n; }
+    function clearDrag() {
+      ul.style.removeProperty('--rf-cf-f');
+      if (!ul.style.length) ul.removeAttribute('style');
+    }
+    dragX(ul, {
+      start: function () {
+        dragFrom = active;
+        var ratio = parseFloat(getComputedStyle(ul).getPropertyValue('--rf-cf-ratio')) || 0.62;
+        stepPx = (items[active].offsetWidth * ratio) || 1;
+      },
+      move: function (dx) {
+        var pos = dragFrom - damp(dx / stepPx);            // fractional index now at the centre
+        var base = Math.round(pos);
+        if (wrapIndex(base) !== active) go(base);
+        ul.style.setProperty('--rf-cf-f', (base - pos).toFixed(4));
+      },
+      end: function (dx, v, cancelled) {
+        // + where a flick would carry it: only the speed above an ordinary swipe (0.6 px/ms) counts
+        var fling = Math.max(0, Math.abs(v) - 0.6) * 200 / stepPx;
+        var s = damp(dx / stepPx) + (v < 0 ? -fling : fling);
+        var k = cancelled ? 0 : Math.round(s);
+        if (!k && !cancelled && Math.abs(dx) > 40 && s * dx > 0) k = dx > 0 ? 1 : -1;
+        k = Math.max(-3, Math.min(3, k));
+        clearDrag();
+        go(dragFrom - k);
+        PREVIEW.bestSeller.lastDrag = { dx: Math.round(dx), v: +v.toFixed(2), stepPx: Math.round(stepPx), steps: -k };
+      },
     });
-    ul.addEventListener('pointercancel', function () { x0 = null; });
 
     render();
     PREVIEW.bestSeller = { state: function () { return { active: active, n: n }; }, go: go };
@@ -879,6 +1151,8 @@
         the brand tags on its products (audit/data/*.raw.json) plus
         Cartisan (a Best Seller product's own name). Top row moves left,
         bottom row right; pauses on hover and stops for reduced motion.
+        Each row can be dragged / swiped (shared marqueeDrag), also when
+        still under reduced motion.
         Screen readers get the list once; the moving copies are hidden.
      ====================================================================== */
   (function brandMarquee() {
@@ -913,6 +1187,7 @@
       row.appendChild(track);
       sec.appendChild(row);
       tracks.push(track);
+      marqueeDrag(row, track, i === 0 ? -1 : 1, false);
     });
     // constant speed whatever the half's width (chip size changes at the mobile breakpoint)
     function timeTracks() {
@@ -935,6 +1210,8 @@
          Data: build-time snapshot of the section's 8 products
          (fetch-bestseller-data.mjs --name latest). Pauses on hover and
          on keyboard focus; still (and scrollable) under reduced motion.
+         Mouse drag / finger swipe scrubs the loop (shared marqueeDrag);
+         under reduced motion a mouse drag scrolls it (fingers: native).
          Only the first set is exposed to screen readers / Tab; the loop
          copies are aria-hidden with their links taken out of the tab order.
      ====================================================================== */
@@ -968,6 +1245,7 @@
         row.appendChild(track);
         host.parentNode.insertBefore(row, host.nextSibling);
         sec.classList.add('rf-latest-on');
+        marqueeDrag(row, track, -1, true);
         function time() {
           var w = track.firstElementChild.getBoundingClientRect().width;
           if (w) track.style.animationDuration = (w / SPEED).toFixed(1) + 's';

@@ -4041,7 +4041,12 @@ html:root body :is(main .rf-shop, main .rf-cf, main .rf-latest, main .rf-promo, 
   html:root body main .rf-shop ul.collection-list {
     display: flex; flex-direction: row; flex-wrap: nowrap; gap: 14px;
     overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory;
-    /* bleed to the screen edges, content still starts at the gutter */
+    /* bleed to the screen edges, content still starts at the gutter. width auto: the theme's
+       .slider--tablet.grid--peek { width: 100% } held the row at the container width, so it
+       stopped a gutter short of the right edge; the snapport (row - 2 gutters) was then narrower
+       than an 82vw card at 375 (295 < 307.5px), and Chromium let a finger swipe rest anywhere
+       inside a card (a covering snap area) instead of on its start. */
+    width: auto;
     margin: 0 calc(-1 * clamp(20px, 2.5vw, 48px));
     padding: 4px clamp(20px, 2.5vw, 48px) 18px;
     scroll-padding-inline: clamp(20px, 2.5vw, 48px);
@@ -4094,7 +4099,8 @@ html:root body main slider-component.rf-cf-host {
 html:root body main slider-component.rf-cf-host .slider-buttons { display: none; }
 html:root body main slider-component.rf-cf-host ul.rf-cf.product-grid.slider {
   --rf-cf-card: clamp(230px, 24vw, 340px);
-  --rf-cf-step: calc(var(--rf-cf-card) * .62);
+  --rf-cf-ratio: .62;            /* step = card width x ratio; reforge.js reads it for the drag */
+  --rf-cf-step: calc(var(--rf-cf-card) * var(--rf-cf-ratio));
   display: grid;
   grid-template-columns: var(--rf-cf-card);
   justify-content: center;
@@ -4187,7 +4193,7 @@ html:root body main .rf-cf__count {
 @media (max-width: 749px) {
   html:root body main slider-component.rf-cf-host ul.rf-cf.product-grid.slider {
     --rf-cf-card: min(68vw, 280px);
-    --rf-cf-step: calc(var(--rf-cf-card) * .5);
+    --rf-cf-ratio: .5;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -4301,7 +4307,11 @@ html:root body main .rf-brands__track {
   animation: rf-marquee-left 48s linear infinite;
 }
 html:root body main .rf-brands__row--right .rf-brands__track { animation: rf-marquee-right 56s linear infinite; }
-html:root body main .rf-brands:hover .rf-brands__track { animation-play-state: paused; }
+/* hover pause for a real hover only: a finger leaves :hover stuck on the row after a swipe, which
+   would keep it paused for good */
+@media (hover: hover) {
+  html:root body main .rf-brands:hover .rf-brands__track { animation-play-state: paused; }
+}
 @keyframes rf-marquee-left { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @keyframes rf-marquee-right { from { transform: translateX(-50%); } to { transform: translateX(0); } }
 html:root body main .rf-brands__set {
@@ -4349,8 +4359,10 @@ html:root body main .rf-latest__track {
   display: flex; width: max-content;
   animation: rf-marquee-left 60s linear infinite;   /* duration re-set from the measured width (30 px/s) */
 }
-html:root body main .rf-latest:hover .rf-latest__track,
 html:root body main .rf-latest:focus-within .rf-latest__track { animation-play-state: paused; }
+@media (hover: hover) {   /* real hover only (see the brand rows) */
+  html:root body main .rf-latest:hover .rf-latest__track { animation-play-state: paused; }
+}
 html:root body main .rf-latest__set {
   display: flex; gap: 20px; list-style: none;
   margin: 0; padding: 0 20px 0 0;          /* right padding = the gap: the two halves join seamlessly */
@@ -4365,6 +4377,74 @@ html:root body main .rf-latest__item > .rf-pcard { width: 100%; }
   html:root body main .rf-latest { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
   html:root body main .rf-latest__track { animation: none; }
   html:root body main .rf-latest__item[aria-hidden="true"] { display: none; }
+}
+
+/* ===========================================================================
+   Draggable sliders (owner request 2026-09-22: mouse drag + finger swipe on
+   every slider). src/js/reforge.js "Shared: drag / swipe" marks each surface
+   .rf-drag and adds .rf-dragging while it is dragged: Best Seller ul.rf-cf,
+   the two brand rows, the Latest row, the Shop By Category <= 760 row.
+   touch-action: pan-y only on the animated / stepped rows (vertical swipes
+   still scroll the page, sideways ones come to the script); the native
+   scroll rows (Shop <= 760, Latest under reduced motion) keep native
+   finger scrolling, the script handles the mouse there.
+   =========================================================================== */
+html:root body main slider-component.rf-cf-host ul.rf-cf.product-grid.slider.rf-drag,
+html:root body main .rf-brands__row.rf-drag {
+  touch-action: pan-y pinch-zoom;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:root body main .rf-latest.rf-drag { touch-action: pan-y pinch-zoom; }
+}
+html:root body main slider-component.rf-cf-host ul.rf-cf.product-grid.slider.rf-drag,
+html:root body main slider-component.rf-cf-host ul.rf-cf.product-grid.slider.rf-drag > li.grid__item,
+html:root body main slider-component.rf-cf-host ul.rf-cf.product-grid.slider.rf-drag a,
+html:root body main .rf-latest.rf-drag,
+html:root body main .rf-latest.rf-drag a,
+html:root body main .rf-brands__row.rf-drag,
+html:root body main .rf-brands__row.rf-drag .rf-brand {
+  cursor: grab;
+}
+html:root body main slider-component.rf-cf-host ul.rf-cf.product-grid.slider.rf-dragging,
+html:root body main slider-component.rf-cf-host ul.rf-cf.product-grid.slider.rf-dragging > li.grid__item,
+html:root body main slider-component.rf-cf-host ul.rf-cf.product-grid.slider.rf-dragging a,
+html:root body main .rf-latest.rf-dragging,
+html:root body main .rf-latest.rf-dragging a,
+html:root body main .rf-brands__row.rf-dragging,
+html:root body main .rf-brands__row.rf-dragging .rf-brand {
+  cursor: grabbing;
+}
+html:root body main .rf-drag.rf-dragging { -webkit-user-select: none; user-select: none; scroll-behavior: auto; }
+/* marquees: held still while dragged (the script moves the animation's time under the pointer) */
+html:root body main .rf-latest.rf-dragging .rf-latest__track,
+html:root body main .rf-brands__row.rf-dragging .rf-brands__track { animation-play-state: paused; }
+/* Best Seller while dragged: every card follows the pointer by --rf-cf-f (a fractional step, set
+   on the list by the script) = position p; scale, stacking, brightness and the far cards' fade are
+   the resting values at p (identical at f = 0), with no transition so the stack stays under the
+   pointer. On release the resting rules and their transitions take over again. */
+html:root body main slider-component.rf-cf-host ul.rf-cf.product-grid.slider.rf-dragging > li.grid__item {
+  --rf-cf-p: calc(var(--o, 0) + var(--rf-cf-f, 0));
+  --rf-cf-d: max(var(--rf-cf-p), -1 * var(--rf-cf-p));
+  transform: translateX(calc(var(--rf-cf-p) * var(--rf-cf-step))) scale(calc(1 - var(--rf-cf-d) * .12));
+  z-index: calc(10 - var(--rf-cf-d));
+  filter: brightness(calc(1 - min(var(--rf-cf-d), 1) * .35));
+  opacity: clamp(0, calc(3 - var(--rf-cf-d)), 1);
+  transition: none;
+}
+/* Shop By Category <= 760: grab cursor for the mouse; snapping off while the script scrolls it. */
+@media (max-width: 760px) {
+  html:root body main ul.collection-list.rf-drag,
+  html:root body main ul.collection-list.rf-drag a {
+    cursor: grab;
+  }
+  html:root body main ul.collection-list.rf-dragging,
+  html:root body main ul.collection-list.rf-dragging a {
+    cursor: grabbing;
+  }
+  /* scroll-behavior: the theme's .slider--tablet is smooth, which would make every scrollLeft
+     write from the drag an animation that lags behind the pointer */
+  html:root body main .rf-shop ul.collection-list.rf-nosnap,
+  html:root body main ul.collection-list.rf-nosnap { scroll-snap-type: none; scroll-behavior: auto; }
 }
 
 /* ===========================================================================
