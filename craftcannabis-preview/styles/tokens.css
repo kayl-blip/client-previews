@@ -1,0 +1,168 @@
+/* tokens.css — derived by sr-tokens.mjs from computed (browser capture).
+   Every value below traces to audit/design-baseline.json. Change values HERE,
+   never at a call site: one source, or the system is not a system. */
+:root {
+  /* --- colour ------------------------------------------------------ */
+  --c-1: #333333;
+  --c-2: #ffffff;
+  --c-3: #ceb185;
+  --c-4: #ceb18585;
+  --c-5: #00000014;
+  --c-6: #000000de;
+  --c-7: #333333b8;
+  --c-8: #cc3366;
+  --c-9: #000000;
+
+  /* --- type -------------------------------------------------------- */
+  --font-body: "Open Sans", sans-serif;
+  --font-display: Inter, sans-serif;
+  --fs-1: 6px;
+  --fs-2: 8px;
+  --fs-3: 12px;
+  --fs-4: 12.8px;
+  --fs-5: 13px;
+  --fs-6: 14px;
+  --fs-7: 14.4px;
+  --fs-8: 15px;
+  --fs-9: 16px;
+  --fs-10: 18px;
+  --fs-11: 22.8571px;
+  --fs-12: 24px;
+  --fs-13: 27.4286px;
+  --fs-14: 28px;
+  --fs-15: 32px;
+  --fs-16: 36px;
+  --fs-17: 38px;
+  --fs-18: 40px;
+  --fs-19: 42px;
+  --fs-20: 48px;
+
+  /* --- space ------------------------------------------------------- */
+  --sp-1: 2px;
+  --sp-2: 4px;
+  --sp-3: 5px;
+  --sp-4: 6px;
+  --sp-5: 8px;
+  --sp-6: 10px;
+  --sp-7: 12px;
+  --sp-8: 16px;
+  --sp-9: 20px;
+  --sp-10: 24px;
+  --sp-11: 32px;
+  --sp-12: 64px;
+
+  /* --- shape ------------------------------------------------------- */
+  --radius-1: 16px;
+  --radius-2: 50%;
+  --radius-3: 3px;
+  --shadow-1: rgba(0, 0, 0, 0.2) 0px 2px 1px -1px, rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 1px 3px 0px;
+  --shadow-2: rgb(247, 59, 115) 0px 0px 4px 0px;
+  --shadow-3: rgb(247, 59, 115) 0px 0px 5px 0px;
+
+  /* --- layout ------------------------------------------------------ */
+  --container: 100%;
+  --bp-1: 394px;
+  --bp-2: 479px;
+  --bp-3: 480px;
+  --bp-4: 575px;
+  --bp-5: 576px;
+  --bp-6: 599px;
+  --bp-7: 640px;
+  --bp-8: 718px;
+  --bp-9: 734px;
+  --bp-10: 767px;
+  --bp-11: 768px;
+  --bp-12: 899px;
+  --bp-13: 900px;
+  --bp-14: 991px;
+  --bp-15: 992px;
+  --bp-16: 1024px;
+  --bp-17: 1025px;
+  --bp-18: 1199px;
+  --bp-19: 1200px;
+  --bp-20: 1400px;
+}
+
+/* design layer — Warm Apothecary Editorial.
+   Every colour below is derived from the measured palette above (--c-1 charcoal, --c-2 white,
+   --c-3 tan, --c-8 pink, --c-9 black). Authored css references these names only. */
+:root {
+  /* grounds */
+  --paper: color-mix(in srgb, var(--c-3) 14%, var(--c-2));
+  --paper-deep: color-mix(in srgb, var(--c-3) 26%, var(--c-2));
+  --tile: color-mix(in srgb, var(--c-3) 9%, var(--c-2));
+  --surface: var(--c-2);
+  --night: color-mix(in srgb, var(--c-1) 86%, var(--c-9));
+  --night-raise: color-mix(in srgb, var(--c-1) 94%, var(--c-2));
+  --night-line: color-mix(in srgb, var(--c-2) 12%, transparent);
+
+  /* ink */
+  --ink: var(--c-1);
+  --ink-strong: color-mix(in srgb, var(--c-1) 72%, var(--c-9));
+  --ink-muted: color-mix(in srgb, var(--c-1) 80%, var(--c-2));
+  --on-night: var(--c-2);
+  --on-night-muted: color-mix(in srgb, var(--c-2) 76%, var(--c-1));
+
+  /* the one accent */
+  --accent: var(--c-8);
+  --accent-ink: color-mix(in srgb, var(--c-8) 86%, var(--c-9));
+  --accent-soft: color-mix(in srgb, var(--c-8) 9%, var(--c-2));
+  --accent-glow: color-mix(in srgb, var(--c-8) 34%, transparent);
+  --on-accent: var(--c-2);
+
+  /* tan — hairlines, dark-ground eyebrows, pattern */
+  --tan: var(--c-3);
+  --tan-rule: color-mix(in srgb, var(--c-3) 62%, transparent);
+  --tan-glow: color-mix(in srgb, var(--c-3) 50%, transparent);
+  --hairline: color-mix(in srgb, var(--c-1) 11%, transparent);
+  --hairline-strong: color-mix(in srgb, var(--c-1) 20%, transparent);
+
+  /* glass + scrims */
+  --glass: color-mix(in srgb, var(--paper) 90%, transparent);
+  --scrim: color-mix(in srgb, var(--c-9) 58%, transparent);
+  --scrim-soft: color-mix(in srgb, var(--c-9) 34%, transparent);
+  --on-photo: var(--c-2);
+  --on-photo-dim: color-mix(in srgb, var(--c-2) 55%, transparent);
+
+  /* depth — ink-tinted, never pure black */
+  --shadow-card: 0 1px 2px color-mix(in srgb, var(--c-1) 6%, transparent), 0 14px 30px -16px color-mix(in srgb, var(--c-1) 28%, transparent);
+  --shadow-lift: 0 2px 6px color-mix(in srgb, var(--c-1) 8%, transparent), 0 30px 60px -22px color-mix(in srgb, var(--c-1) 36%, transparent);
+  --shadow-frame: 0 44px 90px -38px color-mix(in srgb, var(--c-1) 55%, transparent);
+  --shadow-header: 0 10px 30px -18px color-mix(in srgb, var(--c-1) 30%, transparent);
+  --shadow-accent: 0 12px 26px -12px color-mix(in srgb, var(--c-8) 70%, transparent);
+  --focus-ring: 0 0 0 3px var(--c-2), 0 0 0 5px var(--c-8);
+
+  /* type */
+  --font: var(--font-body);
+  --track-tight: -0.03em;
+  --track-display: -0.035em;
+  --track-caps: 0.14em;
+
+  /* layout */
+  --container-max: 1280px;
+  --gutter: clamp(16px, 4vw, 40px);
+  --section-y: clamp(72px, 9vw, 132px);
+  --radius-card: 18px;
+  --radius-frame: 28px;
+  --radius-pill: 999px;
+  --header-h: 128px;
+}
+
+/* design layer — final pass additions (derived from the measured palette) */
+:root {
+  --tan-ink: color-mix(in srgb, var(--c-3) 55%, var(--c-1));
+  --scrim-deep: color-mix(in srgb, var(--c-9) 74%, transparent);
+}
+
+/* design layer — hero slide controls: a dark backing pill so every dot keeps >= 3:1 against its
+   own backing over ANY photo pixel (worst case, pure white under 58% black: dot 3.65:1, active 5.3:1) */
+:root {
+  --control-scrim: color-mix(in srgb, var(--c-9) 58%, transparent);
+  --on-photo-soft: color-mix(in srgb, var(--c-2) 72%, transparent);
+}
+
+/* design layer — product tiles: the soft shadow under a sharp photo that sits on its own blurred
+   ground (ink-tinted like every other shadow) */
+:root {
+  --shadow-print: 0 1px 2px color-mix(in srgb, var(--c-1) 22%, transparent), 0 12px 24px -12px color-mix(in srgb, var(--c-1) 55%, transparent);
+}

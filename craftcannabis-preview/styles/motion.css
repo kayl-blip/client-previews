@@ -1,0 +1,59 @@
+/* motion.css - keyframes and easing measured on the source site, carried verbatim. */
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes slideInUp {
+  0% { transform: translate3d(0px, 100%, 0px); visibility: visible; }
+  100% { transform: translate3d(0px, 0px, 0px); }
+}
+@keyframes slideOutDown {
+  0% { transform: translate3d(0px, 0px, 0px); }
+  100% { visibility: hidden; transform: translate3d(0px, 100%, 0px); }
+}
+@keyframes slideInDown {
+  0% { transform: translate3d(0px, -100%, 0px); visibility: visible; }
+  100% { transform: translate3d(0px, 0px, 0px); }
+}
+@keyframes slideOutUp {
+  0% { transform: translate3d(0px, 0px, 0px); }
+  100% { visibility: hidden; transform: translate3d(0px, -100%, 0px); }
+}
+@keyframes eicon-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(359deg); }
+}
+@keyframes swiper-preloader-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes hide-scroll {
+  0%, 100% { overflow: hidden; }
+}
+@keyframes animation-c7515d {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+:root {
+  --ease-1: cubic-bezier(.4,0,.2,1);
+  --ease-2: cubic-bezier(.58,.3,.005,1);
+  --dur-1: 0.3s, 0.3s, 0.3s, 0.4s;
+  --dur-2: 0.3s, 0.3s, 0.3s, 0.3s, 0.4s;
+  --dur-3: 0.4s;
+  --dur-4: 0.2s;
+  --dur-5: 0.3s;
+  --dur-6: 0.3s, 0.3s;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
